@@ -504,11 +504,55 @@ N('Oe','O5',-60,'Fluch der Schwäche','enemyHpRed',3,10,25,'b');
 N('Of','O7',60,'Seelenfeuer','explode',30,10,8,'g');
 N('Og','Ob',25,'Blutrausch','critDmg',20,10,110,'s');
 
+// ===== v0.2: äußerer Baum =====
+BR.X={name:'Brücke',col:'#e6dccb',ang:0};
+const XC={};
+function SP(br,from,list){let p=from;list.forEach((d,i)=>{const id=br+(9+i);N(id,p,0,...d);p=id;});}
+function CH(br,from,off,list){let p=from;list.forEach((d,i)=>{XC[br]=(XC[br]||0)+1;const id=br+'x'+XC[br];N(id,p,i===0?off:Math.sign(off)*18,...d);p=id;});}
+function BRG(a,b,list){const A=BR[a].ang;list.forEach((d,i)=>{XC.X=(XC.X||0)+1;const id='X'+XC.X;const ang=(A+15*(i+1))*Math.PI/180;
+  const par=i===0?a+'6':'X'+(XC.X-1);const links=i===2?[b+'6']:[];N(id,par,0,...d,Object.assign({x:Math.cos(ang)*720,y:Math.sin(ang)*720,links,brg:1},d[6]||{}));});}
+SP('K','K8',[['Seelenklinge','dmgPerCircle',2,10,20,'g'],['Rasende Klinge','frenzy',5,10,30,'g'],['Gottesschwert','dmgPct',150,10,45,'g'],['Weltenbrand','explode',100,5,80,'g',{ks:1}]]);
+CH('K','K8',-50,[['Ordensschärfe','dmgFlat',50,10,60,'b'],['Klingenfuror','atkSpd',12,10,90,'b'],['Reißzahn','critDmg',50,10,140,'b']]);
+CH('K','K9',50,[['Kreuzhieb','aoe',20,10,18,'g'],['Vergeltung','bossDmg',50,10,25,'g'],['Henker','execute',2,5,35,'g']]);
+CH('K','K10',-50,[['Blutstahl','dmgPct',80,10,400,'b'],['Sturmklinge','multi',1,1,600,'b'],['Klingentanz','atkSpd',20,10,900,'b']]);
+CH('K','K11',50,[['Erzfeind','bossDmg',100,10,50,'g'],['Ewiger Hieb','dmgPerCircle',3,10,70,'g'],['Schlachtruf','frenzy',5,10,100,'g']]);
+SP('W','W8',[['Lebensband','hpPerCircle',3,10,20,'g'],['Ewige Wacht','regen',20,10,30,'g'],['Engelsschild','armor',40,10,45,'g'],['Unsterblich','revive',1,1,80,'g',{ks:1}]]);
+CH('W','W8',-50,[['Eisenleib','hpFlat',500,10,60,'b'],['Wehrhaft','armor',20,10,90,'b'],['Blutdurst','lifesteal',3,10,140,'b']]);
+CH('W','W9',50,[['Heilende Hand','regen',10,10,18,'g'],['Gegenwehr','thorns',150,10,25,'g'],['Lebenshunger','lifesteal',4,10,35,'g']]);
+CH('W','W10',-50,[['Titanenhaut','hpPct',60,10,400,'b'],['Bastion','armor',50,10,600,'b'],['Unerschütterlich','hpFlat',2000,10,900,'b']]);
+CH('W','W11',50,[['Märtyrer','hpPerCircle',4,10,50,'g'],['Dornenkrone','thorns',300,10,70,'g'],['Heiliger Quell','regen',50,10,100,'g']]);
+SP('Z','Z8',[['Zeitfresser','killTime',.03,10,20,'g',{ks:1}],['Dämonenflut','spawnPct',40,10,30,'g'],['Äonen','runTime',5,10,45,'g'],['Ewigkeit','killTime',.05,10,80,'g']]);
+CH('Z','Z8',-50,[['Seelenstrudel','magnet',30,10,60,'b'],['Endlose Nacht','runTime',3,10,90,'b'],['Vorhut','spawnPct',30,10,140,'b']]);
+CH('Z','Z9',50,[['Hast','atkSpd',10,10,18,'g'],['Fürstenruf','quotaRed',3,5,25,'g'],['Zeitschleife','killTime',.02,10,35,'g']]);
+CH('Z','Z10',-50,[['Massenbeschwörung','spawnPct',50,10,400,'b'],['Zeitdehnung','runTime',4,10,600,'b'],['Seelenmagnet','magnet',50,5,900,'b']]);
+CH('Z','Z11',50,[['Chronomant','atkSpd',15,10,50,'g'],['Uhrwerk','runTime',8,10,70,'g'],['Höllensturm','spawnPct',80,10,100,'g']]);
+SP('G','G8',[['Schatzkammer','soulPerCircle',5,10,20,'g'],['Schwefelmine','brimPct',100,10,30,'g'],['Seelenbank','soulPct',200,10,45,'g'],['Midas','golden',5,5,80,'g',{ks:1}]]);
+CH('G','G8',-50,[['Tribut','soulFlat',50,10,60,'b'],['Elitenrudel','eliteCh',5,10,90,'b'],['Doppelernte','doubleLoot',5,10,140,'b']]);
+CH('G','G9',50,[['Siegelsucher','sigilPct',30,10,18,'g'],['Schwefelstrom','brimFlat',5,10,25,'g'],['Kriegsbeute','bossLoot',50,10,35,'g']]);
+CH('G','G10',-50,[['Seelenflut','soulPct',150,10,400,'b'],['Goldader','golden',3,5,600,'b'],['Raffgier','doubleLoot',8,10,900,'b']]);
+CH('G','G11',50,[['Siegelmeister','sigilFlat',2,10,50,'g'],['Reichtum','soulPerCircle',8,10,70,'g'],['Fürstenschatz','bossLoot',100,10,100,'g']]);
+SP('B','B8',[['Heiliger Speer','clickPct',300,10,20,'g'],['Engelslegion','autoSmiteCount',1,3,30,'g',{gr:2}],['Himmelsfeuer','clickAoe',40,10,45,'g'],['Jüngstes Gericht','clickPct',1000,10,80,'g',{ks:1}]]);
+CH('B','B8',-50,[['Brandzeichen','markPct',30,10,60,'b'],['Lichtstrahl','clickCrit',5,8,90,'b'],['Strafgericht','clickCritDmg',50,10,140,'b']]);
+CH('B','B9',50,[['Engelsflügel','autoSmiteSpd',25,10,18,'g'],['Seelenbann','clickSoul',25,10,25,'g'],['Lichtgeschoss','clickPct',200,10,35,'g']]);
+CH('B','B10',-50,[['Lichtkreis','clickAoe',30,10,400,'b'],['Heiligenschein','markPct',50,10,600,'b'],['Zorn Gottes','clickCritDmg',100,10,900,'b']]);
+CH('B','B11',50,[['Seraphim','autoSmiteSpd',40,10,50,'g'],['Fanal','clickPct',500,10,70,'g'],['Gnadenlos','clickCrit',5,8,100,'g']]);
+SP('O','O8',[['Blutmond','critDmg',200,10,20,'g'],['Höllenschlund','explodeR',30,10,30,'g'],['Seelenfresser','enemyHpRed',3,5,45,'g'],['Untergang','crit',5,5,80,'g',{ks:1}]]);
+CH('O','O8',-50,[['Sprengsiegel','explode',50,10,60,'b'],['Splitterhagel','pierce',1,2,90,'b',{gr:3}],['Schwäche','enemyHpRed',2,5,140,'b']]);
+CH('O','O9',50,[['Schicksal','crit',3,8,18,'g'],['Glutsturm','explodeR',25,10,25,'g'],['Mordgier','critDmg',150,10,35,'g']]);
+CH('O','O10',-50,[['Inferno','explode',100,10,400,'b'],['Durchschlag','pierce',1,2,600,'b',{gr:3}],['Fluch','critDmg',300,10,900,'b']]);
+CH('O','O11',50,[['Seelenbrand','explode',200,10,50,'g'],['Vorsehung','crit',3,5,70,'g'],['Weltenende','critDmg',500,10,100,'g']]);
+BRG('K','W',[['Kreuzritter','dmgPct',40,10,10,'g'],['Paladinschwur','hpPct',40,10,10,'g'],['Glaubensstahl','armor',15,10,10,'g']]);
+BRG('W','Z',[['Ausdauer','runTime',2,5,10,'g'],['Wächter','regen',8,10,10,'g'],['Atempause','hpFlat',300,10,10,'g']]);
+BRG('Z','G',[['Ernteeile','magnet',20,5,8,'g'],['Goldene Stunde','soulPct',80,10,10,'g'],['Zeitzins','killTime',.02,5,12,'g']]);
+BRG('G','B',[['Ablasshandel','clickSoul',30,10,10,'g'],['Opfergabe','soulFlat',20,10,10,'g'],['Heiliger Zehnt','sigilPct',20,5,12,'g']]);
+BRG('B','O',[['Brandmarke','markPct',40,10,10,'g'],['Bannfluch','clickCrit',4,5,10,'g'],['Lichtbruch','explode',40,10,10,'g']]);
+BRG('O','K',[['Blutklinge','critDmg',60,10,10,'g'],['Mordhieb','crit',2,5,10,'g'],['Klingenrausch','frenzy',3,10,12,'g']]);
+
 const FX={
  dmgFlat:v=>`+${v} Grundschaden`,dmgPct:v=>`+${v}% Schaden`,atkSpd:v=>`+${v}% Angriffstempo`,aoe:v=>`+${v}% Flächenradius`,
  bossDmg:v=>`+${v}% Schaden gegen Fürsten & Elite`,chain:v=>`Treffer springen als Blitz auf +${v} Dämon(en)`,chainDmg:v=>`+${v}% Kettenblitz-Schaden`,
  execute:v=>`Dämonen unter ${v}% Leben werden sofort vernichtet`,multi:v=>`+${v} zusätzliche Ziele pro Angriff`,
- hpFlat:v=>`+${v} Leben`,hpPct:v=>`+${v}% Leben`,armor:v=>`+${v} Rüstung`,regen:v=>`+${v} Leben/s`,revive:v=>`Einmal pro Jagd: Wiederbelebung mit 50% Leben`,
+ hpFlat:v=>`+${v} Leben`,hpPct:v=>`+${v}% Leben`,armor:v=>`+${v} Rüstung`,regen:v=>`+${v} Leben/s`,revive:v=>`+${v} Wiederbelebung pro Jagd (50% Leben)`,
  thorns:v=>`Reflektiert ${v}% des erlittenen Schadens`,lifesteal:v=>`+${v}% Lebensraub`,
  runTime:v=>`+${v}s Jagdzeit`,magnet:v=>`+${v} Sammelradius des Zeigers`,spawnPct:v=>`+${v}% mehr Dämonen`,autoCollect:v=>`Beute fliegt fast sofort zu dir`,
  collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,
@@ -520,9 +564,11 @@ const FX={
  crit:v=>`+${v}% Krit-Chance`,critDmg:v=>`+${v}% Krit-Schaden`,explode:v=>`Getötete Dämonen explodieren (${v}% Schaden)`,explodeR:v=>`+${v}% Explosionsradius`,
  pierce:v=>`+${v} durchbohrte/zusätzliche Ziele`,chainReact:v=>`Explosionen lösen weitere Explosionen aus`,enemyHpRed:v=>`Dämonen haben −${v}% Leben`,
  unlock:v=>`Schaltet ${HB[v].name} frei`,
+ dmgPerCircle:v=>`+${v}% Schaden pro erreichtem Höllenkreis`,hpPerCircle:v=>`+${v}% Leben pro erreichtem Höllenkreis`,soulPerCircle:v=>`+${v}% Seelen pro erreichtem Höllenkreis`,
+ frenzy:v=>`+${v}% Angriffstempo je 10 Kills in der Jagd (max. +100%)`,killTime:v=>`Jeder Kill verlängert die Jagd um ${v}s`,
 };
 // --- layout
-(function layout(){for(const n of NODES){if(n.root)continue;const p=NB[n.parent];const br=BR[n.id[0]];const a=(br.ang+n.off)*Math.PI/180;const d=n.parent==='root'?140:(n.off===0?100:86);n.x=p.x+Math.cos(a)*d;n.y=p.y+Math.sin(a)*d;n.br=n.id[0];n.r=n.ch?24:n.ks?21:16;}NB.root.r=30;})();
+(function layout(){for(const n of NODES){if(n.root)continue;if(n.brg){n.br='X';n.r=17;continue;}const p=NB[n.parent];const br=BR[n.id[0]];const a=(br.ang+n.off)*Math.PI/180;const d=n.parent==='root'?140:(n.off===0?100:86);n.x=p.x+Math.cos(a)*d;n.y=p.y+Math.sin(a)*d;n.br=n.id[0];n.r=n.ch?24:n.ks?21:16;}NB.root.r=30;})();
 const CHILD={};NODES.forEach(n=>{if(n.parent){(CHILD[n.parent]=CHILD[n.parent]||[]).push(n.id);}});
 
 // ================= SAVE =================
@@ -535,8 +581,8 @@ load();
 const lv=id=>save.tree[id]||0;
 const heroUnlocked=h=>!h.unlock||lv(h.unlock)>0;
 const nodeCost=n=>Math.ceil(n.cost*Math.pow(n.gr,lv(n.id)));
-const nodeAvail=n=>n.root||lv(n.parent)>0;
-const nodeVisible=n=>n.root||lv(n.parent)>0||NB[n.parent].root||lv(NB[n.parent].parent)>0;
+const nodeAvail=n=>n.root||lv(n.parent)>0||(n.links||[]).some(id=>lv(id)>0);
+const nodeVisible=n=>nodeAvail(n)||[n.parent,...(n.links||[])].some(id=>NB[id].root||nodeAvail(NB[id]));
 const curAmt=c=>c==='s'?save.souls:c==='b'?save.brim:save.sig;
 function curSub(c,v){if(c==='s')save.souls-=v;else if(c==='b')save.brim-=v;else save.sig-=v;}
 
@@ -571,6 +617,9 @@ function computeStats(){
   s.execute=g('execute')/100;s.explode=g('explode')/100;s.explodeR=55*(1+g('explodeR')/100);s.chainReact=g('chainReact');
   s.pierce=g('pierce')+(h.pierce||0);s.multi=g('multi');
   s.revive=g('revive');s.quota=1-g('quotaRed')/100;s.enemyHp=1-g('enemyHpRed')/100;
+  const mc=save.maxCircle-1;s.dmg*=1+g('dmgPerCircle')*mc/100;s.hp*=1+g('hpPerCircle')*mc/100;s.soul*=1+g('soulPerCircle')*mc/100;
+  s.click=1+s.dmg*(.3+g('clickPct')/100);s.frenzy=g('frenzy')/100;s.killTime=g('killTime');
+  s.crit=Math.min(95,s.crit);s.enemyHp=Math.max(.3,s.enemyHp);
   s.range=h.range*(h.type==='pulse'?s.aoe:1);
   ST=s;return s;
 }
@@ -651,7 +700,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;sfxL('kill');
+  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;sfxL('kill');if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
   // particles
   const col=e.type==='wraith'?'#9bf0ff':e.type==='bat'?'#c06aff':'#ff6a3a';
   for(let i=0;i<(e.boss?60:10);i++)R.pt.push({x:e.x,y:e.y-e.r,vx:rnd(-160,160),vy:rnd(-220,40),t:0,life:rnd(.4,.9),c:Math.random()<.5?col:'#2a1018',s:ri(2,5)});
@@ -740,7 +789,7 @@ function smite(x,y,auto){
 function hurtHero(amt,src){
   const a=Math.max(amt*.15,amt-ST.armor);R.hp-=a;R.hero.flash=.1;sfxL('hurt');
   if(ST.thorns>0&&src&&!src.dead)dealDmg(src,amt*ST.thorns*3+ST.dmg*ST.thorns*.5,{col:'#8aff8a'});
-  if(R.hp<=0){if(ST.revive&&!R.revived){R.revived=true;R.hp=R.maxHp*.5;R.fx.push({k:'ring',x:W/2,y:H/2+18,r:220,t:0,dur:.6,col:'#9bffb0'});
+  if(R.hp<=0){if((R.revives||0)<ST.revive){R.revives=(R.revives||0)+1;R.hp=R.maxHp*.5;R.fx.push({k:'ring',x:W/2,y:H/2+18,r:220,t:0,dur:.6,col:'#9bffb0'});
       for(const e of R.en)if(!e.dead){const d=Math.hypot(e.x-W/2,e.y-H/2)||1;e.kb=.3;e.kx=(e.x-W/2)/d*500;e.ky=(e.y-H/2)/d*500;}
       R.tx.push({x:W/2,y:H/2-80,str:'ZWEITER ATEM!',t:0,col:'#9bffb0'});}
     else{R.hp=0;endRun('dead');}}
@@ -753,7 +802,7 @@ function updateRun(dt){
   if(R.time<=0){R.time=0;endRun('time');return;}
   R.hp=Math.min(R.maxHp,R.hp+ST.regen*dt);
   R.spawnT-=dt;if(R.spawnT<=0){spawnTick();R.spawnT=Math.max(.12,(1.05-Math.min(.45,(R.c-1)*.05))/ST.spawn);}
-  R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/ST.aps;else R.atkT=.05;}
+  R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/(ST.aps*(1+Math.min(1,ST.frenzy*Math.floor(R.kills/10))));else R.atkT=.05;}
   if(ST.autoSmite){R.smiteT-=dt;if(R.smiteT<=0){R.smiteT=1/ST.autoSmite;const al=R.en.filter(e=>!e.dead&&e.x>0&&e.x<W&&e.y>0&&e.y<H);
     for(let i=0;i<ST.smiteN&&al.length;i++){const e=al[ri(0,al.length-1)];smite(e.x,e.y-e.r,1);if(ST.smiteTwice)smite(e.x,e.y-e.r,1);}}}
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
@@ -919,7 +968,7 @@ function renderHub(dt){
   // ritual circles
   const o=w2s(0,0);
   ctx.save();ctx.strokeStyle='rgba(160,40,50,.25)';ctx.lineWidth=2;
-  for(const r of [70,330,660,980]){ctx.beginPath();ctx.arc(o.x,o.y,r*cam.z,0,Math.PI*2);ctx.stroke();}
+  for(const r of [70,330,720,1050,1420]){ctx.beginPath();ctx.arc(o.x,o.y,r*cam.z,0,Math.PI*2);ctx.stroke();}
   ctx.translate(o.x,o.y);ctx.rotate(hubT*.03);ctx.font=`${Math.max(10,22*cam.z)|0}px "VT323"`;ctx.fillStyle='rgba(200,60,70,.28)';ctx.textAlign='center';
   const runes='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';for(let i=0;i<48;i++){ctx.save();ctx.rotate(i/48*Math.PI*2);ctx.fillText(runes[i%runes.length],0,-345*cam.z);ctx.restore();}
   ctx.restore();
@@ -931,12 +980,13 @@ function renderHub(dt){
     const own=lv(n.id)>0,av=nodeAvail(n);const col=BR[n.br].col;
     ctx.lineWidth=(own?5:3)*Math.max(.6,cam.z);ctx.strokeStyle=own?col:av?'rgba(200,170,150,.35)':'rgba(120,90,90,.18)';
     if(own){ctx.save();ctx.shadowColor=col;ctx.shadowBlur=10;}
-    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();if(own)ctx.restore();}
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();if(own)ctx.restore();
+    for(const lid of n.links||[]){const q=NB[lid];const c2=w2s(q.x,q.y);const on=own&&lv(lid)>0;ctx.lineWidth=(on?5:3)*Math.max(.6,cam.z);ctx.strokeStyle=on?col:(own||lv(lid)>0)?'rgba(200,170,150,.35)':'rgba(120,90,90,.18)';ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(c2.x,c2.y);ctx.stroke();}}
   // nodes
   for(const n of NODES){if(!nodeVisible(n))continue;drawNode(n);}
   // branch names near first nodes
   ctx.font=`600 ${Math.max(12,16*cam.z)|0}px "Pixelify Sans"`;
-  for(const k in BR){const b=BR[k];const n1=NB[k+'1'];const a=b.ang*Math.PI/180;const p=w2s(n1.x+Math.cos(a+Math.PI/2)*0-Math.cos(a)*-0,n1.y);const q=w2s((n1.x)*0.58,(n1.y)*0.58);ctx.fillStyle=b.col;ctx.globalAlpha=.8;ctx.fillText(b.name.toUpperCase(),q.x,q.y+5);ctx.globalAlpha=1;}
+  for(const k in BR){if(k==='X')continue;const b=BR[k];const n1=NB[k+'1'];const a=b.ang*Math.PI/180;const p=w2s(n1.x+Math.cos(a+Math.PI/2)*0-Math.cos(a)*-0,n1.y);const pa=a+Math.PI/2;const q=w2s(Math.cos(a)*190+Math.cos(pa)*34,Math.sin(a)*190+Math.sin(pa)*34);ctx.fillStyle=b.col;ctx.globalAlpha=.8;ctx.fillText(b.name.toUpperCase(),q.x,q.y+5);ctx.globalAlpha=1;}
 }
 function drawNode(n){
   const p=w2s(n.x,n.y);const r=n.r*cam.z;if(p.x<-60||p.y<-60||p.x>W+60||p.y>H+60)return;
@@ -970,7 +1020,7 @@ const ICON={
 };
 const KEYICON={dmgFlat:'dmg',dmgPct:'dmg',atkSpd:'spd',aoe:'aoe',bossDmg:'skull',chain:'chain',chainDmg:'chain',execute:'skull',multi:'star',hpFlat:'hp',hpPct:'hp',armor:'arm',regen:'regen',revive:'regen',thorns:'thorn',lifesteal:'hp',
  runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
- clickPct:'click',clickAoe:'aoe',clickCrit:'crit',clickCritDmg:'crit',autoSmite:'click',autoSmiteSpd:'spd',autoSmiteCount:'click',smiteTwice:'star',markPct:'click',clickSoul:'loot',crit:'crit',critDmg:'crit',explode:'boom',explodeR:'boom',pierce:'dmg',chainReact:'boom',enemyHpRed:'skull'};
+ clickPct:'click',clickAoe:'aoe',clickCrit:'crit',clickCritDmg:'crit',autoSmite:'click',autoSmiteSpd:'spd',autoSmiteCount:'click',smiteTwice:'star',markPct:'click',clickSoul:'loot',crit:'crit',critDmg:'crit',explode:'boom',explodeR:'boom',pierce:'dmg',chainReact:'boom',enemyHpRed:'skull',dmgPerCircle:'dmg',hpPerCircle:'hp',soulPerCircle:'loot',frenzy:'spd',killTime:'time'};
 function drawIcon(key,col,size,on){const g=ICON[KEYICON[key]]||ICON.star;const px=Math.max(1,size*2/5);ctx.fillStyle=on?'#fff8e8':col;ctx.globalAlpha=on?1:.75;
   for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(g[j][i]==='#')ctx.fillRect(Math.round((i-2.5)*px),Math.round((j-2.5)*px),Math.ceil(px),Math.ceil(px));ctx.globalAlpha=1;}
 
@@ -1009,6 +1059,7 @@ function refreshHub(){
   $('#sideName').textContent=h.name;$('#sidePass').textContent=h.pass;
   const rows=[['Schaden',fmt(ST.dmg)],['Angriffe/s',ST.aps.toFixed(2)],['Krit',ST.crit.toFixed(0)+'% ×'+ST.critDmg.toFixed(2)],['Leben',fmt(ST.hp)],['Rüstung',fmt(ST.armor)],['Regeneration',ST.regen.toFixed(1)+'/s'],
     ['Jagdzeit',ST.time+'s'],['Bannstrahl',fmt(ST.click)],['Seelen',`×${ST.soul.toFixed(2)}`],['Beute-Sog',ST.collectDelay.toFixed(1)+'s']];
+  rows.unshift(['Schwurbaum',NODES.filter(n=>!n.root&&lv(n.id)>0).length+' / '+(NODES.length-1)]);
   if(ST.ls)rows.push(['Lebensraub',(ST.ls*100).toFixed(0)+'%']);if(ST.chain)rows.push(['Kettenblitz',ST.chain]);if(ST.explode)rows.push(['Explosion',(ST.explode*100|0)+'%']);if(ST.execute)rows.push(['Hinrichtung','<'+(ST.execute*100|0)+'%']);
   $('#stats').innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join('');
   $('#cLbl').textContent=circleName(save.circle);
