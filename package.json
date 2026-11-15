@@ -1,0 +1,26 @@
+{
+  "name": "daemonenjaeger",
+  "productName": "Dämonenjäger",
+  "version": "0.2.0",
+  "description": "Dämonenjäger – Incremental Game",
+  "main": "electron/main.js",
+  "author": "LucciArch",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable nsis --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "de.lucciarch.daemonenjaeger",
+    "productName": "Daemonenjaeger",
+    "files": ["index.html", "electron/**"],
+    "directories": { "output": "dist" },
+    "win": { "icon": "build/icon.png" },
+    "portable": { "artifactName": "Daemonenjaeger-${version}-portable.exe" },
+    "nsis": { "artifactName": "Daemonenjaeger-${version}-setup.exe", "oneClick": true, "createDesktopShortcut": true }
+  }
+}
