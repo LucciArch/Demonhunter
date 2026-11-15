@@ -24,6 +24,7 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 .cur i{display:inline-block;width:14px;height:14px;transform:rotate(45deg);border:2px solid #000}
 .cur.s i{background:var(--soul);box-shadow:0 0 8px var(--soul)}
 .cur.b i{background:var(--brim);box-shadow:0 0 8px var(--brim)}
+.cur.a i{background:#ff4ad0;box-shadow:0 0 8px #ff4ad0;transform:rotate(45deg) scale(.85,1.15)}
 .cur.g i{background:var(--sig);box-shadow:0 0 8px var(--sig);border-radius:50%;transform:none}
 #top{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:18px;padding:8px 14px;background:linear-gradient(#000c,#0000);pointer-events:none;z-index:5}
 #top>*{pointer-events:auto}
@@ -102,6 +103,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
     <span class="cur s" title="Seelen"><i></i><b id="cS">0</b></span>
     <span class="cur b" title="Schwefel"><i></i><b id="cB">0</b></span>
     <span class="cur g" title="Siegel"><i></i><b id="cG">0</b></span>
+    <span class="cur a hide" id="cAw" title="Höllenfragmente"><i></i><b id="cA">0</b></span>
   </div>
 </div>
 
@@ -116,6 +118,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
     <div id="circleSel"><button id="cPrev">◀</button><span class="lbl" id="cLbl">1. Höllenkreis</span><button id="cNext">▶</button></div>
     <button class="big" id="btnHunt">⚔ JAGD BEGINNEN</button>
     <button id="btnHeroes">Jäger &amp; Ultimates</button>
+    <button id="btnAsc" class="hide" style="border-color:#a03a90;color:#ffb0f0">✦ Aufstieg</button>
     <button id="btnMenu">⚙</button>
   </div>
   <div id="info" class="hide"></div>
@@ -618,13 +621,36 @@ const CHILD={};NODES.forEach(n=>{if(n.parent){(CHILD[n.parent]=CHILD[n.parent]||
 // ================= SAVE =================
 const SKEY='daemonenjaeger_save_v1';
 let save;
-function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:1,maxCircle:1,st:{runs:0,kills:0,bosses:0,best:0},auto:false,seenIntro:false};}
+function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:1,maxCircle:1,st:{runs:0,kills:0,bosses:0,best:0},auto:false,seenIntro:false,frag:0,asc:{},ascCount:0,fragTotal:0};}
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
 const lv=id=>save.tree[id]||0;
 const heroUnlocked=h=>!h.unlock||lv(h.unlock)>0;
-const nodeCost=n=>Math.ceil(n.cost*Math.pow(n.gr,lv(n.id)));
+// ===== AUFSTIEG =====
+const ASC=[
+ {id:'a1',name:'Ewiger Zorn',d:v=>`+${v*25}% Schaden`,max:25,cost:1,gr:1.45},
+ {id:'a2',name:'Ewiges Leben',d:v=>`+${v*25}% Leben`,max:25,cost:1,gr:1.45},
+ {id:'a3',name:'Seelenquelle',d:v=>`+${v*50}% Seelen`,max:25,cost:1,gr:1.45},
+ {id:'a5',name:'Zeitgewinn',d:v=>`+${v*2}s Jagdzeit`,max:10,cost:2,gr:1.6},
+ {id:'a6',name:'Schwefelquelle',d:v=>`+${v*50}% Schwefel`,max:20,cost:2,gr:1.5},
+ {id:'a7',name:'Siegelquelle',d:v=>`+${v*30}% Siegel`,max:20,cost:3,gr:1.5},
+ {id:'a10',name:'Ultimate-Fokus',d:v=>`Ultimate lädt ${v*10}% schneller`,max:5,cost:3,gr:1.8},
+ {id:'a11',name:'Beutemagnet',d:v=>`Beute fliegt ${(v*.5).toFixed(1)}s früher zu dir`,max:4,cost:2,gr:1.8},
+ {id:'a12',name:'Kreisspringer',d:v=>`Fürst erscheint ${v*8}% früher`,max:5,cost:3,gr:1.8},
+ {id:'a13',name:'Ablassbrief',d:v=>`Schwurbaum-Knoten kosten ${100-Math.round(Math.pow(.94,v)*100)}% weniger`,max:10,cost:2,gr:1.6},
+ {id:'a14',name:'Krit-Weihe',d:v=>`+${v*3}% Krit-Chance`,max:5,cost:2,gr:1.7},
+ {id:'a15',name:'Blutpakt',d:v=>`+${v*2}% Lebensraub`,max:5,cost:2,gr:1.7},
+ {id:'a4',name:'Erinnerung',d:v=>`Starte nach dem Aufstieg in Höllenkreis ${1+v}`,max:5,cost:5,gr:2},
+ {id:'a8',name:'Fragmentgier',d:v=>`+${v*20}% Höllenfragmente`,max:10,cost:4,gr:1.7},
+ {id:'a9',name:'Ordensschreiber',d:v=>v?'Kauft nach jeder Jagd automatisch Seelen-Knoten':'Kauft nach jeder Jagd automatisch Seelen-Knoten',max:1,cost:6,gr:1},
+ {id:'a16',name:'Höllenfürst',d:v=>`×${Math.pow(1.5,v).toFixed(2)} Schaden, Leben und Seelen`,max:5,cost:15,gr:2.2},
+];
+const AB={};ASC.forEach(a=>AB[a.id]=a);
+const al=id=>(save.asc||{})[id]||0;
+const ascCost=a=>Math.ceil(a.cost*Math.pow(a.gr,al(a.id)));
+const fragGain=()=>save.maxCircle<5?0:Math.floor(Math.pow(save.maxCircle-3,1.6)*(1+al('a8')*.2));
+const nodeCost=n=>Math.ceil(n.cost*Math.pow(n.gr,lv(n.id))*Math.pow(.94,al('a13')));
 const nodeAvail=n=>n.root||lv(n.parent)>0||(n.links||[]).some(id=>lv(id)>0);
 const nodeVisible=n=>nodeAvail(n)||[n.parent,...(n.links||[])].some(id=>NB[id].root||nodeAvail(NB[id]));
 const curAmt=c=>c==='s'?save.souls:c==='b'?save.brim:save.sig;
@@ -663,7 +689,10 @@ function computeStats(){
   s.pierce=g('pierce')+(h.pierce||0);s.multi=g('multi');
   s.revive=g('revive');s.quota=1-g('quotaRed')/100;s.enemyHp=1-g('enemyHpRed')/100;
   s.dmg*=1+g('heroAll')/100;s.hp*=1+g('heroAll')/100;
-  s.ultDmg=1+g('ultDmg')/100;s.ultKills=Math.max(5,20*(1-g('ultCharge')/100));s.ultX=g('ultX');
+  const hf=Math.pow(1.5,al('a16'));s.dmg*=(1+al('a1')*.25)*hf;s.hp*=(1+al('a2')*.25)*hf;s.soul*=(1+al('a3')*.5)*hf;
+  s.time+=al('a5')*2;s.brim*=1+al('a6')*.5;s.sigil*=1+al('a7')*.3;s.collectDelay=Math.max(.2,s.collectDelay-al('a11')*.5);
+  s.quota*=1-al('a12')*.08;s.crit=Math.min(95,s.crit+al('a14')*3);s.ls+=al('a15')*.02;
+  s.ultDmg=1+g('ultDmg')/100;s.ultKills=Math.max(4,20*(1-g('ultCharge')/100)*(1-al('a10')*.1));s.ultX=g('ultX');
   const mc=save.maxCircle-1;s.dmg*=1+g('dmgPerCircle')*mc/100;s.hp*=1+g('hpPerCircle')*mc/100;s.soul*=1+g('soulPerCircle')*mc/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.frenzy=g('frenzy')/100;s.killTime=g('killTime');
   s.crit=Math.min(95,s.crit);s.enemyHp=Math.max(.3,s.enemyHp);
@@ -913,8 +942,31 @@ function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered
   save.souls+=R.souls;save.brim+=R.brim;save.sig+=R.sig;save.st.runs++;save.st.best=Math.max(save.st.best,R.kills);
+  if(al('a9'))R.autoBought=autoBuy();
   persist();
   setTimeout(showSummary,why==='dead'?900:600);
+}
+function autoBuy(){let n=0;for(let i=0;i<300;i++){let best=null,bc=Infinity;for(const x of NODES){if(x.root||x.cur!=='s'||x.key==='unlock'||!nodeAvail(x)||lv(x.id)>=x.max)continue;const c=nodeCost(x);if(c<bc){bc=c;best=x;}}
+  if(!best||bc>save.souls)break;save.souls-=bc;save.tree[best.id]=lv(best.id)+1;n++;}computeStats();return n;}
+function ascend(){
+  const f=fragGain();if(f<=0)return;
+  save.frag+=f;save.fragTotal+=f;save.ascCount++;
+  const keep={root:1};for(const k in save.tree){if(k.startsWith('H_')||(NB[k]&&NB[k].key==='unlock'))keep[k]=save.tree[k];}
+  save.tree=keep;save.souls=0;save.brim=0;save.sig=0;save.maxCircle=1+al('a4');save.circle=save.maxCircle;
+  persist();computeStats();refreshHub();cam.x=cam.y=0;sfx('boss');toast('AUFSTIEG! +'+f+' Höllenfragmente',3000);
+}
+function ascModal(){
+  const f=fragGain();
+  let h=`<h2>AUFSTIEG</h2><div style="max-width:640px;color:#d8c8b8;font-size:19px;line-height:1.1;text-align:center">Opfere Seelen, Schwefel, Siegel, den Schwurbaum und deine Höllenkreise. Dafür erhältst du <b style="color:#ff6ad8">Höllenfragmente</b> für dauerhafte Macht.<br><span style="color:var(--dim)">Freigeschaltete Jäger und Jägerbäume bleiben erhalten. Ab Höllenkreis 5, mehr Fragmente je tiefer du warst.</span></div>
+  <div class="row" style="margin:10px 0"><span class="cur a" style="font-size:24px"><i></i><b>${fmt(save.frag)}</b>&nbsp;Fragmente</span></div>
+  <div class="row"><button class="big" id="ascGo" ${f>0?'':'disabled'}>${f>0?'Aufsteigen: +'+f+' Fragmente':'Erreiche Höllenkreis 5'}</button></div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr));max-width:820px;margin-top:14px">`;
+  for(const a of ASC){const l=al(a.id),mx=l>=a.max,c=ascCost(a),can=!mx&&save.frag>=c;
+    h+=`<div class="htn ${mx?'max':''} ${can?'can':''}" data-asc="${a.id}"><b style="color:#ff8ae0">${a.name} <span style="color:var(--dim)">${l}/${a.max}</span></b>${l?'<span style="color:var(--dim)">Jetzt:</span> '+a.d(l)+'<br>':''}${mx?'':'<span style="color:var(--dim)">'+(l?'Nächste:':'Effekt:')+'</span> '+a.d(l+1)+'<br>'}${mx?'<span style="color:#ffd76a">MAXIMAL</span>':`<span class="cur a" style="font-size:17px"><i></i><span style="color:${can?'#bfffbf':'#ff8a8a'}">${fmt(c)}</span></span>`}</div>`;}
+  h+=`</div><div class="row"><button id="ascClose">Schließen</button></div>`;
+  openModal(h);
+  $('#ascClose').onclick=closeModal;
+  $('#ascGo').onclick=()=>{const b=$('#ascGo');if(!b.dataset.c){b.dataset.c=1;b.textContent='Wirklich? Alles zurücksetzen!';return;}ascend();ascModal();};
+  document.querySelectorAll('[data-asc]').forEach(el=>el.onclick=()=>{const a=AB[el.dataset.asc];const l=al(a.id),c=ascCost(a);if(l>=a.max||save.frag<c)return;save.frag-=c;save.asc[a.id]=l+1;sfx('buy');persist();refreshHub();ascModal();});
 }
 function showSummary(){
   if(!R)return;
@@ -925,6 +977,7 @@ function showSummary(){
   if(R.brim>0)h+=`<span class="cur b"><i></i>Schwefel</span><span>+${fmt(R.brim)}</span>`;
   if(R.sig>0)h+=`<span class="cur g"><i></i>Siegel</span><span>+${fmt(R.sig)}</span>`;
   h+=`</div>`;
+  if(R.autoBought)h+=`<div style="text-align:center;color:#bfa8ff;margin-bottom:8px">Ordensschreiber kaufte ${R.autoBought} Knoten.</div>`;
   if(R.newCircle)h+=`<div style="text-align:center;color:var(--gold);font-size:22px;margin-bottom:10px">Neuer Höllenkreis freigeschaltet: ${save.maxCircle}!</div>`;
   h+=`<div class="row"><button class="big" id="sumAgain">⚔ Nochmal</button><button id="sumTree">Zum Schwurbaum</button></div>
   <div class="row" style="margin-top:10px"><label class="chk"><input type="checkbox" id="autoChk" ${save.auto?'checked':''}> Auto-Jagd (startet automatisch neu)</label></div>`;
@@ -1121,6 +1174,8 @@ function showUI(){
 function refreshCur(){
   if(mode==='run'&&R){$('#cS').textContent=fmt(save.souls+R.souls);$('#cB').textContent=fmt(save.brim+R.brim);$('#cG').textContent=fmt(save.sig+R.sig);}
   else{$('#cS').textContent=fmt(save.souls);$('#cB').textContent=fmt(save.brim);$('#cG').textContent=fmt(save.sig);}
+  $('#cA').textContent=fmt(save.frag||0);$('#cAw').classList.toggle('hide',!(save.ascCount||save.frag));
+  $('#btnAsc').classList.toggle('hide',!(save.maxCircle>=5||save.ascCount));
 }
 function refreshHub(){
   refreshCur();computeStats();const h=HB[save.hero];
@@ -1170,6 +1225,7 @@ function menu(){
 $('#btnHunt').onclick=()=>{startRun();};
 $('#ultBtn').onclick=()=>castUlt();
 $('#btnHeroes').onclick=heroSelect;
+$('#btnAsc').onclick=ascModal;
 $('#btnMenu').onclick=menu;
 $('#cPrev').onclick=()=>{save.circle=Math.max(1,save.circle-1);persist();refreshHub();};
 $('#cNext').onclick=()=>{save.circle=Math.min(save.maxCircle,save.circle+1);persist();refreshHub();};
