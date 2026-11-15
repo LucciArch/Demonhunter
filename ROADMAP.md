@@ -6,11 +6,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.1: Jagd-Loop, Loot-Sog, Bannstrahl (Klick), Fürsten-Boss, Höllenkreise, Schwurbaum (~100 Knoten), 5 Jäger, Speichern, Auto-Jagd
 
 - v0.2: Schwurbaum auf 210 Knoten erweitert (äußere Pfade, Brücken-Ring, neue Mechaniken: Raserei, Zeitfresser, Bonus pro Höllenkreis, mehrfache Wiederbelebung)
+- Windows-EXE per Electron + GitHub Actions (Releases bei jedem Push)
+- v0.3: Ultimates (Urteil, Silberhagel, Heilige Flamme, Blutmond, Runensturm) + Jägerbaum mit 8 Knoten pro Jäger
 
 ## Als Nächstes
-2. Jäger-eigene Fähigkeiten (Ultimates mit Abklingzeit) + eigene Mini-Bäume pro Jäger
 3. Prestige „Aufstieg“: Reset gegen Höllenfragmente, eigener Aufstiegsbaum
 4. Mehr Dämonen (Sukkubus, Golem, Kultist-Magier mit Projektilen), Fürsten-Varianten pro Kreis
 5. Animationen: 2-Frame-Laufzyklen, Angriffsframes, Todesanimationen
 6. Erfolge/Quests, Statistik-Seite
-7. Optional: Windows-.exe per Electron + GitHub Actions

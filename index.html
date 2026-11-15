@@ -56,6 +56,16 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 #hudRow .grow{flex:1;min-width:180px}
 #hudLoot{display:flex;gap:14px}
 #hudLoot .cur{font-size:22px}
+#ultWrap{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:center;z-index:6;pointer-events:none}
+#ultBtn{pointer-events:auto;min-width:220px;padding:8px 14px;font-size:18px}
+#ultBtn.ready{border-color:#ffd76a;box-shadow:0 0 16px #ffd76a,0 3px 0 #000;animation:pulse .6s infinite alternate}
+@keyframes pulse{to{transform:scale(1.05)}}
+#ultBar{height:8px;background:#000;margin-top:4px;border:1px solid #4a2a35}
+#ultFill{height:100%;width:0;background:linear-gradient(90deg,#ffb04a,#ffe08a)}
+.ht{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 12px}
+.htn{background:#1e131c;border:2px solid #3e2430;padding:6px 8px;font-size:17px;line-height:1;cursor:pointer;text-align:left}
+.htn b{font-family:'Pixelify Sans';font-weight:600;font-size:15px;display:block;margin-bottom:2px}
+.htn.lock{opacity:.4;cursor:default}.htn.max{border-color:#ffd76a}.htn.can{border-color:#7ad08a;box-shadow:0 0 8px #7ad08a55}
 #bossBanner{position:fixed;top:30%;left:0;right:0;text-align:center;font-family:'Pixelify Sans';font-size:44px;font-weight:700;color:#ffd0a0;text-shadow:0 0 18px #ff2a2a,0 3px 0 #400;z-index:7;pointer-events:none;opacity:0;transition:opacity .4s}
 #modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:30}
 #modal .box{background:#160e15;border:3px solid #6a3a48;box-shadow:0 0 0 3px #000,0 0 40px #a0203055;padding:18px 22px;min-width:300px;max-width:92vw;max-height:88vh;overflow:auto}
@@ -105,7 +115,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
   <div id="bottom">
     <div id="circleSel"><button id="cPrev">◀</button><span class="lbl" id="cLbl">1. Höllenkreis</span><button id="cNext">▶</button></div>
     <button class="big" id="btnHunt">⚔ JAGD BEGINNEN</button>
-    <button id="btnHeroes">Jäger wählen</button>
+    <button id="btnHeroes">Jäger &amp; Ultimates</button>
     <button id="btnMenu">⚙</button>
   </div>
   <div id="info" class="hide"></div>
@@ -125,6 +135,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
     </div>
   </div>
 </div>
+<div id="ultWrap" class="hide"><button id="ultBtn"><span id="ultName">ULTIMATE</span><div id="ultBar"><div id="ultFill"></div></div></button></div>
 <div id="bossBanner"></div>
 <div id="tip" class="hide"></div>
 <div id="modal" class="hide"><div class="box" id="mbox"></div></div>
@@ -381,7 +392,38 @@ const HEROES=[
  {id:'rune',name:'Die Runenschmiedin',spr:'rune',type:'slam',range:84,dmgM:2.7,spdM:.55,hpM:1.5,armor:3,col:'#5fe0ff',unlock:'Kh',
   desc:'Runenhammer mit Schockwelle.',pass:'Langsam, aber gewaltig. Schockwelle am Ziel. +3 Rüstung.'},
 ];
+const ULT={
+ inq:{name:'Urteil',desc:'Ein gewaltiger Kreuzhieb trifft ALLE Dämonen auf dem Feld (8× Schaden).',x:'Das Urteil schlägt ein zweites Mal ein.'},
+ hex:{name:'Silberhagel',desc:'32 Silberbolzen fliegen in alle Richtungen und durchbohren je 3 Dämonen.',x:'Eine zweite Salve folgt sofort.'},
+ exo:{name:'Heilige Flamme',desc:'Riesige Lichtwelle (6× Schaden), stößt Dämonen zurück und heilt 30%.',x:'Heilt dich vollständig.'},
+ blut:{name:'Blutmond',desc:'5s lang: doppeltes Angriffstempo, +30% Krit, +20% Lebensraub.',x:'Der Blutmond hält doppelt so lange.'},
+ rune:{name:'Runensturm',desc:'6 Runen schlagen auf Dämonen ein, jede mit Schockwelle (5× Schaden).',x:'12 statt 6 Runen.'},
+};
 const HB={};HEROES.forEach(h=>HB[h.id]=h);
+// Jäger-Bäume: Spalte A und B, je 4 Stufen; jede Stufe braucht die darüber
+const HT_NAMES={
+ inq:[['Ordenseifer','Richtspruch','Breitseite','Doppeltes Urteil'],['Plattenrüstung','Eifer','Dritte Klinge','Großinquisitor']],
+ hex:[['Silberspitzen','Bolzenregen','Schnelllader','Doppelsalve'],['Lederwams','Jagdfieber','Fächerschuss','Meisterjägerin']],
+ exo:[['Inbrunst','Läuterung','Lichtkreis','Vollständige Heilung'],['Gebet','Andacht','Wunder','Heilige']],
+ blut:[['Blutdurst','Mondfinsternis','Aderlass','Ewige Nacht'],['Schattenhaut','Jagdtrieb','Mondsichel','Blutfürst']],
+ rune:[['Schmiedekunst','Runenmacht','Bebende Erde','Großer Sturm'],['Runenpanzer','Glut','Eisenhaut','Meisterschmiedin']],
+};
+const HT_U1={inq:['aoe',15],hex:['atkSpd',6],exo:['aoe',10],blut:['lifesteal',1.5],rune:['aoe',15]};
+const HT_U2={inq:['multi',1,2],hex:['multi',1,2],exo:['regen',5,3],blut:['crit',5,3],rune:['armor',6,3]};
+const HT={};
+for(const h of HEROES){const nm=HT_NAMES[h.id];const u1=HT_U1[h.id],u2=HT_U2[h.id];
+ HT[h.id]=[
+  {c:0,r:0,name:nm[0][0],key:'dmgPct',val:10,max:10,cost:20,cur:'s',gr:1.6},
+  {c:0,r:1,name:nm[0][1],key:'ultDmg',val:25,max:10,cost:60,cur:'s',gr:1.6},
+  {c:0,r:2,name:nm[0][2],key:u1[0],val:u1[1],max:10,cost:10,cur:'b',gr:1.6},
+  {c:0,r:3,name:nm[0][3],key:'ultX',val:1,max:1,cost:10,cur:'g',gr:1},
+  {c:1,r:0,name:nm[1][0],key:'hpPct',val:10,max:10,cost:20,cur:'s',gr:1.6},
+  {c:1,r:1,name:nm[1][1],key:'ultCharge',val:8,max:5,cost:8,cur:'b',gr:1.8},
+  {c:1,r:2,name:nm[1][2],key:u2[0],val:u2[1],max:u2[2],cost:4,cur:'g',gr:2.2},
+  {c:1,r:3,name:nm[1][3],key:'heroAll',val:25,max:5,cost:6,cur:'g',gr:1.8},
+ ].map((n,i)=>Object.assign(n,{id:'H_'+h.id+'_'+i,hero:h.id}));}
+const htLv=n=>save.tree[n.id]||0;
+const htAvail=n=>n.r===0||htLv(HT[n.hero].find(m=>m.c===n.c&&m.r===n.r-1))>0;
 
 // ================= DATA: DEMONS =================
 const DEMONS={
@@ -566,6 +608,7 @@ const FX={
  pierce:v=>`+${v} durchbohrte/zusätzliche Ziele`,chainReact:v=>`Explosionen lösen weitere Explosionen aus`,enemyHpRed:v=>`Dämonen haben −${v}% Leben`,
  unlock:v=>`Schaltet ${HB[v].name} frei`,
  dmgPerCircle:v=>`+${v}% Schaden pro erreichtem Höllenkreis`,hpPerCircle:v=>`+${v}% Leben pro erreichtem Höllenkreis`,soulPerCircle:v=>`+${v}% Seelen pro erreichtem Höllenkreis`,
+ ultDmg:v=>`+${v}% Ultimate-Stärke`,ultCharge:v=>`Ultimate lädt ${v}% schneller`,heroAll:v=>`+${v}% Schaden und Leben (nur dieser Jäger)`,ultX:v=>'',
  frenzy:v=>`+${v}% Angriffstempo je 10 Kills in der Jagd (max. +100%)`,killTime:v=>`Jeder Kill verlängert die Jagd um ${v}s`,
 };
 // --- layout
@@ -591,6 +634,7 @@ function curSub(c,v){if(c==='s')save.souls-=v;else if(c==='b')save.brim-=v;else 
 let ST={};
 function computeStats(){
   const t={};for(const n of NODES){const l=lv(n.id);if(l&&n.key&&n.key!=='unlock')t[n.key]=(t[n.key]||0)+n.val*l;}
+  for(const n of HT[save.hero]){const l=htLv(n);if(l)t[n.key]=(t[n.key]||0)+n.val*l;}
   const g=k=>t[k]||0;const h=HB[save.hero];const s={};
   s.dmg=(6+g('dmgFlat'))*(1+g('dmgPct')/100)*h.dmgM;
   s.aps=(1+g('atkSpd')/100)*h.spdM;
@@ -618,6 +662,8 @@ function computeStats(){
   s.execute=g('execute')/100;s.explode=g('explode')/100;s.explodeR=55*(1+g('explodeR')/100);s.chainReact=g('chainReact');
   s.pierce=g('pierce')+(h.pierce||0);s.multi=g('multi');
   s.revive=g('revive');s.quota=1-g('quotaRed')/100;s.enemyHp=1-g('enemyHpRed')/100;
+  s.dmg*=1+g('heroAll')/100;s.hp*=1+g('heroAll')/100;
+  s.ultDmg=1+g('ultDmg')/100;s.ultKills=Math.max(5,20*(1-g('ultCharge')/100));s.ultX=g('ultX');
   const mc=save.maxCircle-1;s.dmg*=1+g('dmgPerCircle')*mc/100;s.hp*=1+g('hpPerCircle')*mc/100;s.soul*=1+g('soulPerCircle')*mc/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.frenzy=g('frenzy')/100;s.killTime=g('killTime');
   s.crit=Math.min(95,s.crit);s.enemyHp=Math.max(.3,s.enemyHp);
@@ -664,7 +710,7 @@ function startRun(){
   const c=save.circle;
   R={c,t:0,time:ST.time,maxTime:ST.time,hp:ST.hp,maxHp:ST.hp,kills:0,souls:0,brim:0,sig:0,en:[],pr:[],loot:[],fx:[],tx:[],pt:[],
      spawnT:.3,atkT:.2,smiteT:1,quota:Math.max(8,Math.round((18+4*c)*ST.quota)),bossSpawned:false,bossDead:false,over:false,revived:false,
-     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
+     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,moon:0,later:[],hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
   mode='run';showUI();sfx('hit');for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
 }
 function demonPool(c){const p=[['imp',10]];if(c>=2)p.push(['bat',6]);if(c>=3)p.push(['hound',6]);if(c>=5)p.push(['wraith',5]);return p;}
@@ -696,12 +742,12 @@ function dealDmg(e,amt,o){
   e.hp-=amt;e.flash=.08;
   if(!o.silent)R.tx.push({x:e.x+rnd(-8,8),y:e.y-e.r*2-10,v:amt,t:0,crit:o.crit,col:o.col});
   if(o.crit){shake=Math.max(shake,3);}
-  if(o.ls&&ST.ls>0)R.hp=Math.min(R.maxHp,R.hp+amt*ST.ls);
+  if(o.ls&&(ST.ls>0||R.moon>0))R.hp=Math.min(R.maxHp,R.hp+amt*(ST.ls+(R.moon>0?.2:0)));
   if(e.hp>0&&ST.execute>0&&!e.boss&&e.hp/e.max<ST.execute){e.hp=0;R.tx.push({x:e.x,y:e.y-e.r*2-24,str:'HINGERICHTET',t:0,col:'#ff5a5f'});}
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;sfxL('kill');if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
+  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
   // particles
   const col=e.type==='wraith'?'#9bf0ff':e.type==='bat'?'#c06aff':'#ff6a3a';
   for(let i=0;i<(e.boss?60:10);i++)R.pt.push({x:e.x,y:e.y-e.r,vx:rnd(-160,160),vy:rnd(-220,40),t:0,life:rnd(.4,.9),c:Math.random()<.5?col:'#2a1018',s:ri(2,5)});
@@ -740,7 +786,7 @@ function heroAttack(){
   const inR=alive.filter(e=>Math.hypot(e.x-hp.x,e.y-(hp.y-20))-e.r<ST.range);
   if(!inR.length)return false;
   const tgt=inR[0];R.hero.flip=tgt.x<hp.x;
-  const mk=()=>{const c=critRoll(ST.crit);return {amt:ST.dmg*(c?ST.critDmg:1)*rnd(.9,1.1),crit:c};};
+  const mk=()=>{const c=critRoll(ST.crit+(R.moon>0?30:0));return {amt:ST.dmg*(R.moon>0?1+(ST.ultDmg-1)*.5:1)*(c?ST.critDmg:1)*rnd(.9,1.1),crit:c};};
   const extra=ST.pierce+ST.multi;
   if(h.type==='bolt'){
     const n=1+ST.multi;
@@ -774,6 +820,22 @@ function heroAttack(){
   }
   return true;
 }
+function castUlt(){
+  if(!R||R.over||R.ult<1)return;R.ult=0;R.ultWait=0;const id=save.hero,hp=heroPos(),um=ST.ultDmg;shake=10;sfx('boss');
+  R.tx.push({x:hp.x,y:hp.y-90,str:ULT[id].name.toUpperCase()+'!',t:0,col:HB[id].col});
+  const onScreen=()=>R.en.filter(e=>!e.dead&&e.spawn<=0&&e.x>-20&&e.x<W+20&&e.y>-20&&e.y<H+20);
+  if(id==='inq'){const hit=()=>{R.fx.push({k:'cross',x:W/2,y:H/2,t:0,dur:.5});for(const e of onScreen())dealDmg(e,ST.dmg*8*um,{crit:true,col:'#ffe0a0'});shake=12;};
+    hit();if(ST.ultX)R.later.push({t:.45,fn:hit});}
+  else if(id==='hex'){const vol=o=>{for(let i=0;i<32;i++){const a=i/32*Math.PI*2+o;R.pr.push({x:hp.x,y:hp.y-28,vx:Math.cos(a)*640,vy:Math.sin(a)*640,pierce:3+ST.pierce,hit:new Set(),t:0,mult:2*um,ult:1});}};
+    vol(0);if(ST.ultX)R.later.push({t:.25,fn:()=>vol(Math.PI/32)});}
+  else if(id==='exo'){R.fx.push({k:'ring',x:hp.x,y:hp.y-12,r:Math.max(W,H)*.6,t:0,dur:.7,col:'#fff4b0'});
+    for(const e of R.en){if(e.dead||e.spawn>0)continue;const d=Math.hypot(e.x-hp.x,e.y-hp.y);if(d<Math.max(W,H)*.6){dealDmg(e,ST.dmg*6*um,{col:'#fff4b0'});if(!e.dead&&!e.boss){e.kb=.25;e.kx=(e.x-hp.x)/(d||1)*700;e.ky=(e.y-hp.y)/(d||1)*700;}}}
+    R.hp=Math.min(R.maxHp,R.hp+R.maxHp*(ST.ultX?1:.3));}
+  else if(id==='blut'){R.moon=ST.ultX?10:5;}
+  else if(id==='rune'){const n=ST.ultX?12:6;for(let i=0;i<n;i++)R.later.push({t:i*.12,fn:()=>{const al=onScreen();const tg=al.length?al[ri(0,al.length-1)]:{x:rnd(100,W-100),y:rnd(150,H-80)};
+      const r=90*ST.aoe;R.fx.push({k:'quake',x:tg.x,y:tg.y,r,t:0,dur:.4});R.fx.push({k:'smite',x:tg.x,y:tg.y-10,r:r*.5,t:0,dur:.3});shake=Math.max(shake,6);
+      for(const e of R.en)if(!e.dead&&Math.hypot(e.x-tg.x,e.y-tg.y)<r+e.r)dealDmg(e,ST.dmg*5*um,{col:'#5fe0ff'});}});}
+}
 function chainFrom(e,amt){
   let cur=e;const hit=new Set([e]);
   for(let i=0;i<ST.chain;i++){
@@ -803,9 +865,12 @@ function updateRun(dt){
   if(R.time<=0){R.time=0;endRun('time');return;}
   R.hp=Math.min(R.maxHp,R.hp+ST.regen*dt);
   R.spawnT-=dt;if(R.spawnT<=0){spawnTick();R.spawnT=Math.max(.12,(1.05-Math.min(.45,(R.c-1)*.05))/ST.spawn);}
-  R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/(ST.aps*(1+Math.min(1,ST.frenzy*Math.floor(R.kills/10))));else R.atkT=.05;}
+  R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/(ST.aps*(1+Math.min(1,ST.frenzy*Math.floor(R.kills/10)))*(R.moon>0?2:1));else R.atkT=.05;}
   if(ST.autoSmite){R.smiteT-=dt;if(R.smiteT<=0){R.smiteT=1/ST.autoSmite;const al=R.en.filter(e=>!e.dead&&e.x>0&&e.x<W&&e.y>0&&e.y<H);
     for(let i=0;i<ST.smiteN&&al.length;i++){const e=al[ri(0,al.length-1)];smite(e.x,e.y-e.r,1);if(ST.smiteTwice)smite(e.x,e.y-e.r,1);}}}
+  R.moon=Math.max(0,R.moon-dt);
+  for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
+  if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
   // enemies
   for(const e of R.en){
@@ -822,7 +887,7 @@ function updateRun(dt){
   R.en=R.en.filter(e=>!e.dead);
   // projectiles
   for(const p of R.pr){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;
-    for(const e of R.en){if(e.dead||p.hit.has(e))continue;if(Math.hypot(e.x-p.x,e.y-e.r-p.y)<e.r+6){p.hit.add(e);const c=critRoll(ST.crit);const amt=ST.dmg*(c?ST.critDmg:1)*rnd(.9,1.1);dealDmg(e,amt,{crit:c,ls:1});if(ST.chain)chainFrom(e,amt);
+    for(const e of R.en){if(e.dead||p.hit.has(e))continue;if(Math.hypot(e.x-p.x,e.y-e.r-p.y)<e.r+6){p.hit.add(e);const c=critRoll(ST.crit);const amt=ST.dmg*(p.mult||1)*(c?ST.critDmg:1)*rnd(.9,1.1);dealDmg(e,amt,{crit:c,ls:1});if(ST.chain)chainFrom(e,amt);
       if(p.pierce--<=0){p.dead=1;break;}}}
     if(p.t>1.2)p.dead=1;}
   R.pr=R.pr.filter(p=>!p.dead);
@@ -889,7 +954,7 @@ function renderRun(){
   ds.push({y:hp.y,f:()=>drawHero(hp,sc)});
   ds.sort((a,b)=>a.y-b.y);for(const d of ds)d.f();
   // projectiles
-  for(const p of R.pr){ctx.save();ctx.strokeStyle='#e8f4ff';ctx.lineWidth=3;ctx.shadowColor='#9be8ff';ctx.shadowBlur=8;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);ctx.stroke();ctx.restore();}
+  for(const p of R.pr){ctx.save();ctx.strokeStyle=p.ult?'#fff2b0':'#e8f4ff';ctx.lineWidth=3;ctx.shadowColor='#9be8ff';ctx.shadowBlur=8;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);ctx.stroke();ctx.restore();}
   drawFx();
   // particles
   for(const p of R.pt){ctx.globalAlpha=1-p.t/p.life;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);}ctx.globalAlpha=1;
@@ -904,6 +969,7 @@ function renderRun(){
     ctx.strokeStyle='rgba(232,208,255,.5)';ctx.beginPath();ctx.arc(ptr.x,ptr.y,ST.clickR,0,Math.PI*2);ctx.stroke();}
   // vignette
   const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.75)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  if(R.moon>0){ctx.fillStyle='rgba(150,0,30,.18)';ctx.fillRect(0,0,W,H);ctx.save();ctx.shadowColor='#ff2040';ctx.shadowBlur=40;ctx.fillStyle='#d01830';ctx.beginPath();ctx.arc(W-120,170,40,0,Math.PI*2);ctx.fill();ctx.restore();}
   // low hp red
   if(R.hp/R.maxHp<.3){ctx.fillStyle=`rgba(160,0,20,${.15+.1*Math.sin(R.t*8)})`;ctx.fillRect(0,0,W,H);}
 }
@@ -944,6 +1010,7 @@ function drawFx(){
     else if(f.k==='ring'){ctx.strokeStyle=f.col;ctx.globalAlpha=1-p;ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*p*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=(1-p)*.15;ctx.fillStyle=f.col;ctx.fill();}
     else if(f.k==='quake'){ctx.strokeStyle=`rgba(95,224,255,${1-p})`;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*p*.5,0,0,Math.PI*2);ctx.stroke();
       for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.fillStyle=`rgba(95,224,255,${1-p})`;ctx.fillRect(f.x+Math.cos(a)*f.r*p-2,f.y+Math.sin(a)*f.r*p*.5-2,4,4);}}
+    else if(f.k==='cross'){const a=1-p;ctx.fillStyle=`rgba(255,240,200,${a*.9})`;const w=40*a+6;ctx.save();ctx.translate(f.x,f.y);ctx.rotate(Math.PI/4);ctx.fillRect(-W,-w/2,2*W,w);ctx.fillRect(-w/2,-W,w,2*W);ctx.restore();ctx.fillStyle=`rgba(255,255,255,${a*.35})`;ctx.fillRect(0,0,W,H);}
     else if(f.k==='portal'){const a=p<.5?p*2:2-p*2;ctx.fillStyle=`rgba(20,0,10,${.8*a})`;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*a,f.r*a*.4,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle=`rgba(255,60,60,${a})`;ctx.lineWidth=2;ctx.stroke();}
     else if(f.k==='boom'){ctx.fillStyle=`rgba(255,${140+100*(1-p)|0},40,${.6*(1-p)})`;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(.4+.6*p),0,Math.PI*2);ctx.fill();}
     else if(f.k==='zap'){ctx.strokeStyle=`rgba(160,230,255,${1-p})`;ctx.lineWidth=2;ctx.shadowColor='#9be8ff';ctx.shadowBlur=8;ctx.beginPath();ctx.moveTo(f.x,f.y);
@@ -1048,7 +1115,7 @@ function buyNode(n){
 // ================= UI =================
 function showUI(){
   $('#hubUI').classList.toggle('hide',mode!=='hub');
-  $('#hud').classList.toggle('hide',mode!=='run');$('#top').classList.toggle('hide',mode==='run');
+  $('#hud').classList.toggle('hide',mode!=='run');$('#top').classList.toggle('hide',mode==='run');$('#ultWrap').classList.toggle('hide',mode!=='run');
   $('#tip').classList.add('hide');$('#info').classList.add('hide');selNode=null;
 }
 function refreshCur(){
@@ -1057,7 +1124,7 @@ function refreshCur(){
 }
 function refreshHub(){
   refreshCur();computeStats();const h=HB[save.hero];
-  $('#sideName').textContent=h.name;$('#sidePass').textContent=h.pass;
+  $('#sideName').textContent=h.name;$('#sidePass').textContent=h.pass+' Ultimate: '+ULT[h.id].name+'.';
   const rows=[['Schaden',fmt(ST.dmg)],['Angriffe/s',ST.aps.toFixed(2)],['Krit',ST.crit.toFixed(0)+'% ×'+ST.critDmg.toFixed(2)],['Leben',fmt(ST.hp)],['Rüstung',fmt(ST.armor)],['Regeneration',ST.regen.toFixed(1)+'/s'],
     ['Jagdzeit',ST.time+'s'],['Bannstrahl',fmt(ST.click)],['Seelen',`×${ST.soul.toFixed(2)}`],['Beute-Sog',ST.collectDelay.toFixed(1)+'s']];
   rows.unshift(['Schwurbaum',NODES.filter(n=>!n.root&&lv(n.id)>0).length+' / '+(NODES.length-1)]);
@@ -1078,8 +1145,16 @@ function closeModal(){$('#modal').classList.add('hide');}
 function heroSelect(){
   let h='<h2>JÄGER WÄHLEN</h2><div class="heroes">';
   for(const x of HEROES){const u=heroUnlocked(x);h+=`<div class="hcard ${u?'':'lock'} ${save.hero===x.id?'sel':''}" data-id="${x.id}"><img src="${sprURL(x.spr)}" style="${u?'':'filter:brightness(0)'}"><div class="n" style="color:${x.col}">${x.name}</div><div class="d">${u?x.desc:'Im Schwurbaum freischalten: '+NB[x.unlock].name}</div>${u?`<div class="d" style="margin-top:4px;color:#d8c8b8">${x.pass}</div>`:''}</div>`;}
+  h+='</div>';
+  const cur=HB[save.hero],u=ULT[cur.id];
+  h+=`<h3 class="px" style="color:${cur.col};font-size:20px">${cur.name}: Jägerbaum</h3><div style="color:#d8c8b8;font-size:18px;margin:4px 0">Ultimate <b style="color:#ffd76a">${u.name}</b>: ${u.desc}<br><span style="color:var(--dim)">Lädt sich durch Kills auf. Auslösen mit dem Knopf unten, Leertaste oder Q (sonst automatisch).</span></div><div class="ht">`;
+  for(const r of [0,1,2,3])for(const c of [0,1]){const n=HT[cur.id].find(m=>m.c===c&&m.r===r);const l=htLv(n),av=htAvail(n),mx=l>=n.max;const cost=Math.ceil(n.cost*Math.pow(n.gr,l));const can=av&&!mx&&curAmt(n.cur)>=cost;
+    const eff=n.key==='ultX'?u.x:(FX[n.key]?FX[n.key](n.val):'');
+    h+=`<div class="htn ${av?'':'lock'} ${mx?'max':''} ${can?'can':''}" data-ht="${n.id}"><b style="color:${c?'#9be8ff':'#ffb08a'}">${n.name} <span style="color:var(--dim)">${l}/${n.max}</span></b>${eff}${n.max>1&&n.key!=='ultX'?' <span style="color:var(--dim)">/Stufe</span>':''}<br>${mx?'<span style="color:#ffd76a">MAXIMAL</span>':av?`<span class="cur ${n.cur}" style="font-size:17px"><i></i><span style="color:${can?'#bfffbf':'#ff8a8a'}">${fmt(cost)}</span></span>`:'<span style="color:var(--dim)">Gesperrt</span>'}</div>`;}
   h+='</div><div class="row"><button id="hsClose">Fertig</button></div>';
   openModal(h);
+  document.querySelectorAll('.htn').forEach(el=>el.onclick=()=>{const n=HT[save.hero].find(m=>m.id===el.dataset.ht);const l=htLv(n);if(!htAvail(n)||l>=n.max)return;const c=Math.ceil(n.cost*Math.pow(n.gr,l));
+    if(curAmt(n.cur)<c){toast('Nicht genug '+{s:'Seelen',b:'Schwefel',g:'Siegel'}[n.cur]);return;}curSub(n.cur,c);save.tree[n.id]=l+1;sfx('buy');persist();refreshHub();heroSelect();});
   document.querySelectorAll('.hcard').forEach(el=>el.onclick=()=>{const x=HB[el.dataset.id];if(!heroUnlocked(x))return;save.hero=x.id;persist();refreshHub();heroSelect();});
   $('#hsClose').onclick=closeModal;
 }
@@ -1093,6 +1168,7 @@ function menu(){
   $('#mReset').onclick=()=>{const b=$('#mReset');if(b.dataset.c){save=defSave();persist();closeModal();toHub();cam.x=cam.y=0;toast('Neuer Schwur geleistet.');}else{b.dataset.c=1;b.textContent='Wirklich? Nochmal klicken';}};
 }
 $('#btnHunt').onclick=()=>{startRun();};
+$('#ultBtn').onclick=()=>castUlt();
 $('#btnHeroes').onclick=heroSelect;
 $('#btnMenu').onclick=menu;
 $('#cPrev').onclick=()=>{save.circle=Math.max(1,save.circle-1);persist();refreshHub();};
@@ -1137,7 +1213,7 @@ function pUp(e){
 cv.addEventListener('pointerup',pUp);cv.addEventListener('pointercancel',pUp);
 cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){ptr.active=false;hoverNode=null;$('#tip').classList.add('hide');}});
 cv.addEventListener('wheel',e=>{if(mode!=='hub')return;e.preventDefault();const before=s2w(e.clientX,e.clientY);cam.z=clamp(cam.z*Math.pow(1.0015,-e.deltaY),.35,2.2);const after=s2w(e.clientX,e.clientY);cam.x+=before.x-after.x;cam.y+=before.y-after.y;},{passive:false});
-addEventListener('keydown',e=>{if(e.code==='Space'&&mode==='hub'&&$('#modal').classList.contains('hide')){e.preventDefault();startRun();}});
+addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='KeyQ')&&mode==='run'){e.preventDefault();castUlt();return;}if(e.code==='Space'&&mode==='hub'&&$('#modal').classList.contains('hide')){e.preventDefault();startRun();}});
 
 // ================= LOOP =================
 let last=performance.now();
@@ -1154,6 +1230,7 @@ function frame(now){
     if(!R.bossSpawned){$('#qFill').style.width=(100*Math.min(1,R.kills/R.quota))+'%';$('#qTxt').textContent=`Fürst erscheint: ${R.kills}/${R.quota}`;}
     else if(!R.bossDead){const b=R.en.find(e=>e.boss);$('#qFill').style.width=(b?100*b.hp/b.max:0)+'%';$('#qTxt').textContent='ASCHEFÜRST';}
     else{$('#qFill').style.width='100%';$('#qTxt').textContent='Fürst gebannt! Kills: '+R.kills;}
+    $('#ultName').textContent=ULT[save.hero].name+(R.ult>=1?' (Leertaste)':'');$('#ultFill').style.width=(R.ult*100)+'%';$('#ultBtn').classList.toggle('ready',R.ult>=1);
     $('#hS').textContent=fmt(R.souls);$('#hB').textContent=fmt(R.brim);$('#hG').textContent=fmt(R.sig);
     refreshCur();
   }else{
