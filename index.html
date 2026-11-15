@@ -366,10 +366,81 @@ boss:{pal:{b:'#3a1020',B:'#6a1e34',w:'#26101a',W:'#4a1828',h:'#f0e2b8',e:'#fffff
 "......bbbb....bbbb......",
 "......bbb......bbb......",
 ".....hhhh......hhhh....."]},
+succ:{pal:{s:'#c25a8a',S:'#8a3a66',h:'#2a1020',H:'#1e0e24',e:'#ffe14a',w:'#3a1430',W:'#6e2452',c:'#2a0e1e',t:'#8a3a66',l:'#ff3a6a'},rows:[
+"..h........h..",
+"..hh.HHHH.hh..",
+"...hHHHHHHh...",
+"...HHsssssH...",
+"...HseSsesH...",
+"...HsssssSH...",
+"....HslssH....",
+"w...HSssSH...w",
+"ww..sccccs..ww",
+"wWw.sccccs.wWw",
+"wWWwSccccSwWWw",
+".wWWsSssSswWw.",
+"..ww.cccc.ww..",
+".....ccccc....",
+"....ss..ss.t..",
+"....ss..ss..t.",
+"....ss..ss.t..",
+"...SS....SS..."]},
+golem:{pal:{k:'#4a4440',K:'#76706a',d:'#2e2a28',y:'#ff9a2a',Y:'#ffd06a'},rows:[
+".....kkkkkkkk.....",
+"....kKKKKKKKKk....",
+"....kKyKKKKyKk....",
+"....kKKKddKKKk....",
+"..kkkkKKKKKKkkkk..",
+".kKKKkkkkkkkkKKKk.",
+"kKKKKkKKyyKKkKKKKk",
+"kKKKdkKyYYyKkdKKKk",
+"kKKdkkKKyyKKkkdKKk",
+"kKKk.kKKKKKKk.kKKk",
+"kkkk.kKKddKKk.kkkk",
+"kKKk.kkkkkkkk.kKKk",
+"kKKKk.kKK.KKk.kKKKk",
+".kkkk.kKK.KKk.kkkk",
+"......kKK.KKk.....",
+".....kkKK.KKkk....",
+".....kkkk.kkkk...."]},
+cult:{pal:{r:'#5a1020',R:'#8a1a2c',d:'#2a0810',e:'#ffcf4a',f:'#ff7a1e',F:'#ffe05a',g:'#c9a24a',s:'#1a0a0e'},rows:[
+"......d.......",
+".....dRd......",
+"....dRRRd.....",
+"...dRRRRRd....",
+"...dRssssRd...",
+"...dsesesRd...",
+"...dRssssRd...",
+"..dRRRggRRRd..",
+"..RRRRggRRRR..",
+".fRRrRggRrRRf.",
+"fFfRrRggRrRfFf",
+".fdRrRggRrRdf.",
+"..dRrRggRrRd..",
+"..dRrrggrrRd..",
+"..dRrrrrrrRd..",
+".dRRrrrrrrRRd.",
+".dRRRRRRRRRRd.",
+"..dddd..dddd.."]},
 };
 // fix accidental space in rune sprite row
 SPR_DEF.rune.rows[12]="..AddddddddA.x..";
 const SPR={};for(const k in SPR_DEF)SPR[k]=mkSprite(SPR_DEF[k]);
+// Fürsten-Varianten (Farbvarianten + eigene Fähigkeit)
+const BOSSES=[
+ {name:'Aschefürst',ab:'charge',pal:{}},
+ {name:'Klagende Herrin',ab:'summon',add:'bat',pal:{b:'#2a1040',B:'#5a2a88',w:'#1a0a2a',W:'#3a1a5a',E:'#c06aff',f:'#c06aff',F:'#f0c0ff'}},
+ {name:'Blutgraf',ab:'nova',pal:{b:'#4a0810',B:'#8a1020',E:'#ffffff',f:'#ff2a2a',F:'#ff9a9a',g:'#c0c0c0'}},
+ {name:'Pestfürst',ab:'summon',add:'imp',pal:{b:'#1e2a10',B:'#3e5a1a',w:'#141a0a',W:'#2a3a14',E:'#d0ff4a',f:'#9be04a',F:'#e8ffb0',h:'#c8c0a0'}},
+ {name:'Eiskönig',ab:'nova',pal:{b:'#14243a',B:'#2a4a7a',w:'#0e1a2a',W:'#1e3450',E:'#9be8ff',f:'#7ad0ff',F:'#ffffff',h:'#e8f8ff',g:'#a8e0ff'}},
+ {name:'Schwefelherzog',ab:'charge',pal:{b:'#3a2a08',B:'#7a5a10',w:'#2a1e06',W:'#4a3a0e',E:'#ffe04a',f:'#ffc23a',F:'#fff4b0'}},
+ {name:'Leerenwandler',ab:'summon',add:'wraith',pal:{b:'#0e0a18',B:'#241a3a',w:'#06040c',W:'#141026',E:'#8a7aff',f:'#6a5aff',F:'#d0c8ff',h:'#5a5a7a'}},
+ {name:'Dornenkönig',ab:'nova',pal:{b:'#1e1a10',B:'#4a3a1e',w:'#14100a',W:'#2a2214',E:'#e0703a',f:'#7a9a3a',F:'#c0e07a',h:'#6a4a2a'}},
+ {name:'Glutkoloss',ab:'charge',pal:{b:'#3a1408',B:'#7a2a0e',w:'#2a0e06',W:'#4a1a0a',E:'#ffd04a',f:'#ff9a3a',F:'#ffe8a0'}},
+ {name:'Abgrundfürst',ab:'all',add:'hound',pal:{b:'#100810',B:'#2a1028',w:'#080408',W:'#1a0a18',E:'#ff3a8a',f:'#ff3a8a',F:'#ffc0e0',h:'#e0d0f0'}},
+];
+BOSSES.forEach((b,i)=>{SPR['boss'+i]=mkSprite({pal:Object.assign({},SPR_DEF.boss.pal,b.pal),rows:SPR_DEF.boss.rows});});
+const bossOf=c=>BOSSES[(c-1)%BOSSES.length];
 
 function drawSpr(s,x,y,sc,flip,flash,alpha,black){
   const img=black?s.kc:s.c;
@@ -435,6 +506,9 @@ const DEMONS={
  hound:{name:'Höllenhund',spr:'hound',hp:1.7,spd:95,dmg:1.4,souls:2,r:17,sc:1},
  wraith:{name:'Schemen',spr:'wraith',hp:2.4,spd:55,dmg:2,souls:3,brim:.25,r:15,sc:1,fly:1},
  brute:{name:'Hornbestie',spr:'brute',hp:9,spd:42,dmg:4,souls:10,brim:1,r:22,sc:1.25,elite:1},
+ succ:{name:'Sukkubus',spr:'succ',hp:1.3,spd:125,dmg:1.3,souls:3,r:14,sc:1,zig:1,drain:1},
+ golem:{name:'Golem',spr:'golem',hp:6,spd:30,dmg:3,souls:6,brim:.5,r:20,sc:1.15,tough:.4},
+ cult:{name:'Kultist',spr:'cult',hp:1.2,spd:60,dmg:1.2,souls:2,brim:.15,r:14,sc:1,ranged:230},
  boss:{name:'Aschefürst',spr:'boss',hp:28,spd:30,dmg:6,souls:60,brim:6,r:34,sc:1.6,boss:1},
 };
 const CIRCLES=['Asche','Klagen','Blut','Fäulnis','Eis','Schwefel','Leere','Dornen','Glut','Abgrund'];
@@ -739,10 +813,10 @@ function startRun(){
   const c=save.circle;
   R={c,t:0,time:ST.time,maxTime:ST.time,hp:ST.hp,maxHp:ST.hp,kills:0,souls:0,brim:0,sig:0,en:[],pr:[],loot:[],fx:[],tx:[],pt:[],
      spawnT:.3,atkT:.2,smiteT:1,quota:Math.max(8,Math.round((18+4*c)*ST.quota)),bossSpawned:false,bossDead:false,over:false,revived:false,
-     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,moon:0,later:[],hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
+     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,moon:0,later:[],ep:[],hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
   mode='run';showUI();sfx('hit');for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
 }
-function demonPool(c){const p=[['imp',10]];if(c>=2)p.push(['bat',6]);if(c>=3)p.push(['hound',6]);if(c>=5)p.push(['wraith',5]);return p;}
+function demonPool(c){const p=[['imp',10]];if(c>=2)p.push(['bat',6]);if(c>=3)p.push(['hound',6]);if(c>=5)p.push(['wraith',5]);if(c>=3)p.push(['cult',4]);if(c>=4)p.push(['succ',5]);if(c>=6)p.push(['golem',3]);return p;}
 function pickW(p){let s=0;for(const q of p)s+=q[1];let r=Math.random()*s;for(const q of p){if((r-=q[1])<0)return q[0];}return p[0][0];}
 function spawnDemon(type){
   const d=DEMONS[type];const hp0=heroPos();const ang=Math.random()*Math.PI*2;const rr=Math.min(rnd(230,330),Math.max(W,H)*.6);
@@ -759,14 +833,16 @@ function spawnTick(){
   if(R.c>=2&&Math.random()<.04+ST.elite)spawnDemon('brute');
 }
 function spawnBoss(){
-  R.bossSpawned=true;const b=spawnDemon('boss');b.x=W/2;b.y=-60;sfx('boss');shake=12;
-  const bb=$('#bossBanner');bb.textContent='DER ASCHEFÜRST ERWACHT';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1800);
+  R.bossSpawned=true;const b=spawnDemon('boss');b.x=W/2;b.y=Math.max(220,H*.3);sfx('boss');shake=12;
+  const v=bossOf(R.c);b.spr='boss'+((R.c-1)%BOSSES.length);b.bv=v;b.abT=2.5;b.name=v.name;
+  const bb=$('#bossBanner');bb.textContent=v.name.toUpperCase()+' ERWACHT';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1800);
 }
 function heroPos(){return {x:W/2,y:H/2+30};}
 
 function dealDmg(e,amt,o){
   if(e.dead)return;o=o||{};
   if(e.boss||e.elite)amt*=ST.bossDmg;
+  if(e.d.tough&&!o.crit)amt*=1-e.d.tough;
   if(e.mark>0)amt*=1+ST.mark;
   e.hp-=amt;e.flash=.08;
   if(!o.silent)R.tx.push({x:e.x+rnd(-8,8),y:e.y-e.r*2-10,v:amt,t:0,crit:o.crit,col:o.col});
@@ -789,7 +865,7 @@ function killDemon(e,o){
   if(e.boss){const s=(1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat;dropLoot(e,'g',s*ST.bossLoot);
     R.bossDead=true;save.st.bosses++;R.time+=5;R.maxTime+=5;shake=16;
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
-    const bb=$('#bossBanner');bb.textContent='FÜRST GEBANNT! +5s';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1600);}
+    const bb=$('#bossBanner');bb.textContent=(e.name||'FÜRST').toUpperCase()+' GEBANNT! +5s';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1600);}
   // explosion
   if(ST.explode>0&&(o.depth||0)<(ST.chainReact?3:1)){
     const r=ST.explodeR*ST.aoe;R.fx.push({k:'boom',x:e.x,y:e.y-e.r*.6,r,t:0,dur:.3});
@@ -865,6 +941,13 @@ function castUlt(){
       const r=90*ST.aoe;R.fx.push({k:'quake',x:tg.x,y:tg.y,r,t:0,dur:.4});R.fx.push({k:'smite',x:tg.x,y:tg.y-10,r:r*.5,t:0,dur:.3});shake=Math.max(shake,6);
       for(const e of R.en)if(!e.dead&&Math.hypot(e.x-tg.x,e.y-tg.y)<r+e.r)dealDmg(e,ST.dmg*5*um,{col:'#5fe0ff'});}});}
 }
+function fireball(x,y,a,dmg,sp){R.ep.push({x,y,vx:Math.cos(a)*(sp||220),vy:Math.sin(a)*(sp||220),dmg,t:0});}
+function bossAbility(e){
+  const v=e.bv,hp=heroPos();const ab=v.ab==='all'?['charge','summon','nova'][ri(0,2)]:v.ab;
+  if(ab==='charge'){e.charge=.6;e.abT=4;R.tx.push({x:e.x,y:e.y-e.r*3,str:'ANSTURM!',t:0,col:'#ff8a3a'});}
+  else if(ab==='summon'){e.abT=3.5;for(let i=0;i<2+Math.floor(R.c/4);i++){const m=spawnDemon(v.add||'imp');m.x=clamp(e.x+rnd(-70,70),20,W-20);m.y=clamp(e.y+rnd(-30,50),100,H-20);R.fx.push({k:'portal',x:m.x,y:m.y,r:24,t:0,dur:.5});}}
+  else{e.abT=3;const n=10+R.c;const o=Math.random()*6;for(let i=0;i<n;i++)fireball(e.x,e.y-e.r*1.5,o+i/n*Math.PI*2,e.dmg*.6,170);}
+}
 function chainFrom(e,amt){
   let cur=e;const hit=new Set([e]);
   for(let i=0;i<ST.chain;i++){
@@ -876,6 +959,7 @@ function chainFrom(e,amt){
 function smite(x,y,auto){
   const r=ST.clickR;const c=critRoll(ST.clickCrit);const amt=ST.click*(c?ST.clickCritDmg:1);
   R.fx.push({k:'smite',x,y,r,t:0,dur:.28,auto});sfxL('smite');
+  for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+8)f.dead=1;
   for(const e of R.en){if(e.dead)continue;if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
 }
 function hurtHero(amt,src){
@@ -908,12 +992,18 @@ function updateRun(dt){
     if(e.kb>0){e.kb-=dt;e.x+=e.kx*dt;e.y+=e.ky*dt;continue;}
     const dx=hp.x-e.x,dy=hp.y-e.y,d=Math.hypot(dx,dy)||1;const reach=18+e.r;
     e.flip=dx<0;
-    if(d>reach){e.x+=dx/d*e.spd*dt;e.y+=dy/d*e.spd*dt;}
-    else{e.hitT-=dt;if(e.hitT<=0){e.hitT=1;hurtHero(e.dmg,e);if(R.over)return;}}
+    if(e.bv){e.abT-=dt;if(e.abT<=0)bossAbility(e);}
+    let sp=e.spd*(e.charge>0?4:1);if(e.charge>0)e.charge-=dt;
+    if(e.d.ranged&&d<e.d.ranged&&d>reach){e.castT=(e.castT===undefined?rnd(.5,1.5):e.castT)-dt;if(e.castT<=0){e.castT=2.2;fireball(e.x,e.y-e.r*1.4,Math.atan2(hp.y-20-(e.y-e.r*1.4),hp.x-e.x),e.dmg*1.2);}}
+    else if(d>reach){let mx=dx/d,my=dy/d;if(e.d.zig){const z=Math.sin(e.bob*.6)*.9;const ox=-my*z,oy=mx*z;mx+=ox;my+=oy;}e.x+=mx*sp*dt;e.y+=my*sp*dt;}
+    else{e.hitT-=dt;if(e.hitT<=0){e.hitT=1;hurtHero(e.dmg,e);if(e.d.drain&&!e.dead)e.hp=Math.min(e.max,e.hp+e.max*.25);if(R.over)return;}}
   }
   // separation
   const A=R.en;for(let i=0;i<A.length;i++){const a=A[i];if(a.dead)continue;for(let j=i+1;j<A.length;j++){const b=A[j];if(b.dead)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=(a.r+b.r)*.8;if(d>0&&d<m){const p=(m-d)/2/d;a.x-=dx*p;a.y-=dy*p;b.x+=dx*p;b.y+=dy*p;}}}
   R.en=R.en.filter(e=>!e.dead);
+  // enemy fireballs
+  for(const f of R.ep){f.t+=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;if(Math.hypot(f.x-hp.x,f.y-(hp.y-24))<20){f.dead=1;hurtHero(f.dmg,null);R.fx.push({k:'boom',x:f.x,y:f.y,r:22,t:0,dur:.2});if(R.over)return;}if(f.t>5)f.dead=1;}
+  R.ep=R.ep.filter(f=>!f.dead);
   // projectiles
   for(const p of R.pr){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;
     for(const e of R.en){if(e.dead||p.hit.has(e))continue;if(Math.hypot(e.x-p.x,e.y-e.r-p.y)<e.r+6){p.hit.add(e);const c=critRoll(ST.crit);const amt=ST.dmg*(p.mult||1)*(c?ST.critDmg:1)*rnd(.9,1.1);dealDmg(e,amt,{crit:c,ls:1});if(ST.chain)chainFrom(e,amt);
@@ -1008,6 +1098,7 @@ function renderRun(){
   ds.sort((a,b)=>a.y-b.y);for(const d of ds)d.f();
   // projectiles
   for(const p of R.pr){ctx.save();ctx.strokeStyle=p.ult?'#fff2b0':'#e8f4ff';ctx.lineWidth=3;ctx.shadowColor='#9be8ff';ctx.shadowBlur=8;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);ctx.stroke();ctx.restore();}
+  for(const f of R.ep){const fl=1+.25*Math.sin(f.t*30);ctx.save();ctx.shadowColor='#ff6a1e';ctx.shadowBlur=12;ctx.fillStyle='#ff6a1e';ctx.beginPath();ctx.arc(f.x,f.y,7*fl,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe05a';ctx.beginPath();ctx.arc(f.x,f.y,3.5,0,Math.PI*2);ctx.fill();ctx.restore();}
   drawFx();
   // particles
   for(const p of R.pt){ctx.globalAlpha=1-p.t/p.life;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);}ctx.globalAlpha=1;
@@ -1035,7 +1126,7 @@ function drawHero(hp,sc){
   drawSpr(s,x,y+breath*0,sc,R.hero.flip,R.hero.flash>0);
 }
 function drawDemon(e,sc){
-  const s=SPR[e.d.spr];const k=sc*(e.d.sc||1);
+  const s=SPR[e.spr||e.d.spr];const k=sc*(e.d.sc||1);
   const fy=e.d.fly?Math.sin(e.bob)*4-10:0;
   drawShadow(e.x,e.y,s.w*k*.32);
   if(e.boss||e.elite){ctx.save();ctx.globalAlpha=.25+.1*Math.sin(e.bob);ctx.fillStyle=e.boss?'#ff3a3a':'#ffb04a';ctx.beginPath();ctx.ellipse(e.x,e.y,s.w*k*.5,s.w*k*.18,0,0,Math.PI*2);ctx.fill();ctx.restore();}
@@ -1216,7 +1307,7 @@ function heroSelect(){
 function menu(){
   openModal(`<h2>MENÜ</h2><div style="max-width:440px;font-size:20px;line-height:1.1;color:#d8c8b8">
   <p><b>So spielst du:</b> Starte eine Jagd. Dein Jäger kämpft automatisch. <b>Klicke/tippe</b> auf Dämonen für einen <b>Bannstrahl</b>. Fahre mit dem Zeiger über die Beute, um sie sofort einzusammeln, sonst fliegt sie nach ein paar Sekunden zu dir. Beute, die am Ende noch liegt, geht verloren.</p>
-  <p>Töte genug Dämonen, dann erscheint der <b>Aschefürst</b>. Besiegst du ihn, öffnet sich der nächste Höllenkreis.</p>
+  <p>Töte genug Dämonen, dann erscheint der <b>Fürst</b> des Höllenkreises. Besiegst du ihn, öffnet sich der nächste Höllenkreis.</p>
   <p>Gib Seelen, Schwefel und Siegel im <b>Schwurbaum</b> aus. Ziehen (oder wischen) verschiebt den Baum, das Mausrad zoomt.</p></div>
   <div class="row" style="margin-top:10px"><button id="mMute">${muted?'Ton an':'Ton aus'}</button><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
   $('#mClose').onclick=closeModal;$('#mMute').onclick=()=>{muted=!muted;menu();};
@@ -1284,7 +1375,7 @@ function frame(now){
     $('#hpFill').style.width=(100*R.hp/R.maxHp)+'%';$('#hpTxt').textContent=`Leben ${fmt(Math.max(0,R.hp))} / ${fmt(R.maxHp)}`;
     $('#tFill').style.width=(100*R.time/R.maxTime)+'%';$('#tTxt').textContent=`Jagdzeit ${R.time.toFixed(1)}s`;
     if(!R.bossSpawned){$('#qFill').style.width=(100*Math.min(1,R.kills/R.quota))+'%';$('#qTxt').textContent=`Fürst erscheint: ${R.kills}/${R.quota}`;}
-    else if(!R.bossDead){const b=R.en.find(e=>e.boss);$('#qFill').style.width=(b?100*b.hp/b.max:0)+'%';$('#qTxt').textContent='ASCHEFÜRST';}
+    else if(!R.bossDead){const b=R.en.find(e=>e.boss);$('#qFill').style.width=(b?100*b.hp/b.max:0)+'%';$('#qTxt').textContent=(b&&b.name||'FÜRST').toUpperCase();}
     else{$('#qFill').style.width='100%';$('#qTxt').textContent='Fürst gebannt! Kills: '+R.kills;}
     $('#ultName').textContent=ULT[save.hero].name+(R.ult>=1?' (Leertaste)':'');$('#ultFill').style.width=(R.ult*100)+'%';$('#ultBtn').classList.toggle('ready',R.ult>=1);
     $('#hS').textContent=fmt(R.souls);$('#hB').textContent=fmt(R.brim);$('#hG').textContent=fmt(R.sig);

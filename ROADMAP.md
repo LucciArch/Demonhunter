@@ -9,8 +9,8 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - Windows-EXE per Electron + GitHub Actions (Releases bei jedem Push)
 - v0.3: Ultimates (Urteil, Silberhagel, Heilige Flamme, Blutmond, Runensturm) + Jägerbaum mit 8 Knoten pro Jäger
 - v0.4: Aufstieg (Prestige ab Kreis 5) mit Höllenfragmenten und 16 dauerhaften Aufstiegsknoten inkl. Auto-Kauf
+- v0.5: Sukkubus (Zickzack, Lebensentzug), Golem (zäh), Kultist (Feuerbälle, per Bannstrahl zerstörbar), 10 Fürsten-Varianten mit Ansturm/Beschwörung/Feuernova
 
 ## Als Nächstes
-4. Mehr Dämonen (Sukkubus, Golem, Kultist-Magier mit Projektilen), Fürsten-Varianten pro Kreis
 5. Animationen: 2-Frame-Laufzyklen, Angriffsframes, Todesanimationen
 6. Erfolge/Quests, Statistik-Seite
