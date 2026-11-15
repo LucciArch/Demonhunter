@@ -11,9 +11,9 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.4: Aufstieg (Prestige ab Kreis 5) mit Höllenfragmenten und 16 dauerhaften Aufstiegsknoten inkl. Auto-Kauf
 - v0.5: Sukkubus (Zickzack, Lebensentzug), Golem (zäh), Kultist (Feuerbälle, per Bannstrahl zerstörbar), 10 Fürsten-Varianten mit Ansturm/Beschwörung/Feuernova
 - v0.6: Laufzyklen (2 Frames), Flügelschlag, Angriffs-Neigung für Jäger und Dämonen, Atmen, Todesanimationen, Fürsten-Tod mit Explosionskette
+- v0.7: Chronik mit 3 rotierenden Aufträgen, 39 Erfolgen (+2% Schaden/Seelen je Erfolg) und Statistik-Seite
 
 ## Als Nächstes
 7. Soundtrack/bessere Sounds, Einstellungen (Lautstärke, Schadenszahlen an/aus)
 8. Offline-Fortschritt (Seelen während Abwesenheit), Schnellreise-Kreis-Auswahl
 9. Mehr Inhalte: weitere Jäger (z.B. Pestarzt, Templerin), Artefakte/Ausrüstung als Loot
-6. Erfolge/Quests, Statistik-Seite

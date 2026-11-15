@@ -118,6 +118,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
     <div id="circleSel"><button id="cPrev">◀</button><span class="lbl" id="cLbl">1. Höllenkreis</span><button id="cNext">▶</button></div>
     <button class="big" id="btnHunt">⚔ JAGD BEGINNEN</button>
     <button id="btnHeroes">Jäger &amp; Ultimates</button>
+    <button id="btnChron">📜 Chronik</button>
     <button id="btnAsc" class="hide" style="border-color:#a03a90;color:#ffb0f0">✦ Aufstieg</button>
     <button id="btnMenu">⚙</button>
   </div>
@@ -704,6 +705,51 @@ function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
+save.st.kt=save.st.kt||{};save.ach=save.ach||{};save.quests=save.quests||[];
+// ===== ERFOLGE & AUFTRÄGE =====
+const stv=k=>save.st[k]||0;
+const heroCount=()=>HEROES.filter(heroUnlocked).length;
+const nodeCount=()=>Object.keys(save.tree).filter(k=>k!=='root'&&!k.startsWith('H_')&&save.tree[k]>0).length;
+const ACH=[];
+function A(id,name,desc,fn,rew){ACH.push({id,name,desc,fn,rew});}
+[[100,'Erstes Blut'],[1000,'Dämonenschlächter'],[10000,'Geißel der Hölle'],[100000,'Weltenreiniger'],[1000000,'Legende']].forEach(([n,nm],i)=>A('k'+i,nm,`Vernichte ${fmt(n)} Dämonen`,()=>stv('kills')>=n,{s:20*Math.pow(8,i)}));
+[[1,'Fürstenbann'],[10,'Fürstentöter'],[50,'Thronstürmer'],[250,'Königsmörder']].forEach(([n,nm],i)=>A('b'+i,nm,`Besiege ${n} Fürsten`,()=>stv('bosses')>=n,{g:2+i*3}));
+[[3,'Abstieg'],[5,'Tiefer'],[10,'Abgrundwanderer'],[15,'Herz der Hölle'],[20,'Jenseits der Kreise'],[30,'Unendliche Tiefe']].forEach(([n,nm],i)=>A('c'+i,nm,`Erreiche Höllenkreis ${n}`,()=>Math.max(save.maxCircle,stv('maxC'))>=n,{b:5*Math.pow(3,i)}));
+[[10,'Jäger'],[100,'Veteran'],[1000,'Unermüdlich']].forEach(([n,nm],i)=>A('r'+i,nm,`Bestreite ${n} Jagden`,()=>stv('runs')>=n,{s:50*Math.pow(10,i)}));
+[[500,'Bannender'],[5000,'Lichtbringer'],[50000,'Zorn des Himmels']].forEach(([n,nm],i)=>A('m'+i,nm,`Wirke ${fmt(n)} Bannstrahlen`,()=>stv('smites')>=n,{s:40*Math.pow(10,i)}));
+[[10,'Entfesselt'],[100,'Urgewalt'],[1000,'Weltenbeben']].forEach(([n,nm],i)=>A('u'+i,nm,`Wirke ${n} Ultimates`,()=>stv('ults')>=n,{b:10*Math.pow(5,i)}));
+[[3,'Bruderschaft'],[5,'Der ganze Orden']].forEach(([n,nm],i)=>A('h'+i,nm,`Schalte ${n} Jäger frei`,()=>heroCount()>=n,{g:3+i*5}));
+[[25,'Lehrling des Schwurs'],[100,'Meister des Schwurs'],[210,'Der vollendete Schwur']].forEach(([n,nm],i)=>A('n'+i,nm,`Besitze ${n} Knoten im Schwurbaum`,()=>nodeCount()>=n,{s:100*Math.pow(20,i)}));
+[[1,'Wiedergeboren'],[5,'Ewiger Kreislauf'],[25,'Unsterblicher Orden']].forEach(([n,nm],i)=>A('a'+i,nm,`Steige ${n}× auf`,()=>(save.ascCount||0)>=n,{a:2+i*5}));
+[[100,'Gemetzel'],[500,'Blutbad'],[2000,'Apokalypse']].forEach(([n,nm],i)=>A('p'+i,nm,`Vernichte ${n} Dämonen in einer Jagd`,()=>stv('best')>=n,{b:20*Math.pow(4,i)}));
+A('g0','Steinbrecher','Vernichte 100 Golems',()=>(save.st.kt.golem||0)>=100,{b:50});
+A('g1','Ketzerjäger','Vernichte 200 Kultisten',()=>(save.st.kt.cult||0)>=200,{b:40});
+A('g2','Unbetört','Vernichte 200 Sukkuben',()=>(save.st.kt.succ||0)>=200,{b:40});
+A('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths')>=1,{s:25});
+const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
+function curAdd(c,v){if(c==='s')save.souls+=v;else if(c==='b')save.brim+=v;else if(c==='g')save.sig+=v;else{save.frag+=v;save.fragTotal=(save.fragTotal||0)+v;}}
+const rewTxt=r=>Object.entries(r).map(([c,v])=>`<span class="cur ${c}" style="font-size:17px"><i></i>${fmt(v)}</span>`).join(' ');
+function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
+function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
+  if(n){persist();computeStats();}return n;}
+const PL={imp:'Imps',bat:'Nachtmahre',hound:'Höllenhunde',wraith:'Schemen',brute:'Hornbestien',succ:'Sukkuben',golem:'Golems',cult:'Kultisten'};
+const QT={
+ kill:{t:n=>`Vernichte ${n} Dämonen`,base:60,sc:1},
+ boss:{t:n=>`Besiege ${n} Fürsten`,base:2,sc:0,min:2},
+ smite:{t:n=>`Wirke ${n} Bannstrahlen`,base:60,sc:0},
+ ult:{t:n=>`Wirke ${n} Ultimates`,base:4,sc:0,min:1},
+ type:{t:(n,x)=>`Vernichte ${n} ${PL[x]||DEMONS[x].name}`,base:25,sc:0},
+};
+function newQuest(){const mc=Math.max(1,save.maxCircle);const keys=['kill','smite','type','kill'];if(mc>=2)keys.push('boss');if(stv('ults')>0||mc>=2)keys.push('ult');
+  const k=keys[ri(0,keys.length-1)],q=QT[k];let x=null;if(k==='type'){const pool=demonPool(mc);x=pool[ri(0,pool.length-1)][0];}
+  const target=Math.round(q.base*(1+mc*.25)*rnd(.8,1.3));const val=40*Math.pow(1.45,mc-1)*target/q.base;
+  const rew=mc>=3&&Math.random()<.35?{b:Math.ceil(3*Math.pow(1.25,mc-2))}:mc>=4&&Math.random()<.15?{g:1+Math.floor(mc/4)}:{s:Math.ceil(val)};
+  return {k,x,target,prog:0,rew};}
+function fillQuests(){let g=0;while(save.quests.length<3&&g++<50){const q=newQuest();if(save.quests.some(o=>o.k===q.k&&o.x===q.x))continue;save.quests.push(q);}}
+save.quests=save.quests.filter((q,i,a)=>a.findIndex(o=>o.k===q.k&&o.x===q.x)===i);
+fillQuests();
+function questProg(k,x,n){let done=0;for(const q of save.quests){if(q.done)continue;if(q.k===k&&(!q.x||q.x===x)){q.prog=Math.min(q.target,q.prog+(n||1));if(q.prog>=q.target){q.done=1;done++;}}}return done;}
+function claimQuests(){let n=0;save.quests=save.quests.filter(q=>{if(q.done){for(const c in q.rew)curAdd(c,q.rew[c]);n++;toast('📜 Auftrag erfüllt: '+QT[q.k].t(q.target,q.x));return false;}return true;});fillQuests();if(n)persist();return n;}
 const lv=id=>save.tree[id]||0;
 const heroUnlocked=h=>!h.unlock||lv(h.unlock)>0;
 // ===== AUFSTIEG =====
@@ -768,6 +814,7 @@ function computeStats(){
   s.pierce=g('pierce')+(h.pierce||0);s.multi=g('multi');
   s.revive=g('revive');s.quota=1-g('quotaRed')/100;s.enemyHp=1-g('enemyHpRed')/100;
   s.dmg*=1+g('heroAll')/100;s.hp*=1+g('heroAll')/100;
+  const ab=1+.02*achCount();s.dmg*=ab;s.soul*=ab;
   const hf=Math.pow(1.5,al('a16'));s.dmg*=(1+al('a1')*.25)*hf;s.hp*=(1+al('a2')*.25)*hf;s.soul*=(1+al('a3')*.5)*hf;
   s.time+=al('a5')*2;s.brim*=1+al('a6')*.5;s.sigil*=1+al('a7')*.3;s.collectDelay=Math.max(.2,s.collectDelay-al('a11')*.5);
   s.quota*=1-al('a12')*.08;s.crit=Math.min(95,s.crit+al('a14')*3);s.ls+=al('a15')*.02;
@@ -857,7 +904,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
+  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
   // particles
   R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
   if(e.boss)for(let i=0;i<8;i++)R.later.push({t:i*.15,fn:()=>{const bx=e.x+rnd(-50,50),by=e.y-rnd(10,110);R.fx.push({k:'boom',x:bx,y:by,r:rnd(30,60),t:0,dur:.35});shake=Math.max(shake,8);sfxL('kill');}});
@@ -870,7 +917,7 @@ function killDemon(e,o){
   for(let i=0;i<orbs;i++){let v=souls/orbs,gold=false;if(Math.random()<ST.golden){v*=10;gold=true;}dropLoot(e,'s',v,gold);}
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;dropLoot(e,'b',b);}
   if(e.boss){const s=(1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat;dropLoot(e,'g',s*ST.bossLoot);
-    R.bossDead=true;save.st.bosses++;R.time+=5;R.maxTime+=5;shake=16;
+    R.bossDead=true;save.st.bosses++;questProg('boss');R.time+=5;R.maxTime+=5;shake=16;
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
     const bb=$('#bossBanner');bb.textContent=(e.name||'FÜRST').toUpperCase()+' GEBANNT! +5s';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1600);}
   // explosion
@@ -933,7 +980,7 @@ function heroAttack(){
   return true;
 }
 function castUlt(){
-  if(!R||R.over||R.ult<1)return;R.ult=0;R.ultWait=0;const id=save.hero,hp=heroPos(),um=ST.ultDmg;shake=10;sfx('boss');
+  if(!R||R.over||R.ult<1)return;save.st.ults=(save.st.ults||0)+1;questProg('ult');R.ult=0;R.ultWait=0;const id=save.hero,hp=heroPos(),um=ST.ultDmg;shake=10;sfx('boss');
   R.tx.push({x:hp.x,y:hp.y-90,str:ULT[id].name.toUpperCase()+'!',t:0,col:HB[id].col});
   const onScreen=()=>R.en.filter(e=>!e.dead&&e.spawn<=0&&e.x>-20&&e.x<W+20&&e.y>-20&&e.y<H+20);
   if(id==='inq'){const hit=()=>{R.fx.push({k:'cross',x:W/2,y:H/2,t:0,dur:.5});for(const e of onScreen())dealDmg(e,ST.dmg*8*um,{crit:true,col:'#ffe0a0'});shake=12;};
@@ -965,6 +1012,7 @@ function chainFrom(e,amt){
 }
 function smite(x,y,auto){
   const r=ST.clickR;const c=critRoll(ST.clickCrit);const amt=ST.click*(c?ST.clickCritDmg:1);
+  save.st.smites=(save.st.smites||0)+1;questProg('smite');
   R.fx.push({k:'smite',x,y,r,t:0,dur:.28,auto});sfxL('smite');
   for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+8)f.dead=1;
   for(const e of R.en){if(e.dead)continue;if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
@@ -1040,7 +1088,10 @@ function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered
   save.souls+=R.souls;save.brim+=R.brim;save.sig+=R.sig;save.st.runs++;save.st.best=Math.max(save.st.best,R.kills);
+  save.st.soulsTotal=(save.st.soulsTotal||0)+R.souls;if(why==='dead')save.st.deaths=(save.st.deaths||0)+1;save.st.maxC=Math.max(save.st.maxC||0,save.maxCircle);
+  R.quests=claimQuests();
   if(al('a9'))R.autoBought=autoBuy();
+  R.ach=checkAch();
   persist();
   setTimeout(showSummary,why==='dead'?900:600);
 }
@@ -1048,7 +1099,7 @@ function autoBuy(){let n=0;for(let i=0;i<300;i++){let best=null,bc=Infinity;for(
   if(!best||bc>save.souls)break;save.souls-=bc;save.tree[best.id]=lv(best.id)+1;n++;}computeStats();return n;}
 function ascend(){
   const f=fragGain();if(f<=0)return;
-  save.frag+=f;save.fragTotal+=f;save.ascCount++;
+  save.frag+=f;save.fragTotal+=f;save.ascCount++;save.st.maxC=Math.max(save.st.maxC||0,save.maxCircle);
   const keep={root:1};for(const k in save.tree){if(k.startsWith('H_')||(NB[k]&&NB[k].key==='unlock'))keep[k]=save.tree[k];}
   save.tree=keep;save.souls=0;save.brim=0;save.sig=0;save.maxCircle=1+al('a4');save.circle=save.maxCircle;
   persist();computeStats();refreshHub();cam.x=cam.y=0;sfx('boss');toast('AUFSTIEG! +'+f+' Höllenfragmente',3000);
@@ -1075,6 +1126,7 @@ function showSummary(){
   if(R.brim>0)h+=`<span class="cur b"><i></i>Schwefel</span><span>+${fmt(R.brim)}</span>`;
   if(R.sig>0)h+=`<span class="cur g"><i></i>Siegel</span><span>+${fmt(R.sig)}</span>`;
   h+=`</div>`;
+  if(R.quests)h+=`<div style="text-align:center;color:#ffd76a;margin-bottom:6px">${R.quests} Auftrag/Aufträge erfüllt!</div>`;
   if(R.autoBought)h+=`<div style="text-align:center;color:#bfa8ff;margin-bottom:8px">Ordensschreiber kaufte ${R.autoBought} Knoten.</div>`;
   if(R.newCircle)h+=`<div style="text-align:center;color:var(--gold);font-size:22px;margin-bottom:10px">Neuer Höllenkreis freigeschaltet: ${save.maxCircle}!</div>`;
   h+=`<div class="row"><button class="big" id="sumAgain">⚔ Nochmal</button><button id="sumTree">Zum Schwurbaum</button></div>
@@ -1262,7 +1314,7 @@ function nodeHTML(n){
 }
 function buyNode(n){
   if(n.root||!nodeAvail(n))return false;const l=lv(n.id);if(l>=n.max)return false;const c=nodeCost(n);if(curAmt(n.cur)<c){return false;}
-  curSub(n.cur,c);save.tree[n.id]=l+1;sfx('buy');persist();computeStats();refreshHub();
+  curSub(n.cur,c);save.tree[n.id]=l+1;sfx('buy');checkAch();persist();computeStats();refreshHub();
   if(n.key==='unlock'){toast('Neuer Jäger freigeschaltet: '+HB[n.val].name);}
   return true;
 }
@@ -1328,6 +1380,26 @@ $('#btnHunt').onclick=()=>{startRun();};
 $('#ultBtn').onclick=()=>castUlt();
 $('#btnHeroes').onclick=heroSelect;
 $('#btnAsc').onclick=ascModal;
+$('#btnChron').onclick=()=>chronik('q');
+function fmtTime(t){t=Math.floor(t);const h=Math.floor(t/3600),m=Math.floor(t%3600/60);return h?h+' h '+m+' min':m+' min '+(t%60)+' s';}
+function chronik(tab){
+  claimQuests();checkAch();
+  let h=`<h2>CHRONIK DES ORDENS</h2><div class="row" style="margin-bottom:10px"><button data-tab="q" class="${tab==='q'?'big':''}">Aufträge</button><button data-tab="a" class="${tab==='a'?'big':''}">Erfolge ${achCount()}/${ACH.length}</button><button data-tab="s" class="${tab==='s'?'big':''}">Statistik</button></div><div style="max-width:820px;min-width:min(620px,86vw)">`;
+  if(tab==='q'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Drei Aufträge gleichzeitig. Erfüllte Aufträge zahlen nach der Jagd aus und werden ersetzt.</div>`;
+    for(const q of save.quests){const pc=q.prog/q.target;h+=`<div class="htn" style="margin-bottom:8px;cursor:default"><b style="color:#ffd76a">${QT[q.k].t(q.target,q.x)}</b><div class="bar" style="margin:6px 0"><div style="width:${pc*100}%;background:linear-gradient(#ffb04a,#a8481e)"></div><span>${fmt(q.prog)} / ${fmt(q.target)}</span></div>Belohnung: ${rewTxt(q.rew)}</div>`;}
+    h+=`<div class="row"><button id="qReroll">Aufträge neu würfeln (${fmt(Math.ceil(20*Math.pow(1.45,save.maxCircle-1)))} Seelen)</button></div>`;}
+  else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
+    for(const a of ACH){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
+    h+='</div>';}
+  else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Erfolge',achCount()+' / '+ACH.length]];
+    for(const k in DEMONS)rows.push([DEMONS[k].name+' getötet',fmt(st.kt[k]||0)]);
+    h+=`<div class="sumgrid" style="font-size:20px;max-width:460px;margin:0 auto 12px">${rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join('')}</div>`;}
+  h+=`</div><div class="row" style="margin-top:8px"><button id="chClose">Schließen</button></div>`;
+  openModal(h);refreshCur();
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>chronik(b.dataset.tab));
+  $('#chClose').onclick=closeModal;
+  const rr=$('#qReroll');if(rr)rr.onclick=()=>{const c=Math.ceil(20*Math.pow(1.45,save.maxCircle-1));if(save.souls<c){toast('Nicht genug Seelen');return;}save.souls-=c;save.quests=[];fillQuests();persist();chronik('q');};
+}
 $('#btnMenu').onclick=menu;
 $('#cPrev').onclick=()=>{save.circle=Math.max(1,save.circle-1);persist();refreshHub();};
 $('#cNext').onclick=()=>{save.circle=Math.min(save.maxCircle,save.circle+1);persist();refreshHub();};
@@ -1376,7 +1448,7 @@ addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='KeyQ')&&mode==='r
 // ================= LOOP =================
 let last=performance.now();
 function frame(now){
-  let dt=Math.min(.05,(now-last)/1000);last=now;sfxCount=0;
+  let dt=Math.min(.05,(now-last)/1000);last=now;sfxCount=0;save.st.play=(save.st.play||0)+dt;
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=false;
   if(mode==='run'&&R){
     updateRun(dt);
