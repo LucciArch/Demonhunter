@@ -14,6 +14,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family
 canvas#c{position:fixed;inset:0;display:block;touch-action:none;image-rendering:pixelated}
 .hide{display:none!important}
 h1,h2,h3,.px{font-family:'Pixelify Sans',monospace;margin:0}
+input{accent-color:#c0303a}
 button{font-family:'Pixelify Sans',monospace;font-size:17px;color:var(--txt);background:var(--panel2);border:2px solid var(--line);padding:8px 14px;cursor:pointer;box-shadow:0 3px 0 #000;border-radius:2px}
 button:hover{border-color:#7a4655;background:#2e1c27}
 button:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
@@ -705,6 +706,7 @@ function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
+save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true},save.opt);
 save.st.kt=save.st.kt||{};save.ach=save.ach||{};save.quests=save.quests||[];
 // ===== ERFOLGE & AUFTRÄGE =====
 const stv=k=>save.st[k]||0;
@@ -844,14 +846,21 @@ function bgPattern(c){
 }
 
 // ================= AUDIO (tiny synth) =================
-let AC=null,muted=false;
+let AC=null,MG=null;
+function audio(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.connect(AC.destination);}catch(e){return null;}}MG.gain.value=save.opt.vol;return AC;}
 function sfx(type){
-  if(muted)return;try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
-  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+  if(!save.opt.vol||!audio())return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(MG);
   const P={hit:[180,90,.04,'square',.05],crit:[420,120,.07,'square',.07],kill:[260,60,.08,'sawtooth',.05],pick:[880,1320,.05,'triangle',.04],smite:[1200,200,.12,'sawtooth',.05],boss:[90,40,.8,'sawtooth',.12],hurt:[120,60,.1,'square',.06],buy:[520,1040,.1,'triangle',.06]}[type];
   if(!P)return;o.type=P[3];o.frequency.setValueAtTime(P[0],t);o.frequency.exponentialRampToValueAtTime(Math.max(20,P[1]),t+P[2]);
   g.gain.setValueAtTime(P[4],t);g.gain.exponentialRampToValueAtTime(.0001,t+P[2]+.02);o.start(t);o.stop(t+P[2]+.03);
 }
+// Musik: düsteres Moll-Arpeggio (d-Moll), läuft nur nach erster Nutzer-Interaktion
+const MEL=[62,65,69,65,62,65,70,69,62,65,69,72,70,69,65,64],BASS=[38,38,34,36];let beat=0;
+function note(m,t,d,type,vol){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=440*Math.pow(2,(m-69)/12);o.connect(g);g.connect(MG);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.start(t);o.stop(t+d+.05);}
+setInterval(()=>{if(!AC||AC.state!=='running'||!save.opt.music||!save.opt.vol||document.hidden)return;const t=AC.currentTime+.05,fast=mode==='run';
+  note(MEL[beat%16]+(fast&&beat%32>=16?-2:0),t,.5,'triangle',.035);if(beat%4===0)note(BASS[(beat>>2)%4],t,1.6,fast?'sawtooth':'sine',fast?.025:.05);beat++;},330);
 let sfxCount=0;function sfxL(t){if(sfxCount<6){sfxCount++;sfx(t);}}
 
 // ================= GAME STATE =================
@@ -897,7 +906,7 @@ function dealDmg(e,amt,o){
   if(e.d.tough&&!o.crit)amt*=1-e.d.tough;
   if(e.mark>0)amt*=1+ST.mark;
   e.hp-=amt;e.flash=.08;
-  if(!o.silent)R.tx.push({x:e.x+rnd(-8,8),y:e.y-e.r*2-10,v:amt,t:0,crit:o.crit,col:o.col});
+  if(!o.silent&&save.opt.dmg)R.tx.push({x:e.x+rnd(-8,8),y:e.y-e.r*2-10,v:amt,t:0,crit:o.crit,col:o.col});
   if(o.crit){shake=Math.max(shake,3);}
   if(o.ls&&(ST.ls>0||R.moon>0))R.hp=Math.min(R.maxHp,R.hp+amt*(ST.ls+(R.moon>0?.2:0)));
   if(e.hp>0&&ST.execute>0&&!e.boss&&e.hp/e.max<ST.execute){e.hp=0;R.tx.push({x:e.x,y:e.y-e.r*2-24,str:'HINGERICHTET',t:0,col:'#ff5a5f'});}
@@ -1372,10 +1381,20 @@ function menu(){
   <p><b>So spielst du:</b> Starte eine Jagd. Dein Jäger kämpft automatisch. <b>Klicke/tippe</b> auf Dämonen für einen <b>Bannstrahl</b>. Fahre mit dem Zeiger über die Beute, um sie sofort einzusammeln, sonst fliegt sie nach ein paar Sekunden zu dir. Beute, die am Ende noch liegt, geht verloren.</p>
   <p>Töte genug Dämonen, dann erscheint der <b>Fürst</b> des Höllenkreises. Besiegst du ihn, öffnet sich der nächste Höllenkreis.</p>
   <p>Gib Seelen, Schwefel und Siegel im <b>Schwurbaum</b> aus. Ziehen (oder wischen) verschiebt den Baum, das Mausrad zoomt.</p></div>
-  <div class="row" style="margin-top:10px"><button id="mMute">${muted?'Ton an':'Ton aus'}</button><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
-  $('#mClose').onclick=closeModal;$('#mMute').onclick=()=>{muted=!muted;menu();};
+  <h3 class="px" style="color:#ffd9b0;margin:12px 0 6px">Einstellungen</h3>
+  <div style="display:grid;gap:8px;font-size:20px;max-width:440px">
+   <label>Lautstärke <input type="range" id="oVol" min="0" max="1" step=".05" value="${save.opt.vol}" style="width:200px;vertical-align:middle"></label>
+   <label class="chk"><input type="checkbox" id="oMusic" ${save.opt.music?'checked':''}> Musik</label>
+   <label class="chk"><input type="checkbox" id="oDmg" ${save.opt.dmg?'checked':''}> Schadenszahlen anzeigen</label>
+   <label class="chk"><input type="checkbox" id="oShake" ${save.opt.shake?'checked':''}> Bildschirmwackeln</label></div>
+  <div class="row" style="margin-top:12px"><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
+  $('#mClose').onclick=closeModal;
+  $('#oVol').oninput=e=>{save.opt.vol=+e.target.value;if(audio())MG.gain.value=save.opt.vol;persist();};
+  $('#oVol').onchange=()=>sfx('pick');
+  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
   $('#mReset').onclick=()=>{const b=$('#mReset');if(b.dataset.c){save=defSave();persist();closeModal();toHub();cam.x=cam.y=0;toast('Neuer Schwur geleistet.');}else{b.dataset.c=1;b.textContent='Wirklich? Nochmal klicken';}};
 }
+addEventListener('pointerdown',()=>{if(audio()&&AC.state==='suspended')AC.resume();});
 $('#btnHunt').onclick=()=>{startRun();};
 $('#ultBtn').onclick=()=>castUlt();
 $('#btnHeroes').onclick=heroSelect;
@@ -1452,7 +1471,7 @@ function frame(now){
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=false;
   if(mode==='run'&&R){
     updateRun(dt);
-    let sx=0,sy=0;if(shake>0){sx=rnd(-shake,shake);sy=rnd(-shake,shake);shake=Math.max(0,shake-dt*40);}
+    let sx=0,sy=0;if(shake>0&&save.opt.shake){sx=rnd(-shake,shake);sy=rnd(-shake,shake);shake=Math.max(0,shake-dt*40);}
     ctx.save();ctx.translate(sx,sy);renderRun();ctx.restore();
     // HUD
     $('#hpFill').style.width=(100*R.hp/R.maxHp)+'%';$('#hpTxt').textContent=`Leben ${fmt(Math.max(0,R.hp))} / ${fmt(R.maxHp)}`;
