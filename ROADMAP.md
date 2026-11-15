@@ -10,7 +10,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.3: Ultimates (Urteil, Silberhagel, Heilige Flamme, Blutmond, Runensturm) + Jägerbaum mit 8 Knoten pro Jäger
 - v0.4: Aufstieg (Prestige ab Kreis 5) mit Höllenfragmenten und 16 dauerhaften Aufstiegsknoten inkl. Auto-Kauf
 - v0.5: Sukkubus (Zickzack, Lebensentzug), Golem (zäh), Kultist (Feuerbälle, per Bannstrahl zerstörbar), 10 Fürsten-Varianten mit Ansturm/Beschwörung/Feuernova
+- v0.6: Laufzyklen (2 Frames), Flügelschlag, Angriffs-Neigung für Jäger und Dämonen, Atmen, Todesanimationen, Fürsten-Tod mit Explosionskette
 
 ## Als Nächstes
-5. Animationen: 2-Frame-Laufzyklen, Angriffsframes, Todesanimationen
+7. Soundtrack/bessere Sounds, Einstellungen (Lautstärke, Schadenszahlen an/aus)
+8. Offline-Fortschritt (Seelen während Abwesenheit), Schnellreise-Kreis-Auswahl
+9. Mehr Inhalte: weitere Jäger (z.B. Pestarzt, Templerin), Artefakte/Ausrüstung als Loot
 6. Erfolge/Quests, Statistik-Seite
