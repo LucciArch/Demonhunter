@@ -991,10 +991,10 @@ function spawnTick(){
   if(R.c>=2&&Math.random()<.04+ST.elite)spawnDemon('brute');
   if(R.c>=3&&Math.random()<.03+ST.elite/2)makeElite(spawnDemon(pickW(demonPool(R.c))));
 }
-const AFFIX={fast:{name:'Flink',col:'#5fe0ff',c:3,d:'Bewegt sich 80% schneller'},armor:{name:'Gepanzert',col:'#c8c8d8',c:3,d:'×5 Leben, −40% Schaden außer Krits'},expl:{name:'Explosiv',col:'#ff6a3a',c:3,d:'Explodiert beim Tod und trifft den Jäger'},vamp:{name:'Vampirisch',col:'#ff3a6a',c:8,d:'Regeneriert und heilt sich bei Treffern'},summ:{name:'Beschwörer',col:'#b07aff',c:8,d:'Ruft alle 4 s Wichte herbei'},mirror:{name:'Spiegelnd',col:'#e8f4ff',c:8,d:'Wirft Schaden auf den Jäger zurück'},tele:{name:'Teleportierend',col:'#ff4af0',c:18,d:'Springt alle 3 s direkt neben den Jäger'},frost:{name:'Frostig',col:'#9fe8ff',c:22,d:'Treffer verlangsamen die Angriffe des Jägers'},burn:{name:'Brennend',col:'#ff8a1a',c:26,d:'Hinterlässt eine brennende Feuerspur'}};
+const AFFIX={fast:{name:'Flink',col:'#5fe0ff',c:3,d:'Bewegt sich 80% schneller'},armor:{name:'Gepanzert',col:'#c8c8d8',c:3,d:'×5 Leben, −40% Schaden außer Krits'},expl:{name:'Explosiv',col:'#ff6a3a',c:3,d:'Explodiert beim Tod und trifft den Jäger'},vamp:{name:'Vampirisch',col:'#ff3a6a',c:8,d:'Regeneriert und heilt sich bei Treffern'},summ:{name:'Beschwörer',col:'#b07aff',c:8,d:'Ruft alle 4 s Wichte herbei'},mirror:{name:'Spiegelnd',col:'#e8f4ff',c:8,d:'Wirft Schaden auf den Jäger zurück'},tele:{name:'Teleportierend',col:'#ff4af0',c:18,d:'Springt alle 3 s direkt neben den Jäger'},frost:{name:'Frostig',col:'#9fe8ff',c:22,d:'Treffer verlangsamen die Angriffe des Jägers'},burn:{name:'Brennend',col:'#ff8a1a',c:26,d:'Hinterlässt eine brennende Feuerspur'},shield:{name:'Schildträger',col:'#ffe27a',c:30,d:'Halbiert den Schaden an Dämonen in seiner Nähe'}};
 const hasAff=(e,a)=>e.aff===a||e.aff2===a;
 function makeElite(e){
-  const pool=[['fast',1],['armor',1],['expl',1]].concat(R.c>=8?[['vamp',1],['summ',1],['mirror',1]]:[]).concat(R.c>=18?[['tele',1]]:[]).concat(R.c>=22?[['frost',1]]:[]).concat(R.c>=26?[['burn',1]]:[]);
+  const pool=[['fast',1],['armor',1],['expl',1]].concat(R.c>=8?[['vamp',1],['summ',1],['mirror',1]]:[]).concat(R.c>=18?[['tele',1]]:[]).concat(R.c>=22?[['frost',1]]:[]).concat(R.c>=26?[['burn',1]]:[]).concat(R.c>=30?[['shield',1]]:[]);
   e.aff=pickW(pool);e.elite=true;e.esc=1.25;e.r*=1.25;
   if(R.c>=15&&Math.random()<.35){e.aff2=pickW(pool.filter(p=>p[0]!==e.aff));e.esc=1.4;e.r*=1.1;}
   e.max=e.hp=e.max*(hasAff(e,'armor')?5:2.5)*(e.aff2?1.5:1);if(hasAff(e,'fast'))e.spd*=1.8;if(hasAff(e,'summ'))e.smT=2;if(hasAff(e,'tele'))e.tpT=3;
@@ -1019,6 +1019,7 @@ function dealDmg(e,amt,o){
   if(e.d.tough&&!o.crit)amt*=1-e.d.tough;
   if(hasAff(e,'armor')&&!o.crit)amt*=.6;
   if(hasAff(e,'mirror')&&!(e.refT>0)){e.refT=.6;hurtHero(e.dmg*.35,null);R.fx.push({k:'zap',x:e.x,y:e.y-e.r,x2:heroPos().x,y2:heroPos().y-24,t:0,dur:.15});if(R.over)return;}
+  if(e.shd>0)amt*=.5;
   if(e.mark>0)amt*=1+ST.mark;
   e.hp-=amt;e.flash=.08;e.rec=o.crit?.16:.1;
   if(!o.silent&&save.opt.dmg)R.tx.push({x:e.x+rnd(-8,8),y:e.y-e.r*2-10,v:amt,t:0,crit:o.crit,col:o.col});
@@ -1206,7 +1207,8 @@ function updateRun(dt){
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
   // enemies
   for(const e of R.en){
-    if(e.dead)continue;e.flash=Math.max(0,e.flash-dt);e.mark=Math.max(0,e.mark-dt);e.bob+=dt*8;
+    if(e.dead)continue;e.flash=Math.max(0,e.flash-dt);e.mark=Math.max(0,e.mark-dt);e.shd=Math.max(0,(e.shd||0)-dt);e.bob+=dt*8;
+    if(hasAff(e,'shield')&&e.spawn<=0)for(const o of R.en)if(o!==e&&!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<140)o.shd=.2;
     e.rec=Math.max(0,(e.rec||0)-dt);if(e.spawn>0){e.spawn-=dt;continue;}
     if(e.kb>0){e.kb-=dt;e.x+=e.kx*dt;e.y+=e.ky*dt;continue;}
     const dx=hp.x-e.x,dy=hp.y-e.y,d=Math.hypot(dx,dy)||1;const reach=18+e.r;
@@ -1399,6 +1401,8 @@ function drawDemon(e,sc){
     o={rot:(e.flip?-1:1)*.15*q,sx:o?o.sx:1,sy:o?o.sy:1};}
   if(e.spawn>0){const q=1-e.spawn/(e.sp0||.35);drawSpr(s,e.x,e.y+fy+(1-q)*10,k,e.flip,false,q,true,{sy:q,sx:2-q});}
   else drawSpr(fr,e.x+lx,e.y+fy-sq+ly,k,e.flip,e.flash>0,undefined,false,o);
+  if(e.shd>0&&e.spawn<=0){ctx.save();ctx.globalAlpha=.35+.15*Math.sin(e.bob*.5);ctx.strokeStyle='#ffe27a';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(e.x,e.y+fy-s.h*k*.45,s.w*k*.55,s.h*k*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha*=.3;ctx.fillStyle='#ffe27a';ctx.fill();ctx.restore();}
+  if(hasAff(e,'shield')&&e.spawn<=0){ctx.save();ctx.globalAlpha=.12;ctx.strokeStyle='#ffe27a';ctx.setLineDash([6,6]);ctx.beginPath();ctx.ellipse(e.x,e.y,140,98,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
   if(e.mark>0){ctx.fillStyle='rgba(220,190,255,.8)';ctx.fillRect(e.x-3,e.y+fy-s.h*k-10,6,6);}
   // hp bar
   if(e.hp<e.max){const w=e.boss?90:Math.max(24,s.w*k*.7);const y=e.y+fy-s.h*k-6;ctx.fillStyle='#000';ctx.fillRect(e.x-w/2-1,y-1,w+2,e.boss?7:5);
