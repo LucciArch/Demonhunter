@@ -1020,7 +1020,10 @@ const AB={};ASC.forEach(a=>AB[a.id]=a);
 const al=id=>(save.asc||{})[id]||0;
 const ascCost=a=>Math.ceil(a.cost*Math.pow(a.gr,al(a.id)));
 const fragGain=()=>save.maxCircle<5?0:Math.floor(Math.pow(save.maxCircle-3,1.6)*(1+al('a8')*.2));
-const nodeCost=n=>Math.ceil(n.cost*Math.pow(n.gr,lv(n.id))*Math.pow(.94,al('a13')));
+// Jede gekaufte Baum-Stufe verteuert weitere Seelen-/Schwefel-Knoten (Siegel ausgenommen, die kommen nur von Fürsten)
+const treeLv=()=>{let t=0;for(const k in save.tree)if(k!=='root'&&!k.startsWith('H_'))t+=save.tree[k];return t;};
+const inflTxt=()=>{const x=Math.pow(GROW.infl,treeLv());return x<100?x.toFixed(2):fmt(x);};
+const nodeCost=n=>Math.ceil(n.cost*Math.pow(n.gr,lv(n.id))*Math.pow(.94,al('a13'))*(n.cur==='g'?1:Math.pow(GROW.infl,treeLv())));
 const nodeAvail=n=>n.root||lv(n.parent)>0||(n.links||[]).some(id=>lv(id)>0);
 const nodeVisible=n=>nodeAvail(n)||[n.parent,...(n.links||[])].some(id=>NB[id].root||nodeAvail(NB[id]));
 const curAmt=c=>c==='s'?save.souls:c==='b'?save.brim:save.sig;
@@ -1264,7 +1267,7 @@ const ptr={x:-999,y:-999,down:false,active:false,type:'mouse'};
 let shake=0;
 
 // Wachstum pro Höllenkreis: Dämonen-Leben, Dämonen-Schaden, Beute
-const GROW={hp:1.55,dmg:1.33,rew:1.45};
+const GROW={hp:1.65,dmg:1.33,rew:1.45,infl:1.01};
 function startRun(){
   computeStats();
   const c=save.circle;
@@ -1953,7 +1956,7 @@ function drawIcon(key,col,size,on){const g=ICON[KEYICON[key]]||ICON.star;const p
   for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(g[j][i]==='#')ctx.fillRect(Math.round((i-2.5)*px),Math.round((j-2.5)*px),Math.ceil(px),Math.ceil(px));ctx.globalAlpha=1;}
 
 function nodeHTML(n){
-  if(n.root)return `<div class="tn" style="color:#ff6a6a">Der Schwur</div><div class="tl">Das Herz deines Ordens. Alle Pfade beginnen hier.<br>Seelen kaufen Knoten. Schwefel droppen Elite-Dämonen ab Kreis 2, Siegel nur Fürsten.</div>`;
+  if(n.root)return `<div class="tn" style="color:#ff6a6a">Der Schwur</div><div class="tl">Das Herz deines Ordens. Alle Pfade beginnen hier.<br>Seelen kaufen Knoten. Schwefel droppen Elite-Dämonen ab Kreis 2, Siegel nur Fürsten.<br>Jede gekaufte Stufe verteuert Seelen- und Schwefel-Knoten um 1% (aktuell ×${inflTxt()}).</div>`;
   const l=lv(n.id),maxed=l>=n.max,av=nodeAvail(n);const col=BR[n.br].col;
   let h=`<div class="tn" style="color:${col}">${n.name}${n.ks?' ◆':''}</div>`;
   if(!av)return h+`<div class="tl">Gesperrt. Kaufe zuerst den vorherigen Knoten.</div>`;
@@ -1990,7 +1993,7 @@ function refreshHub(){
   $('#sideName').textContent=h.name;$('#sidePass').textContent=h.pass+' Ultimate: '+ULT[h.id].name+'.';
   const rows=[['Schaden',fmt(ST.dmg)],['Angriffe/s',ST.aps.toFixed(2)],['Krit',ST.crit.toFixed(0)+'% ×'+ST.critDmg.toFixed(2)],['Leben',fmt(ST.hp)],['Rüstung',fmt(ST.armor)],['Regeneration',ST.regen.toFixed(1)+'/s'],
     ['Jagdzeit',ST.time+'s'],['Bannstrahl',fmt(ST.click)],['Seelen',`×${ST.soul.toFixed(2)}`],['Beute-Sog',ST.collectDelay.toFixed(1)+'s']];
-  rows.unshift(['Schwurbaum',NODES.filter(n=>!n.root&&lv(n.id)>0).length+' / '+(NODES.length-1)]);
+  rows.unshift(['Schwurbaum',NODES.filter(n=>!n.root&&lv(n.id)>0).length+' / '+(NODES.length-1)],['Teuerung','×'+inflTxt()]);
   if(ST.ls)rows.push(['Lebensraub',(ST.ls*100).toFixed(0)+'%']);if(ST.chain)rows.push(['Kettenblitz',ST.chain]);if(ST.explode)rows.push(['Explosion',(ST.explode*100|0)+'%']);if(ST.execute)rows.push(['Hinrichtung','<'+(ST.execute*100|0)+'%']);
   $('#stats').innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join('');
   $('#cLbl').textContent=circleName(save.circle)+modTag(save.circle);$('#cLbl').title=circleMod(save.circle)?CMOD[circleMod(save.circle)].d+' – Kreis wählen':'Kreis wählen';

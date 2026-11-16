@@ -106,6 +106,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.98: Beim ersten Fürsten-Sieg erscheint ein Tipp, dass goldene Seelen-Kugeln in der Luft fangbar sind
 - v0.99: Knopf „Beenden“ in der Jagd (auch Taste B, im Pausenbild angezeigt) – Auto-Jagd startet danach nicht neu; Jagdverlängerung durch Kills (Zeitfresser & Co.) höchstens +100% der Grund-Jagdzeit
 - v0.100: Jeder Fürst hat eine eigene Gestalt statt Umfärbung: Klagende Herrin (Banshee), Blutgraf (Vampir mit Stehkragen), Pestfürst (aufgedunsen, Pusteln), Eiskönig (Eiskrone, Bart), Schwefelherzog (Widderhörner, Ketten), Leerenwandler (vieläugiges Schattenwesen), Dornenkönig (Geweih, Rinde), Glutkoloss (Lavagestein), Abgrundfürst (Schlund mit Zahnreihen), Knochenkönig (Skelett mit Krone)
+- v0.101: Balance – Dämonen-Leben +65% statt +55% pro Kreis; jede gekaufte Baum-Stufe verteuert Seelen-/Schwefel-Knoten um 1% (Siegel ausgenommen), Anzeige „Teuerung“ in der Seitenleiste und beim Schwur. Per Simulation geprüft: vorher 1 Kreis pro Jagd bis ~Kreis 50, jetzt ~2 Jagden pro Kreis mit echten Wänden
 
 ## Als Nächstes
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
@@ -113,6 +114,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 91. Chronik-Aufträge-Tab: fast geschaffte Aufträge ebenfalls grün markieren
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
+L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 J. Knochenkönig: eigene Todesanimation (zerfällt in Knochenregen) und eigenes Reliquien-Drop „Knochenkrone“
