@@ -83,4 +83,4 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 73. Bannstrahl auf eine Nova-Kugel lässt sie in Fürsten-Farbe zerplatzen (eigener Funkenregen)
 74. Templerin: Schildstoß-Angriff mit vorschnellendem Schild statt nur Klinge
 75. Chronik: Kategorie mit erreichbarem, aber noch offenem Erfolg mit Fortschrittsbalken (z. B. 640/1000)
-76. Golden Seelen-Kugeln aus der Fürsten-Fontäne mit eigenem Klingel-Sound beim Aufprall
+76. Goldene Seelen-Kugeln aus der Fürsten-Fontäne mit eigenem Klingel-Sound beim Aufprall
