@@ -1539,7 +1539,7 @@ const pts=new Map();let drag=null,pinch=null;const canHover=matchMedia('(hover:h
 cv.addEventListener('pointerdown',e=>{
   cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   ptr.x=e.clientX;ptr.y=e.clientY;ptr.active=true;ptr.type=e.pointerType;ptr.down=true;
-  if(mode==='run'&&R&&!R.over){smite(e.clientX,e.clientY);}
+  if(mode==='run'&&R&&!R.over&&!R.paused){smite(e.clientX,e.clientY);}
   else if(mode==='hub'){
     if(pts.size===2){const [a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:cam.z};drag=null;}
     else drag={sx:e.clientX,sy:e.clientY,cx:cam.x,cy:cam.y,moved:false};
@@ -1571,7 +1571,8 @@ function pUp(e){
 cv.addEventListener('pointerup',pUp);cv.addEventListener('pointercancel',pUp);
 cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){ptr.active=false;hoverNode=null;$('#tip').classList.add('hide');}});
 cv.addEventListener('wheel',e=>{if(mode!=='hub')return;e.preventDefault();const before=s2w(e.clientX,e.clientY);cam.z=clamp(cam.z*Math.pow(1.0015,-e.deltaY),.35,2.2);const after=s2w(e.clientX,e.clientY);cam.x+=before.x-after.x;cam.y+=before.y-after.y;},{passive:false});
-addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='KeyQ')&&mode==='run'){e.preventDefault();castUlt();return;}if(mode!=='hub'||!$('#modal').classList.contains('hide'))return;
+addEventListener('keydown',e=>{if(e.code==='Escape'){if(mode==='hub')closeModal();else if(R&&!R.over){R.paused=!R.paused;$('#ultBtn').disabled=R.paused;}return;}
+  if(R&&R.paused)return;if((e.code==='Space'||e.code==='KeyQ')&&mode==='run'){e.preventDefault();castUlt();return;}if(mode!=='hub'||!$('#modal').classList.contains('hide'))return;
   const b={Space:'#btnHunt',KeyH:'#btnHeroes',KeyC:'#btnChron',ArrowLeft:'#cPrev',ArrowRight:'#cNext'}[e.code];
   if(b&&!$(b).disabled){e.preventDefault();$(b).click();}});
 
@@ -1581,9 +1582,10 @@ function frame(now){
   let dt=Math.min(.05,(now-last)/1000);last=now;sfxCount=0;save.st.play=(save.st.play||0)+dt;
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=false;
   if(mode==='run'&&R){
-    updateRun(dt);
+    if(!R.paused)updateRun(dt);
     let sx=0,sy=0;if(shake>0&&save.opt.shake){sx=rnd(-shake,shake);sy=rnd(-shake,shake);shake=Math.max(0,shake-dt*40);}
     ctx.save();ctx.translate(sx,sy);renderRun();ctx.restore();
+    if(R.paused){ctx.save();ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffd9b0';ctx.textAlign='center';ctx.font='48px "Pixelify Sans"';ctx.fillText('PAUSE',W/2,H/2);ctx.font='22px "Pixelify Sans"';ctx.fillText('Esc zum Fortsetzen',W/2,H/2+36);ctx.restore();}
     // HUD
     $('#hpFill').style.width=(100*R.hp/R.maxHp)+'%';$('#hpTxt').textContent=`Leben ${fmt(Math.max(0,R.hp))} / ${fmt(R.maxHp)}`;
     $('#tFill').style.width=(100*R.time/R.maxTime)+'%';$('#tTxt').textContent=`Jagdzeit ${R.time.toFixed(1)}s`;

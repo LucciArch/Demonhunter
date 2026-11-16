@@ -20,9 +20,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.13: Tastenkürzel im Hub (Leertaste = Jagd, H = Jäger, C = Chronik, ←/→ = Kreis wechseln), Hinweise als Tooltips
 - v0.14: Elite-Dämonen ab Kreis 3 mit Affixen – Flink (×1,8 Tempo), Gepanzert (×5 Leben, −40% Schaden außer Krits), Explosiv (Todesexplosion trifft den Jäger) – mit Aura, Namensschild und Elite-Beute
 - v0.15: Reliquien fallen als leuchtende Beute-Kugel (mit Sprite) und werden eingesammelt, eigener Glocken-Sound; nicht eingesammelte gehen am Rundenende nicht verloren
+- v0.16: Esc schließt Dialoge im Hub und pausiert/fortsetzt die Jagd (Pause-Overlay, Zeit steht still)
 
 ## Als Nächstes
 13. Neue Reliquien ab Kreis 10 (z. B. Kettenblitz-Rune, Dornenmantel)
-14. Esc schließt Dialoge (wo gefahrlos) und pausiert die Jagd
 15. Weitere Affixe ab Kreis 8 (Vampirisch, Beschwörer, Spiegelnd) + Erfolg „Elitejäger“
 16. Seelen-Schmiede: überschüssige Reliquien (Stufe 10) in Höllenfragmente umwandeln
+17. Automatische Pause, wenn das Fenster den Fokus verliert (abschaltbar in den Einstellungen)
