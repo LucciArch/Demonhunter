@@ -34,10 +34,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.26: Neues Elite-Affix ab Kreis 18 – Teleportierend (springt alle 3 s mit violettem Portal-Ring und Klang direkt neben den Jäger)
 - v0.28: Neue Kreis-Modifikatoren ab Kreis 20 – Finsternis (Sicht nur rund um den Jäger, +25% Seelen) und Fluch (Heilung/Lebensraub halbiert, +25% Schwefel)
 - v0.29: Neues Elite-Affix ab Kreis 22 – Frostig (Treffer verlangsamen die Angriffe des Jägers 2 s lang um 60%, Frost-Aura mit Schneeflocken am Jäger)
+- v0.30: Fünftes Reliquien-Set „Gewittermantel“ (Kettenblitz-Rune, Dornenmantel, Sanduhr): +1 Kettenblitz, +50% Kettenschaden, +50% Dornen, +2s Jagdzeit
 
 ## Als Nächstes
-29. Fünftes Reliquien-Set (z. B. Kettenblitz-Rune, Dornenmantel, Sanduhr: „Gewittermantel“)
 30. Bestiarium: Elite-Kills pro Art zählen und anzeigen
 31. Statistik: aktive Set-Boni und Bestiarium-Boni auf einen Blick
 32. Kreis-Modifikator „Siegelflut“ ab Kreis 30 (doppelte Siegel, Fürst mit +50% Leben)
 33. Elite-Affix „Brennend“ ab Kreis 26 (hinterlässt Feuerspur, die den Jäger verletzt)
+34. Sechstes Set „Seelenfürst“ (Seelenlaterne, Sündenauge, Fürstenschädel)
