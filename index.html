@@ -1231,6 +1231,9 @@ function novaPop(f){const c=f.nova.c,k=f.nova.k;save.st.np=(save.st.np||0)+1;R.f
 function smite(x,y,auto){
   const r=ST.clickR;const c=critRoll(ST.clickCrit);const amt=ST.click*(c?ST.clickCritDmg:1);
   save.st.smites=(save.st.smites||0)+1;questProg('smite');
+  if(!auto)for(const l of R.loot)if(l.gold&&l.z>8&&!l.fly&&!l.caught&&Math.hypot(l.x-x,l.y-l.z-y)<r+10){// goldene Kugel in der Luft gefangen: +50%
+    l.caught=1;l.v*=1.5;l.fly=2;sfx('chime');R.tx.push({x:l.x,y:l.y-l.z-14,str:'+50%',t:0,col:'#ffd76a'});
+    for(let i=0;i<10;i++)R.pt.push({x:l.x,y:l.y-l.z,vx:rnd(-160,160),vy:rnd(-200,80),t:0,life:rnd(.25,.5),c:i%2?'#ffffff':'#ffd76a',s:ri(2,3)});}
   R.fx.push({k:'smite',x,y,r,t:0,dur:.42,auto});sfxL('smite');if(!auto)shake=Math.max(shake,2);
   for(let i=0;i<(auto?5:12);i++)R.pt.push({x:x+rnd(-r*.4,r*.4),y,vx:rnd(-120,120),vy:rnd(-380,-120),t:0,life:rnd(.35,.7),c:['#fff6d0','#ffd76a','#e8d0ff'][ri(0,2)],s:ri(2,4)});
   for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+(f.nova?14:8)){f.dead=1;if(f.nova)novaPop(f);else emberBurst(f.x,f.y,6);}

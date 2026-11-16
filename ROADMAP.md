@@ -87,10 +87,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.79: Elite-Knochenwurm schleudert beim Hervorbrechen einen Knochensplitter-Ring (1,5× Schaden im Umkreis)
 - v0.80: Chronik markiert Erfolgs-Kategorien mit „● fast geschafft“, wenn ein Erfolg darin ≥90% erreicht hat
 - v0.81: Templerin – Heiliger Wall als goldene Kuppel mit kreisenden Runen, die bei abgewehrten Treffern aufflackert und kurz anschwillt
+- v0.82: Goldene Seelen-Kugeln lassen sich per Klick in der Luft fangen (+50% Wert, Funkeln, „+50%“-Anzeige)
 
 ## Als Nächstes
-82. Fürsten-Fontäne: Klick auf eine noch fliegende goldene Kugel fängt sie in der Luft (+50% Wert, Funkeln)
 83. Neuer Fürst „Knochenkönig“ ab Kreis 50: beschwört Knochenwürmer und lässt Knochenspeere aus dem Boden schießen
 84. Bestiarium: Hinweis auf Elite-Sonderfähigkeiten (z. B. Splitterring des Knochenwurms)
 85. Chronik-Knopf im Hauptmenü leuchtet, wenn ein Auftrag abgeschlossen oder ein Erfolg fast geschafft ist
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
+87. Statistik zählt in der Luft gefangene Goldkugeln, Erfolg „Luftfänger“ (100 Kugeln, +5 Siegel)
