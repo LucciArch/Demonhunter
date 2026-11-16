@@ -1159,6 +1159,7 @@ function castUlt(){
       const r=90*ST.aoe;R.fx.push({k:'quake',x:tg.x,y:tg.y,r,t:0,dur:.4});R.fx.push({k:'smite',x:tg.x,y:tg.y-10,r:r*.5,t:0,dur:.3});shake=Math.max(shake,6);
       for(const e of R.en)if(!e.dead&&Math.hypot(e.x-tg.x,e.y-tg.y)<r+e.r)dealDmg(e,ST.dmg*5*um,{col:'#5fe0ff'});}});}
 }
+function emberBurst(x,y,n){for(let i=0;i<n;i++)R.pt.push({x,y,vx:rnd(-180,180),vy:rnd(-220,60),t:0,life:rnd(.25,.55),c:['#ffe05a','#ff8a2a','#ff4a1a'][ri(0,2)],s:ri(2,3)});}
 function fireball(x,y,a,dmg,sp){R.ep.push({x,y,vx:Math.cos(a)*(sp||220),vy:Math.sin(a)*(sp||220),dmg,t:0});}
 function bossAbility(e){
   const v=e.bv,hp=heroPos();const ab=v.ab==='all'?['charge','summon','nova'][ri(0,2)]:v.ab;
@@ -1179,7 +1180,7 @@ function smite(x,y,auto){
   save.st.smites=(save.st.smites||0)+1;questProg('smite');
   R.fx.push({k:'smite',x,y,r,t:0,dur:.42,auto});sfxL('smite');if(!auto)shake=Math.max(shake,2);
   for(let i=0;i<(auto?5:12);i++)R.pt.push({x:x+rnd(-r*.4,r*.4),y,vx:rnd(-120,120),vy:rnd(-380,-120),t:0,life:rnd(.35,.7),c:['#fff6d0','#ffd76a','#e8d0ff'][ri(0,2)],s:ri(2,4)});
-  for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+8)f.dead=1;
+  for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+8){f.dead=1;emberBurst(f.x,f.y,6);}
   for(const e of R.en){if(e.dead)continue;if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
 }
 function hurtHero(amt,src){
@@ -1240,7 +1241,7 @@ function updateRun(dt){
   const A=R.en;for(let i=0;i<A.length;i++){const a=A[i];if(a.dead)continue;for(let j=i+1;j<A.length;j++){const b=A[j];if(b.dead)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=(a.r+b.r)*.8;if(d>0&&d<m){const p=(m-d)/2/d;a.x-=dx*p;a.y-=dy*p;b.x+=dx*p;b.y+=dy*p;}}}
   R.en=R.en.filter(e=>!e.dead);
   // enemy fireballs
-  for(const f of R.ep){f.t+=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;if(Math.hypot(f.x-hp.x,f.y-(hp.y-24))<20){f.dead=1;hurtHero(f.dmg,null);R.fx.push({k:'boom',x:f.x,y:f.y,r:22,t:0,dur:.2});if(R.over)return;}if(f.t>5)f.dead=1;}
+  for(const f of R.ep){f.t+=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;if(Math.random()<dt*25)R.pt.push({x:f.x+rnd(-3,3),y:f.y+rnd(-3,3),vx:-f.vx*.15+rnd(-20,20),vy:-f.vy*.15+rnd(-60,0),t:0,life:rnd(.2,.4),c:Math.random()<.6?'#ff8a2a':'#ffd05a',s:ri(1,3)});if(Math.hypot(f.x-hp.x,f.y-(hp.y-24))<20){f.dead=1;hurtHero(f.dmg,null);R.fx.push({k:'boom',x:f.x,y:f.y,r:22,t:0,dur:.2});emberBurst(f.x,f.y,10);if(R.over)return;}if(f.t>5)f.dead=1;}
   R.ep=R.ep.filter(f=>!f.dead);
   // projectiles
   for(const p of R.pr){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;
@@ -1351,7 +1352,7 @@ function renderRun(){
   ds.sort((a,b)=>a.y-b.y);for(const d of ds)d.f();
   // projectiles
   for(const p of R.pr){ctx.save();ctx.strokeStyle=p.ult?'#fff2b0':'#e8f4ff';ctx.lineWidth=3;ctx.shadowColor='#9be8ff';ctx.shadowBlur=8;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*.025,p.y-p.vy*.025);ctx.stroke();ctx.restore();}
-  for(const f of R.ep){const fl=1+.25*Math.sin(f.t*30);ctx.save();ctx.shadowColor='#ff6a1e';ctx.shadowBlur=12;ctx.fillStyle='#ff6a1e';ctx.beginPath();ctx.arc(f.x,f.y,7*fl,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe05a';ctx.beginPath();ctx.arc(f.x,f.y,3.5,0,Math.PI*2);ctx.fill();ctx.restore();}
+  for(const f of R.ep){const fl=1+.25*Math.sin(f.t*30),sp=Math.hypot(f.vx,f.vy)||1;ctx.save();for(let k=4;k>=1;k--){ctx.globalAlpha=.5-k*.1;ctx.fillStyle=k>2?'#a8240e':'#ff6a1e';ctx.beginPath();ctx.arc(f.x-f.vx/sp*k*6,f.y-f.vy/sp*k*6,7-k*1.2,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;ctx.shadowColor='#ff6a1e';ctx.shadowBlur=12;ctx.fillStyle='#ff6a1e';ctx.beginPath();ctx.arc(f.x,f.y,7*fl,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe05a';ctx.beginPath();ctx.arc(f.x,f.y,3.5,0,Math.PI*2);ctx.fill();ctx.restore();}
   drawFx();
   // particles
   for(const p of R.pt){ctx.globalAlpha=1-p.t/p.life;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);}ctx.globalAlpha=1;
