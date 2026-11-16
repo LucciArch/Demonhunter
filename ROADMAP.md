@@ -51,12 +51,13 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.43: Siebtes Reliquien-Set „Eisenwall“ (Eisernes Herz, Dornenmantel, Engelsfeder): +40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration
 - v0.44: 8 neue Erfolge „Bezwinger: <Modifikator>“ – je einen Fürsten unter jedem Höllenkreis-Modifikator besiegen (+3 Siegel, +2% Schaden/Seelen)
 - v0.45: Glutregen-Feuerflächen verbrennen auch Dämonen, die darin stehen (alle 0,5 s halber Jägerschaden); Feuerspuren brennender Elite bleiben nur für den Jäger gefährlich
+- v0.46: Fürsten-Intro – glühende Bodenrisse mit Lichtsäule und Funken, der Fürst steigt langsam aus dem Riss, kurzer Kamerazoom (Klicks bleiben treffsicher)
 
 ## Als Nächstes
-39. Fürsten-Intro: Bodenriss und Kamerazoom beim Erscheinen des Fürsten
 45. Elite-Affix „Schildträger“ ab Kreis 30 (schützt nahe Dämonen mit einem Schild)
 46. Hexenjägerin: sichtbare Armbrust als eigenes Sprite mit Nachlade-Animation
 47. Schemen und Kultist: eigene Angriffs-Effekte (Geistergriff, Beschwörungs-Glyphe beim Feuerball)
 49. Erfolg „Unzerstörbar“: alle 7 Reliquien-Sets aktiv
 50. Statistik: Fürsten-Siege pro Kreis-Modifikator anzeigen
 51. Neuer Kreis-Modifikator ab Kreis 40: Seelenfrost (Dämonen hinterlassen Eisflächen, die den Jäger verlangsamen; +40% Siegel)
+52. Fürsten-Tod: Kamera-Zeitlupe für eine halbe Sekunde beim Todesstoß
