@@ -820,6 +820,7 @@ A('f0','Forscher','Entdecke alle Dämonenarten im Bestiarium',()=>Object.keys(DE
 A('f1','Meister des Bestiariums','Erlege von jeder Dämonenart 1000',()=>Object.keys(DEMONS).every(k=>(save.st.kt[k]||0)>=1000),{a:10});
 A('f2','Elite-Kenner','Erlege von jeder Dämonenart 10 Elite',()=>Object.keys(DEMONS).every(k=>k==='boss'||(save.st.ke[k]||0)>=10),{b:500});
 for(const k in CMOD)A('o'+k,'Bezwinger: '+CMOD[k].name,`Besiege einen Fürsten unter dem Kreis-Modifikator „${CMOD[k].name}“`,()=>!!(save.st.bm&&save.st.bm[k]),{g:3});
+A('s0','Schildbrecher','Vernichte 100 Schildträger-Elite',()=>((save.st.ka||{}).shield||0)>=100,{b:300});
 A('oall','Allbezwinger','Besiege unter jedem Kreis-Modifikator 10 Fürsten',()=>Object.keys(CMOD).every(k=>((save.st.bm||{})[k]||0)>=10),{a:15});
 A('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths')>=1,{s:25});
 const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
@@ -1031,7 +1032,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
+  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
   // particles
   R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
   if(e.boss)for(let i=0;i<8;i++)R.later.push({t:i*.15,fn:()=>{const bx=e.x+rnd(-50,50),by=e.y-rnd(10,110);R.fx.push({k:'boom',x:bx,y:by,r:rnd(30,60),t:0,dur:.35});shake=Math.max(shake,8);sfxL('kill');}});
