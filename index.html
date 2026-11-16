@@ -73,7 +73,8 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 #hudC{flex:1;max-width:520px;margin:0 auto;text-align:center}
 #hudCirc{font-family:'Pixelify Sans';font-weight:700;font-size:20px;color:#ffd9b0;text-shadow:0 0 10px #c0303a,0 2px 0 #000;margin-bottom:4px}
 .bar.q{height:20px}.bar.q>span{font-family:'Pixelify Sans';font-size:14px;line-height:17px}
-#hudLoot{display:flex;gap:14px}
+#hudLoot{display:flex;gap:14px;align-items:center}
+#btnQuit{pointer-events:auto;padding:4px 10px;font-size:14px}
 #hudLoot .cur{font-size:22px}
 #hudLoot .cur.pop{animation:pop .25s}
 @keyframes pop{50%{transform:scale(1.35)}}
@@ -158,6 +159,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
       <span class="cur s"><i></i><b id="hS">0</b></span>
       <span class="cur b"><i></i><b id="hB">0</b></span>
       <span class="cur g"><i></i><b id="hG">0</b></span>
+      <button id="btnQuit" title="Jagd beenden (Taste B)">⏹ Beenden</button>
     </div>
   </div>
 </div>
@@ -894,7 +896,7 @@ const FX={
  unlock:v=>`Schaltet ${HB[v].name} frei`,
  dmgPerCircle:v=>`+${v}% Schaden pro erreichtem Höllenkreis`,hpPerCircle:v=>`+${v}% Leben pro erreichtem Höllenkreis`,soulPerCircle:v=>`+${v}% Seelen pro erreichtem Höllenkreis`,
  ultDmg:v=>`+${v}% Ultimate-Stärke`,ultCharge:v=>`Ultimate lädt ${v}% schneller`,heroAll:v=>`+${v}% Schaden und Leben (nur dieser Jäger)`,ultX:v=>'',
- frenzy:v=>`+${v}% Angriffstempo je 10 Kills in der Jagd (max. +100%)`,killTime:v=>`Jeder Kill verlängert die Jagd um ${v}s`,
+ frenzy:v=>`+${v}% Angriffstempo je 10 Kills in der Jagd (max. +100%)`,killTime:v=>`Jeder Kill verlängert die Jagd um ${v}s (insgesamt max. +100% Jagdzeit)`,
 };
 // --- layout
 (function layout(){for(const n of NODES){if(n.root)continue;if(n.brg){n.br='X';n.r=17;continue;}const p=NB[n.parent];const br=BR[n.id[0]];const a=(br.ang+n.off)*Math.PI/180;const d=n.parent==='root'?140:(n.off===0?100:86);n.x=p.x+Math.cos(a)*d;n.y=p.y+Math.sin(a)*d;n.br=n.id[0];n.r=n.ch?24:n.ks?21:16;}NB.root.r=30;})();
@@ -1315,7 +1317,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;boonGain(e);comboKill();save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
+  if(e.dead)return;e.dead=true;R.kills++;boonGain(e);comboKill();save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime&&(R.kt||0)<ST.time){const g=Math.min(ST.killTime,ST.time-(R.kt||0));R.kt=(R.kt||0)+g;R.time+=g;if(R.time>R.maxTime)R.maxTime=R.time;}// Kill-Verlängerung höchstens +100% der Grund-Jagdzeit
   // particles
   if(e.aff2){R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:.8});shake=Math.max(shake,3);}
   R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
@@ -1619,7 +1621,7 @@ function ascModal(){
 }
 function showSummary(){
   if(!R)return;
-  const why=R.why==='dead'?'Du bist gefallen…':'Die Zeit ist abgelaufen.';
+  const why=R.why==='dead'?'Du bist gefallen…':R.why==='quit'?'Du hast die Jagd beendet.':'Die Zeit ist abgelaufen.';
   let h=`<h2>JAGD BEENDET</h2><div style="text-align:center;color:var(--dim)">${why}</div>
   <div class="sumgrid"><span>Höllenkreis</span><span>${R.c}</span><span>Dämonen vernichtet</span><span>${R.kills}</span>
   <span class="cur s"><i></i>Seelen</span><span>+${fmt(R.souls)}</span>`;
@@ -1637,7 +1639,7 @@ function showSummary(){
   $('#sumAgain').onclick=()=>{closeModal();if(R&&R.newCircle&&save.auto){}startRun();};
   $('#sumTree').onclick=()=>{closeModal();toHub();};
   $('#autoChk').onchange=e=>{save.auto=e.target.checked;persist();};
-  if(save.auto){clearTimeout(showSummary.h);showSummary.h=setTimeout(()=>{if(!$('#modal').classList.contains('hide')&&save.auto&&mode==='run'){closeModal();startRun();}},2200);}
+  if(save.auto&&R.why!=='quit'){clearTimeout(showSummary.h);showSummary.h=setTimeout(()=>{if(!$('#modal').classList.contains('hide')&&save.auto&&mode==='run'){closeModal();startRun();}},2200);}
 }
 function toHub(){mode='hub';R=null;computeStats();showUI();refreshHub();}
 
@@ -2124,7 +2126,9 @@ function pUp(e){
 cv.addEventListener('pointerup',pUp);cv.addEventListener('pointercancel',pUp);
 cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){ptr.active=false;hoverNode=null;$('#tip').classList.add('hide');}});
 cv.addEventListener('wheel',e=>{if(mode!=='hub')return;e.preventDefault();const before=s2w(e.clientX,e.clientY);cam.z=clamp(cam.z*Math.pow(1.0015,-e.deltaY),.35,2.2);const after=s2w(e.clientX,e.clientY);cam.x+=before.x-after.x;cam.y+=before.y-after.y;},{passive:false});
-addEventListener('keydown',e=>{if(e.code==='Escape'){if(mode==='hub')closeModal();else if(R&&!R.over&&!R.choosing){R.paused=!R.paused;$('#ultBtn').disabled=R.paused;}return;}
+$('#btnQuit').onclick=quitRun;
+function quitRun(){if(mode==='run'&&R&&!R.over){R.paused=false;R.choosing=null;$('#ultBtn').disabled=false;endRun('quit');}}
+addEventListener('keydown',e=>{if(e.code==='KeyB'&&mode==='run'){quitRun();return;}if(e.code==='Escape'){if(mode==='hub')closeModal();else if(R&&!R.over&&!R.choosing){R.paused=!R.paused;$('#ultBtn').disabled=R.paused;}return;}
   if(R&&R.choosing){const o=R.choosing.opts[+e.key-1];if(o)R.choosing.pick(o);return;}
   if(R&&R.paused)return;if((e.code==='Space'||e.code==='KeyQ')&&mode==='run'){e.preventDefault();castUlt();return;}if(mode!=='hub'||!$('#modal').classList.contains('hide'))return;
   const b={Space:'#btnHunt',KeyH:'#btnHeroes',KeyC:'#btnChron',ArrowLeft:'#cPrev',ArrowRight:'#cNext'}[e.code];
@@ -2141,7 +2145,7 @@ function frame(now){
     ctx.save();ctx.translate(sx,sy);R.zz=null;
     if(R.zoom){const Z=R.zoom;if(!R.paused)Z.t+=dt;const p=Z.t/Z.dur;if(p>=1)R.zoom=null;else{const z=1+.18*Math.sin(Math.PI*Math.min(1,p*1.6))*(p<.6?1:(1-p)/.4),fx=W/2+(Z.x-W/2)*.6,fy=H/2+(Z.y-H/2)*.6;R.zz={z,fx,fy};ctx.translate(fx,fy);ctx.scale(z,z);ctx.translate(-fx,-fy);}}
     renderRun();ctx.restore();drawCombo();
-    if(R.paused){ctx.save();ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffd9b0';ctx.textAlign='center';ctx.font='48px "Pixelify Sans"';ctx.fillText('PAUSE',W/2,H/2);ctx.font='22px "Pixelify Sans"';ctx.fillText('Esc zum Fortsetzen',W/2,H/2+36);ctx.restore();}
+    if(R.paused){ctx.save();ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffd9b0';ctx.textAlign='center';ctx.font='48px "Pixelify Sans"';ctx.fillText('PAUSE',W/2,H/2);ctx.font='22px "Pixelify Sans"';ctx.fillText('Esc zum Fortsetzen · B zum Beenden',W/2,H/2+36);ctx.restore();}
     // HUD
     $('#hpFill').style.width=$('#hpTrail').style.width=(100*Math.max(0,R.hp)/R.maxHp)+'%';$('#hpTxt').textContent=`${fmt(Math.max(0,R.hp))} / ${fmt(R.maxHp)}`;
     $('#tFill').style.width=(100*R.time/R.maxTime)+'%';$('#blFill').style.width=(100*R.bl/R.blN)+'%';$('#tTxt').textContent=`⧗ ${R.time.toFixed(1)}s`;

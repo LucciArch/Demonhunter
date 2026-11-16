@@ -104,6 +104,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.96: Neu gepixelt: Hornbestie (18×22, glühender Bauch, Hufe), Golem (Lava-Kern, Moos, Steinkanten), Kultist (Kapuze mit Goldsaum, Feuer in beiden Händen), Fürst (26×24, Krone mit Juwelen, Zahnmaul, Gürtel – alle 10 Varianten)
 - v0.97: Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen, +5 Siegel), Knochenkönig-Siege in der Statistik
 - v0.98: Beim ersten Fürsten-Sieg erscheint ein Tipp, dass goldene Seelen-Kugeln in der Luft fangbar sind
+- v0.99: Knopf „Beenden“ in der Jagd (auch Taste B, im Pausenbild angezeigt) – Auto-Jagd startet danach nicht neu; Jagdverlängerung durch Kills (Zeitfresser & Co.) höchstens +100% der Grund-Jagdzeit
 
 ## Als Nächstes
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
