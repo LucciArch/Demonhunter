@@ -15,7 +15,9 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.8: Musik (Moll-Arpeggio, in der Jagd treibender), Master-Lautstärke, Einstellungen: Lautstärke, Musik, Schadenszahlen, Bildschirmwackeln
 - v0.9: Offline-Fortschritt (25% der zuletzt erjagten Seelen/s, max. 8 h) mit Willkommens-Dialog
 - v0.10: Pestarzt (Giftwolken, Ultimate Schwarzer Tod) und Templerin (Schildstoß, 30% Schadensreduktion, Ultimate Heiliger Wall)
+- v0.11: Schnellreise – Klick auf die Kreis-Anzeige öffnet eine Liste aller erreichten Höllenkreise
 
 ## Als Nächstes
-8. Schnellreise-Kreis-Auswahl (Liste aller erreichten Kreise statt nur ◀ ▶)
 9. Artefakte/Ausrüstung als Loot
+10. Tastenkürzel im Hub (H = Jäger, C = Chronik, ←/→ = Kreis wechseln)
+11. Elite-Dämonen mit Affixen (schnell, gepanzert, explosiv) und Extra-Beute
