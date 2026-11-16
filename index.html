@@ -976,10 +976,10 @@ function spawnTick(){
   if(R.c>=2&&Math.random()<.04+ST.elite)spawnDemon('brute');
   if(R.c>=3&&Math.random()<.03+ST.elite/2)makeElite(spawnDemon(pickW(demonPool(R.c))));
 }
-const AFFIX={fast:{name:'Flink',col:'#5fe0ff'},armor:{name:'Gepanzert',col:'#c8c8d8'},expl:{name:'Explosiv',col:'#ff6a3a'},vamp:{name:'Vampirisch',col:'#ff3a6a'},summ:{name:'Beschwörer',col:'#b07aff'},mirror:{name:'Spiegelnd',col:'#e8f4ff'},tele:{name:'Teleportierend',col:'#ff4af0'}};
+const AFFIX={fast:{name:'Flink',col:'#5fe0ff'},armor:{name:'Gepanzert',col:'#c8c8d8'},expl:{name:'Explosiv',col:'#ff6a3a'},vamp:{name:'Vampirisch',col:'#ff3a6a'},summ:{name:'Beschwörer',col:'#b07aff'},mirror:{name:'Spiegelnd',col:'#e8f4ff'},tele:{name:'Teleportierend',col:'#ff4af0'},frost:{name:'Frostig',col:'#9fe8ff'}};
 const hasAff=(e,a)=>e.aff===a||e.aff2===a;
 function makeElite(e){
-  const pool=[['fast',1],['armor',1],['expl',1]].concat(R.c>=8?[['vamp',1],['summ',1],['mirror',1]]:[]).concat(R.c>=18?[['tele',1]]:[]);
+  const pool=[['fast',1],['armor',1],['expl',1]].concat(R.c>=8?[['vamp',1],['summ',1],['mirror',1]]:[]).concat(R.c>=18?[['tele',1]]:[]).concat(R.c>=22?[['frost',1]]:[]);
   e.aff=pickW(pool);e.elite=true;e.esc=1.25;e.r*=1.25;
   if(R.c>=15&&Math.random()<.35){e.aff2=pickW(pool.filter(p=>p[0]!==e.aff));e.esc=1.4;e.r*=1.1;}
   e.max=e.hp=e.max*(hasAff(e,'armor')?5:2.5)*(e.aff2?1.5:1);if(hasAff(e,'fast'))e.spd*=1.8;if(hasAff(e,'summ'))e.smT=2;if(hasAff(e,'tele'))e.tpT=3;
@@ -1159,10 +1159,10 @@ function updateRun(dt){
   if(R.time<=0){R.time=0;endRun('time');return;}
   R.hp=Math.min(R.maxHp,R.hp+ST.regen*dt*(R.mod==='curse'?.5:1));
   R.spawnT-=dt;if(R.spawnT<=0){spawnTick();R.spawnT=Math.max(.12,(1.05-Math.min(.45,(R.c-1)*.05))/ST.spawn);}
-  R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/(ST.aps*(1+Math.min(1,ST.frenzy*Math.floor(R.kills/10)))*(R.moon>0?2:1));else R.atkT=.05;}
+  R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/(ST.aps*(1+Math.min(1,ST.frenzy*Math.floor(R.kills/10)))*(R.moon>0?2:1))*(R.frost>0?1.6:1);else R.atkT=.05;}
   if(ST.autoSmite){R.smiteT-=dt;if(R.smiteT<=0){R.smiteT=1/ST.autoSmite;const al=R.en.filter(e=>!e.dead&&e.x>0&&e.x<W&&e.y>0&&e.y<H);
     for(let i=0;i<ST.smiteN&&al.length;i++){const e=al[ri(0,al.length-1)];smite(e.x,e.y-e.r,1);if(ST.smiteTwice)smite(e.x,e.y-e.r,1);}}}
-  R.moon=Math.max(0,R.moon-dt);R.wall=Math.max(0,R.wall-dt);
+  R.moon=Math.max(0,R.moon-dt);R.wall=Math.max(0,R.wall-dt);R.frost=Math.max(0,(R.frost||0)-dt);
   for(const c of R.clouds){c.t+=dt;c.tk-=dt;if(c.tk<=0){c.tk=.5;for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-c.x,e.y-c.y)<c.r+e.r){const cr=critRoll(ST.crit);dealDmg(e,ST.dmg*c.m*(cr?ST.critDmg:1),{crit:cr,ls:1,col:'#9bff7a'});}}}
   R.clouds=R.clouds.filter(c=>c.t<c.dur);
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
@@ -1185,7 +1185,7 @@ function updateRun(dt){
     let sp=e.spd*(e.charge>0?4:1);if(e.charge>0)e.charge-=dt;
     if(e.d.ranged&&d<e.d.ranged&&d>reach){e.castT=(e.castT===undefined?rnd(.5,1.5):e.castT)-dt;if(e.castT<=0){e.castT=2.2;fireball(e.x,e.y-e.r*1.4,Math.atan2(hp.y-20-(e.y-e.r*1.4),hp.x-e.x),e.dmg*1.2);}}
     else if(d>reach){e.moving=1;let mx=dx/d,my=dy/d;if(e.d.zig){const z=Math.sin(e.bob*.6)*.9;const ox=-my*z,oy=mx*z;mx+=ox;my+=oy;}e.x+=mx*sp*dt;e.y+=my*sp*dt;}
-    else{e.hitT-=dt;e.hitAnim=Math.max(0,(e.hitAnim||0)-dt);if(e.hitT<=0){e.hitT=1;e.hitAnim=.15;hurtHero(e.dmg,e);if((e.d.drain||hasAff(e,'vamp'))&&!e.dead)e.hp=Math.min(e.max,e.hp+e.max*.25);if(R.over)return;}}
+    else{e.hitT-=dt;e.hitAnim=Math.max(0,(e.hitAnim||0)-dt);if(e.hitT<=0){e.hitT=1;e.hitAnim=.15;hurtHero(e.dmg,e);if(hasAff(e,'frost'))R.frost=2;if((e.d.drain||hasAff(e,'vamp'))&&!e.dead)e.hp=Math.min(e.max,e.hp+e.max*.25);if(R.over)return;}}
   }
   // separation
   const A=R.en;for(let i=0;i<A.length;i++){const a=A[i];if(a.dead)continue;for(let j=i+1;j<A.length;j++){const b=A[j];if(b.dead)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=(a.r+b.r)*.8;if(d>0&&d<m){const p=(m-d)/2/d;a.x-=dx*p;a.y-=dy*p;b.x+=dx*p;b.y+=dy*p;}}}
@@ -1287,6 +1287,7 @@ function renderRun(){
   ctx.globalAlpha=.18;ctx.beginPath();ctx.ellipse(hp.x,hp.y,rr*.75,rr*.375,0,0,Math.PI*2);ctx.stroke();ctx.restore();
   for(const c of R.clouds){const a=Math.min(1,(c.dur-c.t)*2)*.35;ctx.fillStyle=`rgba(90,200,70,${a})`;ctx.beginPath();ctx.ellipse(c.x,c.y,c.r,c.r*.55,0,0,Math.PI*2);ctx.fill();
     ctx.fillStyle=`rgba(180,255,140,${a*1.4})`;for(let i=0;i<5;i++){const q=(c.t*.8+i/5)%1;ctx.fillRect(c.x+Math.sin(i*2.3)*c.r*.6,c.y-q*c.r*.6,3,3);}}
+  if(R.frost>0){ctx.fillStyle=`rgba(159,232,255,${.18*Math.min(1,R.frost)})`;ctx.beginPath();ctx.ellipse(hp.x,hp.y-20,34,46,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e8faff';for(let i=0;i<6;i++){const q=(R.t*.7+i/6)%1;ctx.fillRect(hp.x+Math.sin(i*2.1+R.t)*26,hp.y-60+q*50,2,2);}}
   if(R.wall>0){ctx.strokeStyle=`rgba(255,224,138,${.5+.3*Math.sin(R.t*10)})`;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(hp.x,hp.y-20,46,56,0,0,Math.PI*2);ctx.stroke();}
   // loot shadows/orbs drawn below units
   for(const l of R.loot)drawLoot(l);
