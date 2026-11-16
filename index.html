@@ -465,6 +465,19 @@ SPR_DEF.templ={pal:{p:'#c0303a',A:'#c8d0dc',a:'#8a96a8',d:'#4f5866',w:'#f0ece0',
 "....ddd..ddd....",
 "....aaa..aaa....",
 "...AAAA..AAAA..."]};
+// ---- Reliquien (Artefakte) ----
+const ARTPAL={Y:'#e8b84a',y:'#a87828',r:'#c0202a',R:'#ff4a4a',g:'#6ad8ff',W:'#f0f0ff',w:'#a8b0d0',c:'#8a7a6a',P:'#7a2aa0',E:'#ffe04a',K:'#100810',I:'#8a8a98',S:'#6ad8ff',s:'#2a8ab0',k:'#3a3038',O:'#ff8a2a',o:'#a8481e',b:'#e8dcc0',T:'#e8c878',G:'#3a4a5a'};
+const ARTS=[
+ {id:'kelch',name:'Blutkelch',d:v=>`+${v}% Lebensraub`,f:(s,l)=>s.ls+=.01*l,rows:["..........",".YYYYYYYY.",".YRRRRRRY.",".yrRrrrry.","..yrrrry..","...yyyy...","....YY....","....yY....","...yYYY...","..yyyyyy.."]},
+ {id:'krone',name:'Fürstenkrone',d:v=>`+${v*8}% Schaden`,f:(s,l)=>s.dmg*=1+.08*l,rows:["Y...YY...Y","YY..YY..YY","YYY.YY.YYY","YYYYYYYYYY","YrYYgYYrYY","yyyyyyyyyy"]},
+ {id:'feder',name:'Engelsfeder',d:v=>`+${v*5}% Angriffstempo`,f:(s,l)=>s.aps*=1+.05*l,rows:["......WW..",".....WWw..","....WWw...","...WWWw...","..WWWw....","..WWw.....",".WWw......",".Ww.......","w........."]},
+ {id:'auge',name:'Sündenauge',d:v=>`+${v*2}% Krit-Chance`,f:(s,l)=>s.crit=Math.min(95,s.crit+2*l),rows:["c........c",".c......c.","..cPPPPc..","..PEEEEP..",".PEEKKEEP.","..PEEEEP..","...PPPP...","....PP...."]},
+ {id:'herz',name:'Eisernes Herz',d:v=>`+${v*10}% Leben`,f:(s,l)=>s.hp*=1+.1*l,rows:[".II...II..","IIrI.IrII.","IrrrIrrrI.","IrrrrrrrI.",".IrrrrrI..","..IrrrI...","...IrI....","....I....."]},
+ {id:'laterne',name:'Seelenlaterne',d:v=>`+${v*10}% Seelen`,f:(s,l)=>s.soul*=1+.1*l,rows:["....kk....","...k..k...","..kkkkkk..","..kSSSSk..","..kSssSk..","..kSSSSk..","..kkkkkk..","...kkkk..."]},
+ {id:'horn',name:'Schwefelhorn',d:v=>`+${v*10}% Schwefel`,f:(s,l)=>s.brim*=1+.1*l,rows:["........O.",".......Oo.","......Oo..",".....bOo..","....bbo...","..bbbb....",".bbbb.....","bbbb......"]},
+ {id:'uhr',name:'Sanduhr des Richters',d:v=>`+${v/2}s Jagdzeit`,f:(s,l)=>s.time+=.5*l,rows:["YYYYYYYY",".GTTTTG.","..GTTG..","...GG...","..GTTG..",".GTTTTG.","YYYYYYYY"]}];
+const ART_MAX=10;
+for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
 const SPR={};for(const k in SPR_DEF)SPR[k]=mkSprite(SPR_DEF[k]);
 // Fürsten-Varianten (Farbvarianten + eigene Fähigkeit)
 const BOSSES=[
@@ -750,7 +763,7 @@ const CHILD={};NODES.forEach(n=>{if(n.parent){(CHILD[n.parent]=CHILD[n.parent]||
 // ================= SAVE =================
 const SKEY='daemonenjaeger_save_v1';
 let save;
-function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:1,maxCircle:1,st:{runs:0,kills:0,bosses:0,best:0},auto:false,seenIntro:false,frag:0,asc:{},ascCount:0,fragTotal:0};}
+function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:1,maxCircle:1,st:{runs:0,kills:0,bosses:0,best:0},auto:false,seenIntro:false,frag:0,asc:{},ascCount:0,fragTotal:0,arts:{}};}
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){save.last=Date.now();try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
@@ -872,6 +885,7 @@ function computeStats(){
   const mc=save.maxCircle-1;s.dmg*=1+g('dmgPerCircle')*mc/100;s.hp*=1+g('hpPerCircle')*mc/100;s.soul*=1+g('soulPerCircle')*mc/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.frenzy=g('frenzy')/100;s.killTime=g('killTime');
   s.crit=Math.min(95,s.crit);s.enemyHp=Math.max(.3,s.enemyHp);
+  for(const a of ARTS)if(save.arts[a.id])a.f(s,save.arts[a.id]);
   s.range=h.range*(h.type==='pulse'?s.aoe:1);
   ST=s;return s;
 }
@@ -973,6 +987,7 @@ function killDemon(e,o){
   const orbs=e.boss?12:e.elite?4:1;
   for(let i=0;i<orbs;i++){let v=souls/orbs,gold=false;if(Math.random()<ST.golden){v*=10;gold=true;}dropLoot(e,'s',v,gold);}
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;dropLoot(e,'b',b);}
+  if(e.boss||(e.elite&&Math.random()<.02))gainArt();
   if(e.boss){const s=(1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat;dropLoot(e,'g',s*ST.bossLoot);
     R.bossDead=true;save.st.bosses++;questProg('boss');R.time+=5;R.maxTime+=5;shake=16;
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
@@ -984,6 +999,9 @@ function killDemon(e,o){
   }
   if(!R.bossSpawned&&R.kills>=R.quota)spawnBoss();
 }
+function gainArt(){const open=ARTS.filter(a=>(save.arts[a.id]||0)<ART_MAX);if(!open.length)return;
+  const a=open[ri(0,open.length-1)];save.arts[a.id]=(save.arts[a.id]||0)+1;(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
+  toast('Reliquie: '+a.name+' (Stufe '+save.arts[a.id]+')');}
 function dropLoot(e,cur,v,gold){
   const a=Math.random()*Math.PI*2,sp=rnd(60,180);
   R.loot.push({x:e.x,y:e.y-e.r,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-80,z:0,cur,v,gold,age:0,fly:0,tx:0,ty:0});
@@ -1200,6 +1218,7 @@ function showSummary(){
   h+=`</div>`;
   if(R.quests)h+=`<div style="text-align:center;color:#ffd76a;margin-bottom:6px">${R.quests} Auftrag/Aufträge erfüllt!</div>`;
   if(R.autoBought)h+=`<div style="text-align:center;color:#bfa8ff;margin-bottom:8px">Ordensschreiber kaufte ${R.autoBought} Knoten.</div>`;
+  if(R.arts)h+=`<div style="text-align:center;color:#ffb0f0;font-size:20px;margin-bottom:10px">Reliquien: ${R.arts.map(a=>`<img src="${sprURL('art_'+a.id,3)}" style="vertical-align:middle;image-rendering:pixelated"> ${a.name} (Stufe ${save.arts[a.id]})`).join(' · ')}</div>`;
   if(R.newCircle)h+=`<div style="text-align:center;color:var(--gold);font-size:22px;margin-bottom:10px">Neuer Höllenkreis freigeschaltet: ${save.maxCircle}!</div>`;
   h+=`<div class="row"><button class="big" id="sumAgain">⚔ Nochmal</button><button id="sumTree">Zum Schwurbaum</button></div>
   <div class="row" style="margin-top:10px"><label class="chk"><input type="checkbox" id="autoChk" ${save.auto?'checked':''}> Auto-Jagd (startet automatisch neu)</label></div>`;
@@ -1469,12 +1488,15 @@ $('#btnChron').onclick=()=>chronik('q');
 function fmtTime(t){t=Math.floor(t);const h=Math.floor(t/3600),m=Math.floor(t%3600/60);return h?h+' h '+m+' min':m+' min '+(t%60)+' s';}
 function chronik(tab){
   claimQuests();checkAch();
-  let h=`<h2>CHRONIK DES ORDENS</h2><div class="row" style="margin-bottom:10px"><button data-tab="q" class="${tab==='q'?'big':''}">Aufträge</button><button data-tab="a" class="${tab==='a'?'big':''}">Erfolge ${achCount()}/${ACH.length}</button><button data-tab="s" class="${tab==='s'?'big':''}">Statistik</button></div><div style="max-width:820px;min-width:min(620px,86vw)">`;
+  let h=`<h2>CHRONIK DES ORDENS</h2><div class="row" style="margin-bottom:10px"><button data-tab="q" class="${tab==='q'?'big':''}">Aufträge</button><button data-tab="a" class="${tab==='a'?'big':''}">Erfolge ${achCount()}/${ACH.length}</button><button data-tab="r" class="${tab==='r'?'big':''}">Reliquien</button><button data-tab="s" class="${tab==='s'?'big':''}">Statistik</button></div><div style="max-width:820px;min-width:min(620px,86vw)">`;
   if(tab==='q'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Drei Aufträge gleichzeitig. Erfüllte Aufträge zahlen nach der Jagd aus und werden ersetzt.</div>`;
     for(const q of save.quests){const pc=q.prog/q.target;h+=`<div class="htn" style="margin-bottom:8px;cursor:default"><b style="color:#ffd76a">${QT[q.k].t(q.target,q.x)}</b><div class="bar" style="margin:6px 0"><div style="width:${pc*100}%;background:linear-gradient(#ffb04a,#a8481e)"></div><span>${fmt(q.prog)} / ${fmt(q.target)}</span></div>Belohnung: ${rewTxt(q.rew)}</div>`;}
     h+=`<div class="row"><button id="qReroll">Aufträge neu würfeln (${fmt(Math.ceil(20*Math.pow(1.45,save.maxCircle-1)))} Seelen)</button></div>`;}
   else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
     for(const a of ACH){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
+    h+='</div>';}
+  else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten.</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
+    for(const a of ARTS){const l=save.arts[a.id]||0;h+=`<div class="htn ${l>=ART_MAX?'max':l?'':'lock'}" style="cursor:default;opacity:${l?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('art_'+a.id,4)}" style="image-rendering:pixelated;${l?'':'filter:brightness(0)'}"><div><b style="color:${l?'#ffd76a':'#c8b8a8'}">${l?a.name:'???'}</b> ${l?'Stufe '+l+'/'+ART_MAX:''}<br>${a.d(Math.max(1,l))}${l?'':' (Stufe 1)'}</div></div>`;}
     h+='</div>';}
   else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Erfolge',achCount()+' / '+ACH.length]];
     for(const k in DEMONS)rows.push([DEMONS[k].name+' getötet',fmt(st.kt[k]||0)]);

@@ -16,8 +16,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.9: Offline-Fortschritt (25% der zuletzt erjagten Seelen/s, max. 8 h) mit Willkommens-Dialog
 - v0.10: Pestarzt (Giftwolken, Ultimate Schwarzer Tod) und Templerin (Schildstoß, 30% Schadensreduktion, Ultimate Heiliger Wall)
 - v0.11: Schnellreise – Klick auf die Kreis-Anzeige öffnet eine Liste aller erreichten Höllenkreise
+- v0.12: Reliquien – 8 handgepixelte Artefakte als Fürsten-Beute (Elite 2%), Stufen 1–10, eigener Chronik-Reiter, bleiben beim Aufstieg
 
 ## Als Nächstes
-9. Artefakte/Ausrüstung als Loot
 10. Tastenkürzel im Hub (H = Jäger, C = Chronik, ←/→ = Kreis wechseln)
 11. Elite-Dämonen mit Affixen (schnell, gepanzert, explosiv) und Extra-Beute
+12. Reliquien als sichtbare Beute-Kugel im Kampf (einsammeln statt direkt gutschreiben) + eigener Sound
+13. Neue Reliquien ab Kreis 10 (z. B. Kettenblitz-Rune, Dornenmantel)
