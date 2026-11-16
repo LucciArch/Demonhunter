@@ -496,7 +496,8 @@ const SPR={};for(const k in SPR_DEF)SPR[k]=mkSprite(SPR_DEF[k]);
 const WEAP={inq:{px:14.5,py:11,amp:1,f:(c,i)=>'wW'.includes(c)||(c==='g'&&i>=13)},
  blut:{px:13.5,py:10.5,amp:1.1,f:c=>'wWx'.includes(c)},
  rune:{px:12.5,py:9.5,amp:1.4,f:(c,i,j)=>c==='x'||(j<=2&&i>=10)},
- templ:{px:13.5,py:8.5,amp:.9,f:(c,i)=>c==='x'||(c==='g'&&i>=12)}};
+ templ:{px:13.5,py:8.5,amp:.9,f:(c,i)=>c==='x'||(c==='g'&&i>=12)},
+ hex:{px:11.5,py:9.5,rng:1,f:(c,i,j)=>i>=12&&j>=7&&j<=11}}; // rng: Armbrust mit Rückstoß + Nachladen statt Schwung
 for(const k in WEAP){const d=SPR_DEF[k],f=WEAP[k].f,sp=(keep)=>d.rows.map((r,j)=>[...r].map((c,i)=>c!=='.'&&f(c,i,j)===keep?c:'.').join(''));
   WEAP[k].body=mkSprite({pal:d.pal,rows:sp(false)});WEAP[k].w=mkSprite({pal:d.pal,rows:sp(true)});}
 // Fürsten-Varianten (Farbvarianten + eigene Fähigkeit)
@@ -1130,7 +1131,9 @@ function heroAttack(){
   return true;
 }
 // Schwung: kurz ausholen, schnell durchziehen, zurückfedern; Dauer passt sich dem Angriffstempo an
-function rangedStart(){R.hero.raD=Math.min(.22,.8/ST.aps);R.hero.ra=R.hero.raD;}
+function rangedStart(){R.hero.raD=Math.min(.22,.8/ST.aps);R.hero.ra=R.hero.raD;R.hero.rlD=Math.min(.6,.95/ST.aps);R.hero.rl=R.hero.rlD;}
+// Armbrust-Winkel über den Nachladezyklus k (0..1): hochreißen, nach unten kippen und spannen, zurück in Anschlag
+function xbowAng(k){if(k<.15)return -.4*eio(k/.15);if(k<.6)return -.4+1.1*eio((k-.15)/.45);return .7*(1-eio((k-.6)/.4));}
 function swingStart(){R.hero.swD=Math.min(.28,.85/ST.aps);R.hero.sw=R.hero.swD;}
 const eio=t=>t<.5?2*t*t:1-2*(1-t)*(1-t);
 function swingAng(p,amp){if(p<.3)return -.9*amp*eio(p/.3);if(p<.55)return -.9*amp+2.7*amp*Math.pow((p-.3)/.25,2);return 1.8*amp*(1-eio((p-.55)/.45));}
@@ -1206,7 +1209,7 @@ function updateRun(dt){
     R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1,foe:1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
   if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
-  R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
+  R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.rl=Math.max(0,(R.hero.rl||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
   // enemies
   for(const e of R.en){
     if(e.dead)continue;e.flash=Math.max(0,e.flash-dt);e.mark=Math.max(0,e.mark-dt);e.shd=Math.max(0,(e.shd||0)-dt);e.bob+=dt*8;
@@ -1373,20 +1376,22 @@ function drawHero(hp,sc){
   let x=hp.x,y=hp.y;const l=R.hero.lunge;if(l>0){const k=Math.sin(l/.12*Math.PI)*8;x+=(R.hero.flip?-1:1)*k;}
   const rot=l>0?(R.hero.flip?-1:1)*.28*Math.sin(l/.12*Math.PI):0;
   const o={rot,sy:1+.03*Math.sin(R.t*3),sx:1-.015*Math.sin(R.t*3)},wp=WEAP[h.spr];
-  if(!wp){if(R.hero.ra>0){const q=Math.sin(R.hero.ra/R.hero.raD*Math.PI),d=R.hero.flip?-1:1;
+  if(!wp||wp.rng){if(R.hero.ra>0){const q=Math.sin(R.hero.ra/R.hero.raD*Math.PI),d=R.hero.flip?-1:1;
       // Armbrust: Rückstoß nach hinten · Exorzistin: heiliges Aufleuchten · Pestarzt: Wurfbewegung nach vorn
       if(h.type==='bolt'){x-=d*5*q;o.rot=-.14*q;}
       else if(h.type==='pulse'){o.sx*=1+.08*q;o.sy*=1+.08*q;ctx.save();ctx.globalCompositeOperation='lighter';const gr=ctx.createRadialGradient(x,y-s.h*sc*.5,0,x,y-s.h*sc*.5,s.h*sc*.9);
         gr.addColorStop(0,`rgba(255,224,138,${.55*q})`);gr.addColorStop(1,'rgba(255,224,138,0)');ctx.fillStyle=gr;ctx.fillRect(x-s.h*sc,y-s.h*sc*1.4,s.h*sc*2,s.h*sc*1.8);ctx.restore();}
       else if(h.type==='cloud'){const k=1-R.hero.ra/R.hero.raD;o.rot=-.25*Math.sin(k*Math.PI*2);x+=d*3*q;}}
-    return drawSpr(s,x,y,sc,R.hero.flip,R.hero.flash>0,undefined,false,o);}
+    if(!wp)return drawSpr(s,x,y,sc,R.hero.flip,R.hero.flash>0,undefined,false,o);}
   const b=wp.body,X=Math.round(-b.w*sc/2),Y=Math.round(-b.h*sc),fl=R.hero.flash>0;
   ctx.save();ctx.translate(Math.round(x),Math.round(y));if(R.hero.flip)ctx.scale(-1,1);ctx.rotate(rot);ctx.scale(o.sx,o.sy);
   ctx.drawImage(b.c,X,Y,b.w*sc,b.h*sc);if(fl){ctx.globalAlpha=.55;ctx.drawImage(b.wc,X,Y,b.w*sc,b.h*sc);ctx.globalAlpha=1;}
-  const p=R.hero.sw>0?1-R.hero.sw/R.hero.swD:-1,a=p<0?.05*Math.sin(R.t*3):swingAng(p,wp.amp);
+  const k=R.hero.rl>0?1-R.hero.rl/R.hero.rlD:1,p=wp.rng||R.hero.sw<=0?-1:1-R.hero.sw/R.hero.swD,a=wp.rng?(k<1?xbowAng(k):.04*Math.sin(R.t*3)):p<0?.05*Math.sin(R.t*3):swingAng(p,wp.amp);
   ctx.translate(X+(wp.px+1)*sc,Y+(wp.py+1)*sc);const ox=-(wp.px+1)*sc,oy=-(wp.py+1)*sc,ww=wp.w.w*sc,wh=wp.w.h*sc;
   if(p>.3&&p<.75){for(let i=3;i>=1;i--){ctx.save();ctx.rotate(a-i*.28*wp.amp);ctx.globalAlpha=.32/i;ctx.drawImage(wp.w.wc,ox,oy,ww,wh);ctx.restore();}}
   ctx.rotate(a);ctx.drawImage(wp.w.c,ox,oy,ww,wh);if(fl){ctx.globalAlpha=.55;ctx.drawImage(wp.w.wc,ox,oy,ww,wh);}
+  if(wp.rng&&k>.2&&k<.75){const q=Math.sin((k-.2)/.55*Math.PI),bx=(15-wp.px)*sc;ctx.strokeStyle='rgba(200,190,170,.75)';ctx.lineWidth=Math.max(1,sc*.35); // Sehne wird zurückgezogen
+    ctx.beginPath();ctx.moveTo(bx,(8.5-wp.py)*sc);ctx.lineTo(bx-3*q*sc,0);ctx.lineTo(bx,(11.5-wp.py)*sc);ctx.stroke();}
   ctx.restore();
 }
 function drawDemon(e,sc){

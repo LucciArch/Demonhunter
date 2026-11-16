@@ -56,11 +56,12 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.48: Neues Elite-Affix ab Kreis 30 – Schildträger (halbiert den Schaden an Dämonen im Umkreis, goldene Schildblase und gestrichelter Schutzradius)
 - v0.49: Fürsten-Tod – Todesstoß in Zeitlupe (0,5 s mit Viertel-Tempo) und kurzer Kamerazoom auf den Fürsten
 - v0.50: Erfolg „Allbezwinger“ – unter jedem Kreis-Modifikator 10 Fürsten besiegen (+15 Fragmente)
+- v0.51: Hexenjägerin-Armbrust als eigenes Sprite – reißt beim Schuss hoch, kippt zum Nachladen nach unten, Sehne wird sichtbar zurückgezogen, dann zurück in Anschlag
 
 ## Als Nächstes
-46. Hexenjägerin: sichtbare Armbrust als eigenes Sprite mit Nachlade-Animation
 47. Schemen und Kultist: eigene Angriffs-Effekte (Geistergriff, Beschwörungs-Glyphe beim Feuerball)
 51. Neuer Kreis-Modifikator ab Kreis 40: Seelenfrost (Dämonen hinterlassen Eisflächen, die den Jäger verlangsamen; +40% Siegel)
 54. Erfolg „Schildbrecher“: 100 Schildträger-Elite besiegt
 55. Elite-Tod: kurzes Aufblitzen und kleiner Seelenwirbel, wenn eine Doppel-Affix-Elite fällt
 56. Schildträger-Schild optisch mit Verbindungsstrahl zwischen Träger und geschütztem Dämon
+57. Pestarzt: Phiolen-Gürtel als eigenes Sprite, Griff zur Phiole vor dem Wurf
