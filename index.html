@@ -427,6 +427,43 @@ cult:{pal:{r:'#5a1020',R:'#8a1a2c',d:'#2a0810',e:'#ffcf4a',f:'#ff7a1e',F:'#ffe05
 };
 // fix accidental space in rune sprite row
 SPR_DEF.rune.rows[12]="..AddddddddA.x..";
+SPR_DEF.pest={pal:{H:'#1a1418',h:'#3a2a30',m:'#d8cfb8',M:'#9a907a',e:'#7aff6a',c:'#2a2228',C:'#4a3a44',k:'#3a3030',g:'#7aff6a',G:'#2a8a2a',b:'#5a3a22',l:'#1e1a1c',B:'#120e10'},rows:[
+".....HHHHH......",
+"....HHHHHHH.....",
+"....hhhhhhh.....",
+"..HHHHHHHHHHH...",
+"....mmmmm.......",
+"....meMem.......",
+"....mmmmmmmm....",
+"....MmmmmmmMMM..",
+"...CCMmmMCC.....",
+"..CcccCCcccC....",
+"..CcccbbcccCg...",
+"..kCccccccCkgg..",
+"...CcccccccC.G..",
+"...Ccccccccc....",
+"...Ccccc.cccC...",
+"....lll...lll...",
+"....lll...lll...",
+"...BBBB...BBBB.."]};
+SPR_DEF.templ={pal:{p:'#c0303a',A:'#c8d0dc',a:'#8a96a8',d:'#4f5866',w:'#f0ece0',W:'#c8c0b0',r:'#c0303a',s:SK,e:'#2a1a14',S:'#a8b0c0',x:'#eef4fa',g:'#e2b04a'},rows:[
+".....pp.........",
+"....AAApp.......",
+"...AAAAAA.......",
+"...AasesA....x..",
+"...AssssA....x..",
+"...aAAAAa....x..",
+"..SSSaAAAa...x..",
+".SSrSSwwwwa.gxg.",
+".SrrrSwrrwA..s..",
+".SSrSSwrrwA.....",
+".SSrSSwwwwA.....",
+"..SSSAwwwwA.....",
+"...aAwwwwwwA....",
+"...aWwwwwwwW....",
+"....ddd..ddd....",
+"....aaa..aaa....",
+"...AAAA..AAAA..."]};
 const SPR={};for(const k in SPR_DEF)SPR[k]=mkSprite(SPR_DEF[k]);
 // Fürsten-Varianten (Farbvarianten + eigene Fähigkeit)
 const BOSSES=[
@@ -443,7 +480,7 @@ const BOSSES=[
 ];
 function walkRows(rows){const n=rows.length,w=Math.max(...rows.map(r=>r.length)),ls=n-Math.max(3,Math.round(n*.22)),mid=Math.floor(w/2);
   return rows.map((r,j)=>{if(j<ls)return r;const nx=(rows[j+1]||'').padEnd(w,'.');const cur=r.padEnd(w,'.');return nx.slice(0,mid)+cur.slice(mid);});}
-for(const k of ['imp','hound','succ','golem','cult','brute','inq','hex','exo','blut','rune'])SPR[k].f2=mkSprite({pal:SPR_DEF[k].pal,rows:walkRows(SPR_DEF[k].rows)});
+for(const k of ['imp','hound','succ','golem','cult','brute','inq','hex','exo','blut','rune','pest','templ'])SPR[k].f2=mkSprite({pal:SPR_DEF[k].pal,rows:walkRows(SPR_DEF[k].rows)});
 const BOSS_WALK=walkRows(SPR_DEF.boss.rows);
 BOSSES.forEach((b,i)=>{const pal=Object.assign({},SPR_DEF.boss.pal,b.pal);SPR['boss'+i]=mkSprite({pal,rows:SPR_DEF.boss.rows});SPR['boss'+i].f2=mkSprite({pal,rows:BOSS_WALK});});
 const bossOf=c=>BOSSES[(c-1)%BOSSES.length];
@@ -472,12 +509,18 @@ const HEROES=[
   desc:'Sensenschwung im Kreis.',pass:'Rundumschlag. +10% Krit-Chance, 5% Lebensraub.'},
  {id:'rune',name:'Die Runenschmiedin',spr:'rune',type:'slam',range:84,dmgM:2.7,spdM:.55,hpM:1.5,armor:3,col:'#5fe0ff',unlock:'Kh',
   desc:'Runenhammer mit Schockwelle.',pass:'Langsam, aber gewaltig. Schockwelle am Ziel. +3 Rüstung.'},
+ {id:'pest',name:'Der Pestarzt',spr:'pest',type:'cloud',range:250,dmgM:.5,spdM:.8,hpM:.95,col:'#7aff6a',unlock:'Oh',
+  desc:'Wirft Giftflaschen.',pass:'Fernkampf. Giftwolken schaden 2,5s lang allen Dämonen darin.'},
+ {id:'templ',name:'Die Templerin',spr:'templ',type:'bash',range:80,dmgM:1.3,spdM:.85,hpM:1.6,dr:.3,col:'#f0ece0',unlock:'Wj',
+  desc:'Schild und Schwert.',pass:'Schildstoß schleudert Dämonen zurück. Erleidet 30% weniger Schaden.'},
 ];
 const ULT={
  inq:{name:'Urteil',desc:'Ein gewaltiger Kreuzhieb trifft ALLE Dämonen auf dem Feld (8× Schaden).',x:'Das Urteil schlägt ein zweites Mal ein.'},
  hex:{name:'Silberhagel',desc:'32 Silberbolzen fliegen in alle Richtungen und durchbohren je 3 Dämonen.',x:'Eine zweite Salve folgt sofort.'},
  exo:{name:'Heilige Flamme',desc:'Riesige Lichtwelle (6× Schaden), stößt Dämonen zurück und heilt 30%.',x:'Heilt dich vollständig.'},
  blut:{name:'Blutmond',desc:'5s lang: doppeltes Angriffstempo, +30% Krit, +20% Lebensraub.',x:'Der Blutmond hält doppelt so lange.'},
+ pest:{name:'Schwarzer Tod',desc:'6 große Seuchenwolken über den Dämonen (1,2× Schaden pro Tick, 4s).',x:'12 statt 6 Wolken.'},
+ templ:{name:'Heiliger Wall',desc:'5s unverwundbar; jeder Angreifer erleidet 2× deinen Schaden.',x:'Der Wall hält 10s.'},
  rune:{name:'Runensturm',desc:'6 Runen schlagen auf Dämonen ein, jede mit Schockwelle (5× Schaden).',x:'12 statt 6 Runen.'},
 };
 const HB={};HEROES.forEach(h=>HB[h.id]=h);
@@ -487,10 +530,12 @@ const HT_NAMES={
  hex:[['Silberspitzen','Bolzenregen','Schnelllader','Doppelsalve'],['Lederwams','Jagdfieber','Fächerschuss','Meisterjägerin']],
  exo:[['Inbrunst','Läuterung','Lichtkreis','Vollständige Heilung'],['Gebet','Andacht','Wunder','Heilige']],
  blut:[['Blutdurst','Mondfinsternis','Aderlass','Ewige Nacht'],['Schattenhaut','Jagdtrieb','Mondsichel','Blutfürst']],
+ pest:[['Miasma','Seuchenherd','Faulgas','Großes Sterben'],['Schnabelmaske','Aderlass','Giftkunde','Doktor der Toten']],
+ templ:[['Glaubenseifer','Bollwerk','Eiserner Wille','Ewiger Wall'],['Kettenpanzer','Gebetsruf','Dornenschild','Großmeisterin']],
  rune:[['Schmiedekunst','Runenmacht','Bebende Erde','Großer Sturm'],['Runenpanzer','Glut','Eisenhaut','Meisterschmiedin']],
 };
-const HT_U1={inq:['aoe',15],hex:['atkSpd',6],exo:['aoe',10],blut:['lifesteal',1.5],rune:['aoe',15]};
-const HT_U2={inq:['multi',1,2],hex:['multi',1,2],exo:['regen',5,3],blut:['crit',5,3],rune:['armor',6,3]};
+const HT_U1={inq:['aoe',15],hex:['atkSpd',6],exo:['aoe',10],blut:['lifesteal',1.5],rune:['aoe',15],pest:['aoe',15],templ:['armor',5]};
+const HT_U2={inq:['multi',1,2],hex:['multi',1,2],exo:['regen',5,3],blut:['crit',5,3],rune:['armor',6,3],pest:['crit',5,3],templ:['thorns',100,3]};
 const HT={};
 for(const h of HEROES){const nm=HT_NAMES[h.id];const u1=HT_U1[h.id],u2=HT_U2[h.id];
  HT[h.id]=[
@@ -630,6 +675,8 @@ N('Od','O4',60,'Splitter','multi',1,2,15,'b',{gr:3});
 N('Oe','O5',-60,'Fluch der Schwäche','enemyHpRed',3,10,25,'b');
 N('Of','O7',60,'Seelenfeuer','explode',30,10,8,'g');
 N('Og','Ob',25,'Blutrausch','critDmg',20,10,110,'s');
+N('Oh','O6',60,'Pakt: Pestarzt','unlock','pest',1,6,'g',{ch:'pest'});
+N('Wj','W6',60,'Pakt: Templerin','unlock','templ',1,5,'g',{ch:'templ'});
 
 // ===== v0.2: äußerer Baum =====
 BR.X={name:'Brücke',col:'#e6dccb',ang:0};
@@ -874,7 +921,7 @@ function startRun(){
   const c=save.circle;
   R={c,t:0,time:ST.time,maxTime:ST.time,hp:ST.hp,maxHp:ST.hp,kills:0,souls:0,brim:0,sig:0,en:[],pr:[],loot:[],fx:[],tx:[],pt:[],
      spawnT:.3,atkT:.2,smiteT:1,quota:Math.max(8,Math.round((18+4*c)*ST.quota)),bossSpawned:false,bossDead:false,over:false,revived:false,
-     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,moon:0,later:[],ep:[],hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
+     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,moon:0,wall:0,clouds:[],later:[],ep:[],hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
   mode='run';showUI();sfx('hit');for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
 }
 function demonPool(c){const p=[['imp',10]];if(c>=2)p.push(['bat',6]);if(c>=3)p.push(['hound',6]);if(c>=5)p.push(['wraith',5]);if(c>=3)p.push(['cult',4]);if(c>=4)p.push(['succ',5]);if(c>=6)p.push(['golem',3]);return p;}
@@ -970,6 +1017,14 @@ function heroAttack(){
     for(const e of inR.filter(e=>Math.hypot(e.x-hp.x,e.y-hp.y)-e.r<ST.range*ST.aoe)){const m=mk();dealDmg(e,m.amt,{crit:m.crit,ls:1});}
     if(ST.chain){chainFrom(tgt,ST.dmg);}
     R.hero.lunge=.12;sfxL('hit');
+  }else if(h.type==='cloud'){
+    for(const t of inR.slice(0,1+ST.multi)){R.clouds.push({x:t.x,y:t.y-6,r:60*ST.aoe,t:0,dur:2.5,tk:0,m:.4});R.fx.push({k:'boom',x:t.x,y:t.y-10,r:20,t:0,dur:.2});}
+    sfxL('hit');
+  }else if(h.type==='bash'){
+    const m=mk();dealDmg(tgt,m.amt,{crit:m.crit,ls:1});
+    for(const e of inR.slice(0,3+extra)){if(e.dead||e.boss)continue;const d=Math.hypot(e.x-hp.x,e.y-hp.y)||1;e.kb=.15;e.kx=(e.x-hp.x)/d*420;e.ky=(e.y-hp.y)/d*420;}
+    R.fx.push({k:'slash',x:hp.x,y:hp.y-22,a:Math.atan2(tgt.y-hp.y,tgt.x-hp.x),r:ST.range*.8,t:0,dur:.18});
+    if(ST.chain)chainFrom(tgt,m.amt);R.hero.lunge=.12;sfxL('crit');
   }else{
     // cleave / slam
     const targets=inR.slice(0,1+extra);
@@ -1000,6 +1055,8 @@ function castUlt(){
     for(const e of R.en){if(e.dead||e.spawn>0)continue;const d=Math.hypot(e.x-hp.x,e.y-hp.y);if(d<Math.max(W,H)*.6){dealDmg(e,ST.dmg*6*um,{col:'#fff4b0'});if(!e.dead&&!e.boss){e.kb=.25;e.kx=(e.x-hp.x)/(d||1)*700;e.ky=(e.y-hp.y)/(d||1)*700;}}}
     R.hp=Math.min(R.maxHp,R.hp+R.maxHp*(ST.ultX?1:.3));}
   else if(id==='blut'){R.moon=ST.ultX?10:5;}
+  else if(id==='pest'){const al=onScreen();for(let i=0;i<(ST.ultX?12:6);i++){const t=al.length?al[i%al.length]:{x:rnd(100,W-100),y:rnd(150,H-80)};R.clouds.push({x:t.x+rnd(-20,20),y:t.y,r:90*ST.aoe,t:0,dur:4,tk:0,m:1.2*um});}}
+  else if(id==='templ'){R.wall=ST.ultX?10:5;}
   else if(id==='rune'){const n=ST.ultX?12:6;for(let i=0;i<n;i++)R.later.push({t:i*.12,fn:()=>{const al=onScreen();const tg=al.length?al[ri(0,al.length-1)]:{x:rnd(100,W-100),y:rnd(150,H-80)};
       const r=90*ST.aoe;R.fx.push({k:'quake',x:tg.x,y:tg.y,r,t:0,dur:.4});R.fx.push({k:'smite',x:tg.x,y:tg.y-10,r:r*.5,t:0,dur:.3});shake=Math.max(shake,6);
       for(const e of R.en)if(!e.dead&&Math.hypot(e.x-tg.x,e.y-tg.y)<r+e.r)dealDmg(e,ST.dmg*5*um,{col:'#5fe0ff'});}});}
@@ -1027,6 +1084,8 @@ function smite(x,y,auto){
   for(const e of R.en){if(e.dead)continue;if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
 }
 function hurtHero(amt,src){
+  if(R.wall>0){if(src&&!src.dead)dealDmg(src,ST.dmg*2*ST.ultDmg,{col:'#ffe08a'});return;}
+  amt*=1-(HB[save.hero].dr||0);
   const a=Math.max(amt*.15,amt-ST.armor);R.hp-=a;R.hero.flash=.1;sfxL('hurt');
   if(ST.thorns>0&&src&&!src.dead)dealDmg(src,amt*ST.thorns*3+ST.dmg*ST.thorns*.5,{col:'#8aff8a'});
   if(R.hp<=0){if((R.revives||0)<ST.revive){R.revives=(R.revives||0)+1;R.hp=R.maxHp*.5;R.fx.push({k:'ring',x:W/2,y:H/2+18,r:220,t:0,dur:.6,col:'#9bffb0'});
@@ -1045,7 +1104,9 @@ function updateRun(dt){
   R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/(ST.aps*(1+Math.min(1,ST.frenzy*Math.floor(R.kills/10)))*(R.moon>0?2:1));else R.atkT=.05;}
   if(ST.autoSmite){R.smiteT-=dt;if(R.smiteT<=0){R.smiteT=1/ST.autoSmite;const al=R.en.filter(e=>!e.dead&&e.x>0&&e.x<W&&e.y>0&&e.y<H);
     for(let i=0;i<ST.smiteN&&al.length;i++){const e=al[ri(0,al.length-1)];smite(e.x,e.y-e.r,1);if(ST.smiteTwice)smite(e.x,e.y-e.r,1);}}}
-  R.moon=Math.max(0,R.moon-dt);
+  R.moon=Math.max(0,R.moon-dt);R.wall=Math.max(0,R.wall-dt);
+  for(const c of R.clouds){c.t+=dt;c.tk-=dt;if(c.tk<=0){c.tk=.5;for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-c.x,e.y-c.y)<c.r+e.r){const cr=critRoll(ST.crit);dealDmg(e,ST.dmg*c.m*(cr?ST.critDmg:1),{crit:cr,ls:1,col:'#9bff7a'});}}}
+  R.clouds=R.clouds.filter(c=>c.t<c.dur);
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
   if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
@@ -1159,6 +1220,9 @@ function renderRun(){
   ctx.save();ctx.globalAlpha=.35;ctx.strokeStyle=tint;ctx.lineWidth=2;
   const rr=Math.min(ST.range,150);ctx.beginPath();ctx.ellipse(hp.x,hp.y,rr,rr*.5,0,0,Math.PI*2);ctx.stroke();
   ctx.globalAlpha=.18;ctx.beginPath();ctx.ellipse(hp.x,hp.y,rr*.75,rr*.375,0,0,Math.PI*2);ctx.stroke();ctx.restore();
+  for(const c of R.clouds){const a=Math.min(1,(c.dur-c.t)*2)*.35;ctx.fillStyle=`rgba(90,200,70,${a})`;ctx.beginPath();ctx.ellipse(c.x,c.y,c.r,c.r*.55,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=`rgba(180,255,140,${a*1.4})`;for(let i=0;i<5;i++){const q=(c.t*.8+i/5)%1;ctx.fillRect(c.x+Math.sin(i*2.3)*c.r*.6,c.y-q*c.r*.6,3,3);}}
+  if(R.wall>0){ctx.strokeStyle=`rgba(255,224,138,${.5+.3*Math.sin(R.t*10)})`;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(hp.x,hp.y-20,46,56,0,0,Math.PI*2);ctx.stroke();}
   // loot shadows/orbs drawn below units
   for(const l of R.loot)drawLoot(l);
   // collect drawables
