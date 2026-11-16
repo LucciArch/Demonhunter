@@ -96,9 +96,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.88: Segnungen – Kills füllen eine Leiste, dann 1 von 3 Segnungen für die Jagd wählen (13 Arten, 15% geweiht mit doppelter Wirkung), Auto-Jagd wählt selbst
 - v0.89: Schreine in der Arena (anklicken): Blutaltar (−30% Leben, +40% Schaden), Seelenbrunnen (Heilung, +3s), Truhe (Seelenschatz oder Mimic), Segensstein (sofort Segnung)
 - v0.90: Neu gepixelte Dämonen: Imp, Fledermaus, Höllenhund, Geist, Knochenwurm, Sukkubus (mehr Schattierung, Krallen, Schwänze, Augenhöhlen)
+- v0.91: Alle 7 Jäger neu gepixelt in 20×22 (Hutkrempen, Mantelfalten, Plattenrüstung, Schnabelmaske mit Brillengläsern …), Waffen-Drehpunkte, Armbrustsehne, Phiolengürtel und Schild angepasst
 
 ## Als Nächstes
-C. Sprites weiter überarbeiten: Brute, Golem, Kultist, Fürst und die 7 Jäger detaillierter
+C. Sprites weiter überarbeiten: Brute, Golem, Kultist, Fürst
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
 88. Fürsten-Fontäne: Tooltip/Hinweis beim ersten Fürsten-Kill, dass goldene Kugeln in der Luft fangbar sind
 89. Knochenkönig: eigener Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen)
