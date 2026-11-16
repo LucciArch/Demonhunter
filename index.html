@@ -487,7 +487,8 @@ const SET_LVL=5,SETS=[
  {name:'Gewitter des Richters',ids:['feder','auge','rune'],d:'+20% Angriffstempo, +5% Krit, +1 Kettenblitz',f:s=>{s.aps*=1.2;s.crit=Math.min(95,s.crit+5);s.chain+=1;}},
  {name:'Fürstenmord',ids:['schaedel','dornen','krone'],d:'+30% Schaden gegen Fürsten & Elite, +50% Dornen',f:s=>{s.bossDmg+=.3;s.thorns+=.5;}},
  {name:'Gewittermantel',ids:['rune','dornen','uhr'],d:'+1 Kettenblitz, +50% Kettenschaden, +50% Dornen, +2s Jagdzeit',f:s=>{s.chain+=1;s.chainDmg+=.5;s.thorns+=.5;s.time+=2;}},
- {name:'Seelenfürst',ids:['laterne','auge','schaedel'],d:'+25% Seelen, +5% Krit, +40% Fürsten-Beute',f:s=>{s.soul*=1.25;s.crit=Math.min(95,s.crit+5);s.bossLoot+=.4;}}];
+ {name:'Seelenfürst',ids:['laterne','auge','schaedel'],d:'+25% Seelen, +5% Krit, +40% Fürsten-Beute',f:s=>{s.soul*=1.25;s.crit=Math.min(95,s.crit+5);s.bossLoot+=.4;}},
+ {name:'Eisenwall',ids:['herz','dornen','feder'],d:'+40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration',f:s=>{s.hp*=1.4;s.armor=Math.max(s.armor*1.5,s.armor+10);s.regen+=s.hp*.02;}}];
 const setOn=t=>t.ids.every(i=>(save.arts[i]||0)>=SET_LVL),setMax=t=>t.ids.every(i=>(save.arts[i]||0)>=ART_MAX);
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
 const SPR={};for(const k in SPR_DEF)SPR[k]=mkSprite(SPR_DEF[k]);

@@ -48,12 +48,13 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.40: Fernkampf-Animationen – Armbrust-Rückstoß mit Mündungsblitz (Hexenjägerin), heiliges Aufleuchten beim Pulsen (Exorzistin), Wurfbewegung mit im Bogen fliegender Giftphiole, Wolke entsteht beim Aufschlag (Pestarzt)
 - v0.41: Dämonen-Angriffe – Krallenhiebe (Imp, Sukkubus, Nachtmahr), Höllenhund-Biss mit zuschnappenden Zähnen, Faustschlag mit Staub-Schockwelle und Wackeln (Golem, Hornbestie); Dämonen zucken bei Treffern zurück (stärker bei Krits)
 - v0.42: Glutregen-Meteore treffen auch Dämonen im Einschlagradius (3× Jägerschaden)
+- v0.43: Siebtes Reliquien-Set „Eisenwall“ (Eisernes Herz, Dornenmantel, Engelsfeder): +40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration
 
 ## Als Nächstes
 39. Fürsten-Intro: Bodenriss und Kamerazoom beim Erscheinen des Fürsten
-42. Siebtes Set „Eisenwall“ (Eisernes Herz, Dornenmantel, Engelsfeder) mit Fokus auf Überleben
 43. Erfolge für Kreis-Modifikatoren: je einen Fürsten unter jedem Modifikator besiegt
 45. Elite-Affix „Schildträger“ ab Kreis 30 (schützt nahe Dämonen mit einem Schild)
 46. Hexenjägerin: sichtbare Armbrust als eigenes Sprite mit Nachlade-Animation
 47. Schemen und Kultist: eigene Angriffs-Effekte (Geistergriff, Beschwörungs-Glyphe beim Feuerball)
 48. Glutregen-Feuerflächen verbrennen auch Dämonen, die hindurchlaufen
+49. Erfolg „Unzerstörbar“: alle 7 Reliquien-Sets aktiv
