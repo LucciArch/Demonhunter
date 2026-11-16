@@ -37,6 +37,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.30: Fünftes Reliquien-Set „Gewittermantel“ (Kettenblitz-Rune, Dornenmantel, Sanduhr): +1 Kettenblitz, +50% Kettenschaden, +50% Dornen, +2s Jagdzeit
 - v0.31: Statistik zeigt „Aktive Boni“ – alle aktiven Reliquien-Sets und Bestiarium-Boni auf einen Blick
 - v0.32: Bestiarium zählt Elite-Kills pro Dämonenart und zeigt sie neben dem Kill-Zähler
+- v0.33: Grafik & Animation – Nahkampfwaffen (Schwert, Sense, Hammer, Templer-Klinge) als eigenes Sprite: ausholen, durchziehen, Nachzieh-Spur, Hiebbogen im Schlagmoment; Dämonen springen beim Angriff auf den Jäger zu; neuer Bannstrahl (Lichtsäule vom Himmel, Einschlag-Glühen, Runenkreis, Strahlen, Funken, leichtes Wackeln); Fackelschein um den Jäger und aufsteigende Glut in der Jagd
 
 ## Als Nächstes
 32. Kreis-Modifikator „Siegelflut“ ab Kreis 30 (doppelte Siegel, Fürst mit +50% Leben)
@@ -44,3 +45,6 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 34. Sechstes Set „Seelenfürst“ (Seelenlaterne, Sündenauge, Fürstenschädel)
 35. Bestiarium-Erfolge: „Forscher“ (alle Arten entdeckt), „Meister des Bestiariums“ (alle Arten 1000 Kills)
 36. Erfolg „Elite-Kenner“: von jeder Dämonenart 10 Elite erlegt
+37. Fernkampf-Animationen: Rückstoß der Armbrust (Hexenjägerin), Leuchten beim Pulsen (Exorzistin), Wurfbewegung (Pestarzt)
+38. Dämonen-Animationen: eigene Angriffs-Frames (Imp-Kratzer, Höllenhund-Biss, Golem-Faustschlag), Treffer-Rückstoß
+39. Fürsten-Intro: Bodenriss und Kamerazoom beim Erscheinen des Fürsten
