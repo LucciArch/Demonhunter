@@ -1031,6 +1031,38 @@ function offerBoons(){
   $('#mbox').querySelectorAll('.boon').forEach(el=>el.onclick=()=>pick(opts[+el.dataset.i]));
 }
 
+// ================= SCHREINE (anklicken: Risiko und Belohnung) =================
+const SHRINE_PAL={s:'#4a3e48',S:'#7a6a74',h:'#a8949c',x:'#120a0e',r:'#c01a2a',R:'#ff4a4a',b:'#2a6ad0',B:'#8ad8ff',w:'#5a3a1e',W:'#8a5a2a',y:'#ffd76a',Y:'#c8902a',p:'#8a3aff',P:'#e0b0ff'};
+const SHRINES={
+ blood:{n:'Blutaltar',d:'Opfere 30% Leben: +40% Schaden für diese Jagd',c:'#ff4a4a',rows:["...rRRr...","..rRRRRr..","SSSSSSSSSS","ShhhhhhhhS",".SSxSSxSS.","..SSrSSS..","..SSSSrS..","..SSSSSS..",".SSSSSSSS.","sssssssss."]},
+ well:{n:'Seelenbrunnen',d:'Heilt 50% Leben und +3s Jagdzeit',c:'#8ad8ff',rows:["..........","S........S","SSBBBBBBSS","SbBBBbBBbS","ShbbbbbbhS",".SSSSSSSS.",".ShSShSSS.",".SSSSSSSS.","ssssssssss"]},
+ chest:{n:'Truhe',d:'Viele Seelen … oder ein Mimic',c:'#ffd76a',rows:["..wwwwwww..",".wWWWWWWWw.","wWWWWWWWWWw","YYYYYyYYYYY","wWWWWYWWWWw","wWWWWWWWWWw","wWWWWWWWWWw","YYYYYYYYYYY"]},
+ bless:{n:'Segensstein',d:'Sofort eine Segnung wählen',c:'#e0b0ff',rows:["....SS....","...ShSS...","...SPSS...","..SSpPSS..","..ShPpSS..","..SSPSSS..","..SSpPSS..",".SSSSSSSS.","ssssssssss"]},
+};
+for(const k in SHRINES)SPR['sh_'+k]=mkSprite({pal:SHRINE_PAL,rows:SHRINES[k].rows});
+function updShrines(dt){
+  R.shT=(R.shT===undefined?rnd(2,4):R.shT)-dt;
+  if(R.shT<=0&&!R.shrine){R.shT=rnd(10,16);const ks=Object.keys(SHRINES),k=ks[ri(0,ks.length-1)],hp=heroPos(),a=Math.random()*Math.PI*2,rr=rnd(140,Math.min(W,H)*.42);
+    R.shrine={k,x:clamp(hp.x+Math.cos(a)*rr,60,W-60),y:clamp(hp.y+Math.sin(a)*rr*.7,150,H-40),t:0};R.fx.push({k:'portal',x:R.shrine.x,y:R.shrine.y,r:30,t:0,dur:.6});}
+  if(R.shrine)R.shrine.t+=dt;}
+function useShrine(x,y){const s=R.shrine;if(!s||Math.hypot(x-s.x,(y-(s.y-20))*1.2)>34)return false;
+  R.shrine=null;const S=SHRINES[s.k];R.fx.push({k:'ring',x:s.x,y:s.y,r:90,t:0,dur:.5,col:S.c});sfx('relic');
+  for(let i=0;i<20;i++)R.pt.push({x:s.x,y:s.y-20,vx:rnd(-160,160),vy:rnd(-240,-40),t:0,life:rnd(.4,.8),c:S.c,s:ri(2,4)});
+  save.st.shr=(save.st.shr||0)+1;
+  if(s.k==='blood'){R.hp=Math.max(1,R.hp*.7);ST.dmg*=1.4;R.tx.push({x:s.x,y:s.y-50,str:'+40% SCHADEN',t:0,col:S.c});}
+  else if(s.k==='well'){R.hp=Math.min(R.maxHp,R.hp+R.maxHp*.5);R.time+=3;R.maxTime+=3;R.tx.push({x:s.x,y:s.y-50,str:'+3s',t:0,col:S.c});}
+  else if(s.k==='chest'){if(R.c>=2&&Math.random()<.3){const m=spawnDemon(R.c>=5?'brute':'imp');m.x=s.x;m.y=s.y;makeElite(m);m.max=m.hp=m.hp*2;R.tx.push({x:s.x,y:s.y-50,str:'MIMIC!',t:0,col:'#ff6a3a'});shake=Math.max(shake,8);}
+    else{const v=3*R.rewM*ST.soul;for(let i=0;i<14;i++)dropLoot({x:s.x,y:s.y,r:10},'s',v,i<2);R.tx.push({x:s.x,y:s.y-50,str:'SCHATZ!',t:0,col:S.c});}}
+  else offerBoons();
+  return true;}
+function drawShrine(){const s=R.shrine;if(!s)return;const S=SHRINES[s.k],sp=SPR['sh_'+s.k],sc=4,b=Math.sin(s.t*3);
+  ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(s.x,s.y-15,4,s.x,s.y-15,60);g.addColorStop(0,S.c+'55');g.addColorStop(1,S.c+'00');ctx.fillStyle=g;ctx.fillRect(s.x-60,s.y-75,120,120);ctx.restore();
+  ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.ellipse(s.x,s.y,sp.w*sc*.5,sp.w*sc*.15,0,0,Math.PI*2);ctx.fill();
+  drawSpr(sp,s.x,s.y,sc,false,s.t<.3?1-s.t/.3:0);
+  if(Math.random()<.1)R.pt.push({x:s.x+rnd(-14,14),y:s.y-sp.h*sc,vx:0,vy:rnd(-40,-20),t:0,life:.8,c:S.c,s:2});
+  ctx.font='16px "Pixelify Sans"';ctx.textAlign='center';ctx.fillStyle='#000';ctx.fillText(S.n,s.x+1,s.y-sp.h*sc-9+b*2);ctx.fillStyle=S.c;ctx.fillText(S.n,s.x,s.y-sp.h*sc-10+b*2);
+  if(Math.hypot(ptr.x-s.x,ptr.y-s.y+20)<60){ctx.font='15px VT323';ctx.fillStyle='#000c';const w=ctx.measureText(S.d).width+12;ctx.fillRect(s.x-w/2,s.y+6,w,20);ctx.fillStyle='#fff';ctx.fillText(S.d,s.x,s.y+21);}}
+
 // ================= ARENA (Rückwand, Säulen, Fackeln, Deko je Höllenkreis) =================
 const PROP_PAL={k:'#e8dcb8',K:'#b0a480',d:'#6a5c44',x:'#1a1014',s:'#3a3036',S:'#5e5058',h:'#7a6c74',t:'#3a2a18',T:'#6a4a26',m:'#c03a2a',M:'#ff8a6a',g:'#4a7a2a',G:'#9be04a'};
 const PROPS={
@@ -1394,6 +1426,7 @@ function updateRun(dt){
   if(R.mod==='bann'&&(R.bnT=(R.bnT??3)-dt)<=0){R.bnT=10;const c=R.en.filter(e=>!e.dead&&!e.boss&&!e.soulB&&e.spawn<=0);if(c.length)c[ri(0,c.length-1)].soulB=1;}
   if(R.mod==='ember'&&(R.emT=(R.emT||1.5)-dt)<=0){R.emT=rnd(1,1.8);const mx=Math.random()<.35?hp.x+rnd(-60,60):rnd(40,W-40),my=Math.random()<.35?hp.y+rnd(-30,30):rnd(130,H-30),dm=R.dmgM*3;
     R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1,foe:1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
+  updShrines(dt);
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
   if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.rl=Math.max(0,(R.hero.rl||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);R.hero.blk=Math.max(0,(R.hero.blk||0)-dt);R.hero.bsh=Math.max(0,(R.hero.bsh||0)-dt);
@@ -1517,7 +1550,7 @@ function toHub(){mode='hub';R=null;computeStats();showUI();refreshHub();}
 // ================= RENDER: RUN =================
 function renderRun(){
   const sc=Math.max(2,Math.min(4,Math.round(Math.min(W,H)/200)));
-  drawArenaBack();
+  drawArenaBack();drawShrine();
   const hp=heroPos();
   // ritual circle under hero
   const tint=CIRCLE_TINT[(R.c-1)%CIRCLE_TINT.length][2];
@@ -1894,6 +1927,7 @@ function chronik(tab){
     if(st.sb)rows.push(['Seelenträger gebannt',fmt(st.sb)]);
     if(st.shb)rows.push(['Schilde zerbrochen',fmt(st.shb)]);
     if(st.np)rows.push(['Nova-Kugeln zerplatzt',fmt(st.np)]);
+    if(st.shr)rows.push(['Schreine benutzt',fmt(st.shr)]);
     if(st.lf)rows.push(['Goldkugeln in der Luft gefangen',fmt(st.lf)]);
     for(const k in AFFIX)if(st.ka&&st.ka[k])rows.push(['Elite: '+AFFIX[k].name,fmt(st.ka[k])]);
     h+=`<div class="sumgrid" style="font-size:20px;max-width:460px;margin:0 auto 12px">${rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join('')}</div>`;
@@ -1923,7 +1957,7 @@ const pts=new Map();let drag=null,pinch=null;const canHover=matchMedia('(hover:h
 cv.addEventListener('pointerdown',e=>{
   cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   ptr.x=e.clientX;ptr.y=e.clientY;ptr.active=true;ptr.type=e.pointerType;ptr.down=true;
-  if(mode==='run'&&R&&!R.over&&!R.paused&&!R.choosing){const Z=R.zz;Z?smite(Z.fx+(e.clientX-Z.fx)/Z.z,Z.fy+(e.clientY-Z.fy)/Z.z):smite(e.clientX,e.clientY);}
+  if(mode==='run'&&R&&!R.over&&!R.paused&&!R.choosing){const Z=R.zz,x=Z?Z.fx+(e.clientX-Z.fx)/Z.z:e.clientX,y=Z?Z.fy+(e.clientY-Z.fy)/Z.z:e.clientY;if(!useShrine(x,y))smite(x,y);}
   else if(mode==='hub'){
     if(pts.size===2){const [a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:cam.z};drag=null;}
     else drag={sx:e.clientX,sy:e.clientY,cx:cam.x,cy:cam.y,moved:false};
