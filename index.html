@@ -62,7 +62,10 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 #hudL .grow{flex:1;min-width:0}
 #hudPort{width:52px;height:52px;flex:none;background:radial-gradient(#3a1a22,#120a0e);border:2px solid #000;box-shadow:inset 0 0 0 2px #7a3a40;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
 #hudPort img{image-rendering:pixelated;height:46px}
-.bar.hp{height:26px;margin-bottom:6px}.bar.tm{height:14px;margin:0}.bar.tm>span{font-size:13px;line-height:11px}
+.bar.hp{height:26px;margin-bottom:5px}.bar.bl{height:6px;margin-bottom:5px}#blFill{background:linear-gradient(90deg,#8a4aff,#ffd76a)}
+.boon{width:190px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;border-color:var(--bc);font-size:16px;transition:transform .1s}.boon:hover{transform:translateY(-4px);box-shadow:0 0 16px var(--bc),0 3px 0 #000}
+.boon .bi{font-size:40px;color:var(--bc);text-shadow:0 0 12px var(--bc);line-height:1}.boon b{font-size:20px;color:var(--bc)}.boon span{font-family:'VT323';font-size:19px;color:var(--txt)}.boon em{font-size:13px;color:#ffd76a;font-style:normal}
+.boon.holy{background:linear-gradient(#3a2a10,#1e1408);box-shadow:0 0 18px #ffd76a88,0 3px 0 #000}.bar.tm{height:14px;margin:0}.bar.tm>span{font-size:13px;line-height:11px}
 .bar>div{box-shadow:inset 0 3px 0 #ffffff40,inset 0 -3px 0 #0000004d}
 #hpTrail{background:#ffe0c0;transition:width .5s ease-in .25s;box-shadow:none!important}
 .bar.hp>span{font-family:'Pixelify Sans';font-weight:700;font-size:17px;line-height:23px}
@@ -147,6 +150,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
   <div id="hudRow">
     <div id="hudL"><div id="hudPort"><img id="hudImg" alt=""></div><div class="grow">
       <div class="bar hp"><div id="hpTrail"></div><div id="hpFill" style="background:linear-gradient(#ff6a6a,#d0283a 45%,#7a0e1e);width:100%"></div><span id="hpTxt"></span></div>
+      <div class="bar bl" title="Segnung"><div id="blFill"></div></div>
       <div class="bar tm"><div id="tFill" style="background:linear-gradient(#a8d4ff,#4a86d8 45%,#1e4a90);width:100%"></div><span id="tTxt"></span></div>
     </div></div>
     <div id="hudC"><div id="hudCirc"></div><div class="bar q"><div id="qFill" style="background:linear-gradient(#ffd07a,#e07a2a 45%,#8a3a12);width:0%"></div><span id="qTxt"></span></div></div>
@@ -1000,6 +1004,33 @@ function bgPattern(c){
   BG[k]=ctx.createPattern(big,'repeat');return BG[k];
 }
 
+// ================= SEGNUNGEN (Kills füllen die Leiste, dann 1 von 3 Boni für diese Jagd) =================
+const BOONS=[
+ {n:'Zorn',i:'⚔',c:'#ff6a5a',d:m=>`+${25*m}% Schaden`,f:m=>ST.dmg*=1+.25*m},
+ {n:'Raserei',i:'»',c:'#ff9a3a',d:m=>`+${20*m}% Angriffstempo`,f:m=>ST.aps*=1+.2*m},
+ {n:'Scharfblick',i:'◎',c:'#ffd76a',d:m=>`+${8*m}% Krit-Chance`,f:m=>ST.crit=Math.min(95,ST.crit+8*m)},
+ {n:'Henkersbeil',i:'✚',c:'#ff4a6a',d:m=>`+${50*m}% Krit-Schaden`,f:m=>ST.critDmg+=.5*m},
+ {n:'Lebensquell',i:'♥',c:'#ff7a9a',d:m=>`+${30*m}% max. Leben und volle Heilung`,f:m=>{R.maxHp*=1+.3*m;R.hp=R.maxHp;}},
+ {n:'Sanduhr',i:'⧗',c:'#7ab8ff',d:m=>`+${4*m}s Jagdzeit`,f:m=>{R.time+=4*m;R.maxTime+=4*m;}},
+ {n:'Seelengier',i:'◆',c:'#9be8ff',d:m=>`+${30*m}% Seelen`,f:m=>ST.soul*=1+.3*m},
+ {n:'Bannfeuer',i:'✦',c:'#c06aff',d:m=>`+${60*m}% Bannstrahl-Schaden, +${25*m}% Radius`,f:m=>{ST.click*=1+.6*m;ST.clickR*=1+.25*m;}},
+ {n:'Weite Klinge',i:'◠',c:'#e0e0ff',d:m=>`+${25*m}% Reichweite und Flächenschaden`,f:m=>{ST.range*=1+.25*m;ST.aoe*=1+.25*m;}},
+ {n:'Blutdurst',i:'♦',c:'#d0283a',d:m=>`+${3*m}% Lebensraub`,f:m=>ST.ls+=.03*m},
+ {n:'Kettenblitz',i:'ϟ',c:'#9ad8ff',d:m=>`Treffer springen auf +${m} Dämon${m>1?'en':''}`,f:m=>ST.chain+=m},
+ {n:'Märtyrer',i:'☼',c:'#ffe08a',d:m=>`Ultimate lädt ${25*m}% schneller`,f:m=>ST.ultKills=Math.max(3,ST.ultKills*(1-.25*m))},
+ {n:'Leichensprengung',i:'✸',c:'#ffb04a',d:m=>`Getötete Dämonen explodieren (+${40*m}% Schaden)`,f:m=>ST.explode+=.4*m},
+];
+function boonGain(e){if(!R||R.over)return;R.bl=(R.bl||0)+(e.boss?10:e.elite?3:1);if(R.bl>=R.blN&&!R.choosing){R.bl-=R.blN;R.blN=Math.round(R.blN*1.6);offerBoons();}}
+function offerBoons(){
+  const pool=BOONS.slice(),opts=[];while(opts.length<3){const b=pool.splice(ri(0,pool.length-1),1)[0];opts.push({b,m:Math.random()<.15?2:1});}// 15%: geweiht = doppelte Wirkung
+  const pick=o=>{o.b.f(o.m);(R.boons=R.boons||[]).push(o.b.n+(o.m>1?' ✧':''));R.choosing=null;closeModal();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
+    for(let i=0;i<24;i++){const a=i/24*Math.PI*2,h=heroPos();R.pt.push({x:h.x,y:h.y-20,vx:Math.cos(a)*180,vy:Math.sin(a)*120,t:0,life:.6,c:o.b.c,s:3});}};
+  if(save.auto){pick(opts[ri(0,2)]);return;}// Auto-Jagd wählt selbst
+  R.choosing={opts,pick};sfx('buy');
+  openModal(`<h2 style="text-align:center;color:#ffd76a">SEGNUNG</h2><div style="text-align:center;color:var(--dim);margin:4px 0 12px">Wähle einen Segen für diese Jagd (Taste 1–3)</div><div class="row">${opts.map((o,i)=>`<button class="boon${o.m>1?' holy':''}" data-i="${i}" style="--bc:${o.b.c}"><span class="bi">${o.b.i}</span><b>${o.b.n}${o.m>1?' ✧':''}</b><span>${o.b.d(o.m)}</span>${o.m>1?'<em>Geweiht – doppelte Wirkung</em>':''}</button>`).join('')}</div>`);
+  $('#mbox').querySelectorAll('.boon').forEach(el=>el.onclick=()=>pick(opts[+el.dataset.i]));
+}
+
 // ================= ARENA (Rückwand, Säulen, Fackeln, Deko je Höllenkreis) =================
 const PROP_PAL={k:'#e8dcb8',K:'#b0a480',d:'#6a5c44',x:'#1a1014',s:'#3a3036',S:'#5e5058',h:'#7a6c74',t:'#3a2a18',T:'#6a4a26',m:'#c03a2a',M:'#ff8a6a',g:'#4a7a2a',G:'#9be04a'};
 const PROPS={
@@ -1104,7 +1135,7 @@ function startRun(){
   const c=save.circle;
   R={c,t:0,time:ST.time,maxTime:ST.time,hp:ST.hp,maxHp:ST.hp,kills:0,souls:0,brim:0,sig:0,en:[],pr:[],loot:[],fx:[],tx:[],pt:[],
      spawnT:.3,atkT:.2,smiteT:1,mod:circleMod(c),quota:Math.max(8,Math.round((18+4*c)*ST.quota*(circleMod(c)==='horde'?1.5:1))),bossSpawned:false,bossDead:false,over:false,revived:false,
-     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,moon:0,wall:0,clouds:[],fires:[],ice:[],fireT:0,later:[],ep:[],hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
+     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,bl:0,blN:10,moon:0,wall:0,clouds:[],fires:[],ice:[],fireT:0,later:[],ep:[],hpM:Math.pow(1.55,c-1)*ST.enemyHp,dmgM:Math.pow(1.33,c-1),rewM:Math.pow(1.45,c-1),endT:0};
   mode='run';showUI();$('#hudImg').src=sprURL(HB[save.hero].spr,4);$('#hudCirc').textContent=circleName(c)+(R.mod?' · '+CMOD[R.mod].name:'');sfx('hit');if(R.mod){const bb=$('#bossBanner');bb.innerHTML=CMOD[R.mod].name.toUpperCase()+'<div style="font-size:22px">'+CMOD[R.mod].d+'</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2200);}for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
 }
 function demonPool(c){const p=[['imp',10]];if(c>=2)p.push(['bat',6]);if(c>=3)p.push(['hound',6]);if(c>=5)p.push(['wraith',5]);if(c>=3)p.push(['cult',4]);if(c>=4)p.push(['succ',5]);if(c>=6)p.push(['golem',3]);if(c>=50)p.push(['worm',4]);return p;}
@@ -1164,7 +1195,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
+  if(e.dead)return;e.dead=true;R.kills++;boonGain(e);save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
   // particles
   if(e.aff2){R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:.8});shake=Math.max(shake,3);}
   R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
@@ -1471,6 +1502,7 @@ function showSummary(){
   if(R.quests)h+=`<div style="text-align:center;color:#ffd76a;margin-bottom:6px">${R.quests} Auftrag/Aufträge erfüllt!</div>`;
   if(R.autoBought)h+=`<div style="text-align:center;color:#bfa8ff;margin-bottom:8px">Ordensschreiber kaufte ${R.autoBought} Knoten.</div>`;
   if(R.arts)h+=`<div style="text-align:center;color:#ffb0f0;font-size:20px;margin-bottom:10px">Reliquien: ${R.arts.map(a=>`<img src="${sprURL('art_'+a.id,3)}" style="vertical-align:middle;image-rendering:pixelated"> ${a.name} (Stufe ${save.arts[a.id]})`).join(' · ')}</div>`;
+  if(R.boons)h+=`<div style="text-align:center;color:#c8a8ff;margin-bottom:8px">Segnungen: ${R.boons.join(' · ')}</div>`;
   if(R.newCircle)h+=`<div style="text-align:center;color:var(--gold);font-size:22px;margin-bottom:10px">Neuer Höllenkreis freigeschaltet: ${save.maxCircle}!</div>`;
   h+=`<div class="row"><button class="big" id="sumAgain">⚔ Nochmal</button><button id="sumTree">Zum Schwurbaum</button></div>
   <div class="row" style="margin-top:10px"><label class="chk"><input type="checkbox" id="autoChk" ${save.auto?'checked':''}> Auto-Jagd (startet automatisch neu)</label></div>`;
@@ -1891,7 +1923,7 @@ const pts=new Map();let drag=null,pinch=null;const canHover=matchMedia('(hover:h
 cv.addEventListener('pointerdown',e=>{
   cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
   ptr.x=e.clientX;ptr.y=e.clientY;ptr.active=true;ptr.type=e.pointerType;ptr.down=true;
-  if(mode==='run'&&R&&!R.over&&!R.paused){const Z=R.zz;Z?smite(Z.fx+(e.clientX-Z.fx)/Z.z,Z.fy+(e.clientY-Z.fy)/Z.z):smite(e.clientX,e.clientY);}
+  if(mode==='run'&&R&&!R.over&&!R.paused&&!R.choosing){const Z=R.zz;Z?smite(Z.fx+(e.clientX-Z.fx)/Z.z,Z.fy+(e.clientY-Z.fy)/Z.z):smite(e.clientX,e.clientY);}
   else if(mode==='hub'){
     if(pts.size===2){const [a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:cam.z};drag=null;}
     else drag={sx:e.clientX,sy:e.clientY,cx:cam.x,cy:cam.y,moved:false};
@@ -1923,7 +1955,8 @@ function pUp(e){
 cv.addEventListener('pointerup',pUp);cv.addEventListener('pointercancel',pUp);
 cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){ptr.active=false;hoverNode=null;$('#tip').classList.add('hide');}});
 cv.addEventListener('wheel',e=>{if(mode!=='hub')return;e.preventDefault();const before=s2w(e.clientX,e.clientY);cam.z=clamp(cam.z*Math.pow(1.0015,-e.deltaY),.35,2.2);const after=s2w(e.clientX,e.clientY);cam.x+=before.x-after.x;cam.y+=before.y-after.y;},{passive:false});
-addEventListener('keydown',e=>{if(e.code==='Escape'){if(mode==='hub')closeModal();else if(R&&!R.over){R.paused=!R.paused;$('#ultBtn').disabled=R.paused;}return;}
+addEventListener('keydown',e=>{if(e.code==='Escape'){if(mode==='hub')closeModal();else if(R&&!R.over&&!R.choosing){R.paused=!R.paused;$('#ultBtn').disabled=R.paused;}return;}
+  if(R&&R.choosing){const o=R.choosing.opts[+e.key-1];if(o)R.choosing.pick(o);return;}
   if(R&&R.paused)return;if((e.code==='Space'||e.code==='KeyQ')&&mode==='run'){e.preventDefault();castUlt();return;}if(mode!=='hub'||!$('#modal').classList.contains('hide'))return;
   const b={Space:'#btnHunt',KeyH:'#btnHeroes',KeyC:'#btnChron',ArrowLeft:'#cPrev',ArrowRight:'#cNext'}[e.code];
   if(b&&!$(b).disabled){e.preventDefault();$(b).click();}});
@@ -1934,7 +1967,7 @@ function frame(now){
   let dt=Math.min(.05,(now-last)/1000);last=now;sfxCount=0;save.st.play=(save.st.play||0)+dt;
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=false;
   if(mode==='run'&&R){
-    if(!R.paused){let d=dt;if(R.slow>0){R.slow-=dt;d*=.25;}updateRun(d);}
+    if(!R.paused&&!R.choosing){let d=dt;if(R.slow>0){R.slow-=dt;d*=.25;}updateRun(d);}
     let sx=0,sy=0;if(shake>0&&save.opt.shake){sx=rnd(-shake,shake);sy=rnd(-shake,shake);shake=Math.max(0,shake-dt*40);}
     ctx.save();ctx.translate(sx,sy);R.zz=null;
     if(R.zoom){const Z=R.zoom;if(!R.paused)Z.t+=dt;const p=Z.t/Z.dur;if(p>=1)R.zoom=null;else{const z=1+.18*Math.sin(Math.PI*Math.min(1,p*1.6))*(p<.6?1:(1-p)/.4),fx=W/2+(Z.x-W/2)*.6,fy=H/2+(Z.y-H/2)*.6;R.zz={z,fx,fy};ctx.translate(fx,fy);ctx.scale(z,z);ctx.translate(-fx,-fy);}}
@@ -1942,7 +1975,7 @@ function frame(now){
     if(R.paused){ctx.save();ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffd9b0';ctx.textAlign='center';ctx.font='48px "Pixelify Sans"';ctx.fillText('PAUSE',W/2,H/2);ctx.font='22px "Pixelify Sans"';ctx.fillText('Esc zum Fortsetzen',W/2,H/2+36);ctx.restore();}
     // HUD
     $('#hpFill').style.width=$('#hpTrail').style.width=(100*Math.max(0,R.hp)/R.maxHp)+'%';$('#hpTxt').textContent=`${fmt(Math.max(0,R.hp))} / ${fmt(R.maxHp)}`;
-    $('#tFill').style.width=(100*R.time/R.maxTime)+'%';$('#tTxt').textContent=`⧗ ${R.time.toFixed(1)}s`;
+    $('#tFill').style.width=(100*R.time/R.maxTime)+'%';$('#blFill').style.width=(100*R.bl/R.blN)+'%';$('#tTxt').textContent=`⧗ ${R.time.toFixed(1)}s`;
     if(!R.bossSpawned){$('#qFill').style.width=(100*Math.min(1,R.kills/R.quota))+'%';$('#qTxt').textContent=`Fürst erscheint: ${R.kills}/${R.quota}`;}
     else if(!R.bossDead){const b=R.en.find(e=>e.boss);$('#qFill').style.width=(b?100*b.hp/b.max:0)+'%';$('#qTxt').textContent=(b&&b.name||'FÜRST').toUpperCase();}
     else{$('#qFill').style.width='100%';$('#qTxt').textContent='Fürst gebannt! Kills: '+R.kills;}
