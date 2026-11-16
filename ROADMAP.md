@@ -45,12 +45,13 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.37: Erfolge „Forscher“ (alle Arten entdeckt), „Meister des Bestiariums“ (jede Art 1000 Kills) und „Elite-Kenner“ (jede Art 10 Elite)
 - v0.38: Bestiarium listet alle Elite-Affixe und Höllenkreis-Modifikatoren mit Beschreibung und Freischalt-Kreis (noch gesperrte ausgegraut)
 - v0.39: Neuer Kreis-Modifikator ab Kreis 35 – Glutregen (Meteore mit Warnkreis stürzen vom Himmel, hinterlassen Feuer, +40% Schwefel)
+- v0.40: Fernkampf-Animationen – Armbrust-Rückstoß mit Mündungsblitz (Hexenjägerin), heiliges Aufleuchten beim Pulsen (Exorzistin), Wurfbewegung mit im Bogen fliegender Giftphiole, Wolke entsteht beim Aufschlag (Pestarzt)
 
 ## Als Nächstes
-37. Fernkampf-Animationen: Rückstoß der Armbrust (Hexenjägerin), Leuchten beim Pulsen (Exorzistin), Wurfbewegung (Pestarzt)
 38. Dämonen-Animationen: eigene Angriffs-Frames (Imp-Kratzer, Höllenhund-Biss, Golem-Faustschlag), Treffer-Rückstoß
 39. Fürsten-Intro: Bodenriss und Kamerazoom beim Erscheinen des Fürsten
 42. Siebtes Set „Eisenwall“ (Eisernes Herz, Dornenmantel, Engelsfeder) mit Fokus auf Überleben
 43. Erfolge für Kreis-Modifikatoren: je einen Fürsten unter jedem Modifikator besiegt
 44. Glutregen-Meteore treffen auch Dämonen (Schaden skaliert mit dem Jäger)
 45. Elite-Affix „Schildträger“ ab Kreis 30 (schützt nahe Dämonen mit einem Schild)
+46. Hexenjägerin: sichtbare Armbrust als eigenes Sprite mit Nachlade-Animation
