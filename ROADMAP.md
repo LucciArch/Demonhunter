@@ -18,9 +18,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.11: Schnellreise – Klick auf die Kreis-Anzeige öffnet eine Liste aller erreichten Höllenkreise
 - v0.12: Reliquien – 8 handgepixelte Artefakte als Fürsten-Beute (Elite 2%), Stufen 1–10, eigener Chronik-Reiter, bleiben beim Aufstieg
 - v0.13: Tastenkürzel im Hub (Leertaste = Jagd, H = Jäger, C = Chronik, ←/→ = Kreis wechseln), Hinweise als Tooltips
+- v0.14: Elite-Dämonen ab Kreis 3 mit Affixen – Flink (×1,8 Tempo), Gepanzert (×5 Leben, −40% Schaden außer Krits), Explosiv (Todesexplosion trifft den Jäger) – mit Aura, Namensschild und Elite-Beute
 
 ## Als Nächstes
-11. Elite-Dämonen mit Affixen (schnell, gepanzert, explosiv) und Extra-Beute
 12. Reliquien als sichtbare Beute-Kugel im Kampf (einsammeln statt direkt gutschreiben) + eigener Sound
 13. Neue Reliquien ab Kreis 10 (z. B. Kettenblitz-Rune, Dornenmantel)
 14. Esc schließt Dialoge (wo gefahrlos) und pausiert die Jagd
+15. Weitere Affixe ab Kreis 8 (Vampirisch, Beschwörer, Spiegelnd) + Erfolg „Elitejäger“
