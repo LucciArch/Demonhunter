@@ -1043,7 +1043,8 @@ function killDemon(e,o){
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2)*(e.aff2?2:1):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;if(R.mod==='rage')b*=1.5;if(R.mod==='curse')b*=1.25;if(R.mod==='ember')b*=1.4;dropLoot(e,'b',b);}
   if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
   if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1);dropLoot(e,'g',s*ST.bossLoot);
-    R.bossDead=true;save.st.bosses++;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;
+    R.bossDead=true;save.st.bosses++;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;R.slow=.5;R.zoom={x:e.x,y:e.y,t:0,dur:.9};// Todesstoß in Zeitlupe
+
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
     const bb=$('#bossBanner');bb.textContent=(e.name||'FÜRST').toUpperCase()+' GEBANNT! +5s';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1600);}
   if(hasAff(e,'expl')){R.fx.push({k:'boom',x:e.x,y:e.y-e.r*.6,r:80,t:0,dur:.4});shake=Math.max(shake,8);const h=heroPos();if(Math.hypot(h.x-e.x,h.y-e.y)<80)hurtHero(e.dmg*2,e);}
@@ -1717,7 +1718,7 @@ function frame(now){
   let dt=Math.min(.05,(now-last)/1000);last=now;sfxCount=0;save.st.play=(save.st.play||0)+dt;
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=false;
   if(mode==='run'&&R){
-    if(!R.paused)updateRun(dt);
+    if(!R.paused){let d=dt;if(R.slow>0){R.slow-=dt;d*=.25;}updateRun(d);}
     let sx=0,sy=0;if(shake>0&&save.opt.shake){sx=rnd(-shake,shake);sy=rnd(-shake,shake);shake=Math.max(0,shake-dt*40);}
     ctx.save();ctx.translate(sx,sy);R.zz=null;
     if(R.zoom){const Z=R.zoom;if(!R.paused)Z.t+=dt;const p=Z.t/Z.dur;if(p>=1)R.zoom=null;else{const z=1+.18*Math.sin(Math.PI*Math.min(1,p*1.6))*(p<.6?1:(1-p)/.4),fx=W/2+(Z.x-W/2)*.6,fy=H/2+(Z.y-H/2)*.6;R.zz={z,fx,fy};ctx.translate(fx,fy);ctx.scale(z,z);ctx.translate(-fx,-fy);}}
