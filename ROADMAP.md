@@ -80,10 +80,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.72: Neuer Dämon ab Kreis 50 – Knochenwurm (eigenes Sprite): gräbt sich ein, wühlt als Erdhügel unverwundbar zum Jäger und bricht mit Erdfontäne direkt neben ihm hervor
 - v0.73: Erfolg „Wurmfänger“ (200 Knochenwürmer, +60 Schwefel); Bannstrahl auf den Erdhügel treibt den Knochenwurm sofort heraus, fern vom Jäger
 - v0.74: Bannstrahl auf eine Fürsten-Nova-Kugel lässt sie in Fürsten-Farbe zerplatzen (Ring, Splitterregen, eigener Klang); etwas größerer Trefferradius
+- v0.75: Chronik – offene Zähler-Erfolge zeigen einen Fortschrittsbalken (z. B. 640 / 1000)
 
 ## Als Nächstes
 74. Templerin: Schildstoß-Angriff mit vorschnellendem Schild statt nur Klinge
-75. Chronik: Kategorie mit erreichbarem, aber noch offenem Erfolg mit Fortschrittsbalken (z. B. 640/1000)
 76. Goldene Seelen-Kugeln aus der Fürsten-Fontäne mit eigenem Klingel-Sound beim Aufprall
 78. Knochenwurm als Elite: hinterlässt beim Auftauchen einen Knochensplitter-Ring, der kurz Schaden macht
 79. Statistik/Erfolg: zerplatzte Nova-Kugeln zählen, Erfolg „Novabrecher“ (100 Kugeln)
+80. Chronik: Kategorie-Zeile markiert, wenn ein Erfolg darin kurz vor dem Abschluss steht (≥90%)

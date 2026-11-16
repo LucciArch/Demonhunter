@@ -825,22 +825,24 @@ const stv=k=>save.st[k]||0;
 const heroCount=()=>HEROES.filter(heroUnlocked).length;
 const nodeCount=()=>Object.keys(save.tree).filter(k=>k!=='root'&&!k.startsWith('H_')&&save.tree[k]>0).length;
 const ACH=[];
-function A(id,name,desc,fn,rew){ACH.push({id,name,desc,fn,rew});}
-[[100,'Erstes Blut'],[1000,'Dämonenschlächter'],[10000,'Geißel der Hölle'],[100000,'Weltenreiniger'],[1000000,'Legende']].forEach(([n,nm],i)=>A('k'+i,nm,`Vernichte ${fmt(n)} Dämonen`,()=>stv('kills')>=n,{s:20*Math.pow(8,i)}));
-[[1,'Fürstenbann'],[10,'Fürstentöter'],[50,'Thronstürmer'],[250,'Königsmörder']].forEach(([n,nm],i)=>A('b'+i,nm,`Besiege ${n} Fürsten`,()=>stv('bosses')>=n,{g:2+i*3}));
-[[3,'Abstieg'],[5,'Tiefer'],[10,'Abgrundwanderer'],[15,'Herz der Hölle'],[20,'Jenseits der Kreise'],[30,'Unendliche Tiefe']].forEach(([n,nm],i)=>A('c'+i,nm,`Erreiche Höllenkreis ${n}`,()=>Math.max(save.maxCircle,stv('maxC'))>=n,{b:5*Math.pow(3,i)}));
-[[10,'Jäger'],[100,'Veteran'],[1000,'Unermüdlich']].forEach(([n,nm],i)=>A('r'+i,nm,`Bestreite ${n} Jagden`,()=>stv('runs')>=n,{s:50*Math.pow(10,i)}));
-[[500,'Bannender'],[5000,'Lichtbringer'],[50000,'Zorn des Himmels']].forEach(([n,nm],i)=>A('m'+i,nm,`Wirke ${fmt(n)} Bannstrahlen`,()=>stv('smites')>=n,{s:40*Math.pow(10,i)}));
-[[10,'Entfesselt'],[100,'Urgewalt'],[1000,'Weltenbeben']].forEach(([n,nm],i)=>A('u'+i,nm,`Wirke ${n} Ultimates`,()=>stv('ults')>=n,{b:10*Math.pow(5,i)}));
-[[3,'Bruderschaft'],[5,'Der ganze Orden']].forEach(([n,nm],i)=>A('h'+i,nm,`Schalte ${n} Jäger frei`,()=>heroCount()>=n,{g:3+i*5}));
-[[25,'Lehrling des Schwurs'],[100,'Meister des Schwurs'],[210,'Der vollendete Schwur']].forEach(([n,nm],i)=>A('n'+i,nm,`Besitze ${n} Knoten im Schwurbaum`,()=>nodeCount()>=n,{s:100*Math.pow(20,i)}));
-[[1,'Wiedergeboren'],[5,'Ewiger Kreislauf'],[25,'Unsterblicher Orden']].forEach(([n,nm],i)=>A('a'+i,nm,`Steige ${n}× auf`,()=>(save.ascCount||0)>=n,{a:2+i*5}));
-[[100,'Gemetzel'],[500,'Blutbad'],[2000,'Apokalypse']].forEach(([n,nm],i)=>A('p'+i,nm,`Vernichte ${n} Dämonen in einer Jagd`,()=>stv('best')>=n,{b:20*Math.pow(4,i)}));
-A('g0','Steinbrecher','Vernichte 100 Golems',()=>(save.st.kt.golem||0)>=100,{b:50});
-A('g1','Ketzerjäger','Vernichte 200 Kultisten',()=>(save.st.kt.cult||0)>=200,{b:40});
-A('g2','Unbetört','Vernichte 200 Sukkuben',()=>(save.st.kt.succ||0)>=200,{b:40});
-A('g3','Wurmfänger','Vernichte 200 Knochenwürmer',()=>(save.st.kt.worm||0)>=200,{b:60});
-[[100,'Elitejäger'],[1000,'Elitenschreck']].forEach(([n,nm],i)=>A('e'+i,nm,`Vernichte ${fmt(n)} Elite-Dämonen`,()=>stv('elites')>=n,{b:30*Math.pow(8,i)}));
+function A(id,name,desc,fn,rew,pg){ACH.push({id,name,desc,fn,rew,pg});}
+// Zähler-Erfolg: pg liefert [aktuell, Ziel] für den Fortschrittsbalken
+function AN(id,name,desc,val,n,rew){A(id,name,desc,()=>val()>=n,rew,()=>[val(),n]);}
+[[100,'Erstes Blut'],[1000,'Dämonenschlächter'],[10000,'Geißel der Hölle'],[100000,'Weltenreiniger'],[1000000,'Legende']].forEach(([n,nm],i)=>AN('k'+i,nm,`Vernichte ${fmt(n)} Dämonen`,()=>stv('kills'),n,{s:20*Math.pow(8,i)}));
+[[1,'Fürstenbann'],[10,'Fürstentöter'],[50,'Thronstürmer'],[250,'Königsmörder']].forEach(([n,nm],i)=>AN('b'+i,nm,`Besiege ${n} Fürsten`,()=>stv('bosses'),n,{g:2+i*3}));
+[[3,'Abstieg'],[5,'Tiefer'],[10,'Abgrundwanderer'],[15,'Herz der Hölle'],[20,'Jenseits der Kreise'],[30,'Unendliche Tiefe']].forEach(([n,nm],i)=>AN('c'+i,nm,`Erreiche Höllenkreis ${n}`,()=>Math.max(save.maxCircle,stv('maxC')),n,{b:5*Math.pow(3,i)}));
+[[10,'Jäger'],[100,'Veteran'],[1000,'Unermüdlich']].forEach(([n,nm],i)=>AN('r'+i,nm,`Bestreite ${n} Jagden`,()=>stv('runs'),n,{s:50*Math.pow(10,i)}));
+[[500,'Bannender'],[5000,'Lichtbringer'],[50000,'Zorn des Himmels']].forEach(([n,nm],i)=>AN('m'+i,nm,`Wirke ${fmt(n)} Bannstrahlen`,()=>stv('smites'),n,{s:40*Math.pow(10,i)}));
+[[10,'Entfesselt'],[100,'Urgewalt'],[1000,'Weltenbeben']].forEach(([n,nm],i)=>AN('u'+i,nm,`Wirke ${n} Ultimates`,()=>stv('ults'),n,{b:10*Math.pow(5,i)}));
+[[3,'Bruderschaft'],[5,'Der ganze Orden']].forEach(([n,nm],i)=>AN('h'+i,nm,`Schalte ${n} Jäger frei`,()=>heroCount(),n,{g:3+i*5}));
+[[25,'Lehrling des Schwurs'],[100,'Meister des Schwurs'],[210,'Der vollendete Schwur']].forEach(([n,nm],i)=>AN('n'+i,nm,`Besitze ${n} Knoten im Schwurbaum`,()=>nodeCount(),n,{s:100*Math.pow(20,i)}));
+[[1,'Wiedergeboren'],[5,'Ewiger Kreislauf'],[25,'Unsterblicher Orden']].forEach(([n,nm],i)=>AN('a'+i,nm,`Steige ${n}× auf`,()=>(save.ascCount||0),n,{a:2+i*5}));
+[[100,'Gemetzel'],[500,'Blutbad'],[2000,'Apokalypse']].forEach(([n,nm],i)=>AN('p'+i,nm,`Vernichte ${n} Dämonen in einer Jagd`,()=>stv('best'),n,{b:20*Math.pow(4,i)}));
+AN('g0','Steinbrecher','Vernichte 100 Golems',()=>(save.st.kt.golem||0),100,{b:50});
+AN('g1','Ketzerjäger','Vernichte 200 Kultisten',()=>(save.st.kt.cult||0),200,{b:40});
+AN('g2','Unbetört','Vernichte 200 Sukkuben',()=>(save.st.kt.succ||0),200,{b:40});
+AN('g3','Wurmfänger','Vernichte 200 Knochenwürmer',()=>(save.st.kt.worm||0),200,{b:60});
+[[100,'Elitejäger'],[1000,'Elitenschreck']].forEach(([n,nm],i)=>AN('e'+i,nm,`Vernichte ${fmt(n)} Elite-Dämonen`,()=>stv('elites'),n,{b:30*Math.pow(8,i)}));
 A('x0','Sammler','Aktiviere deinen ersten Reliquien-Set-Bonus',()=>SETS.some(setOn),{g:5});
 A('x1','Vollendeter Sammler','Bringe einen Set-Bonus auf Stufe 2',()=>SETS.some(setMax),{a:5});
 A('x2','Unzerstörbar','Aktiviere alle Reliquien-Set-Boni gleichzeitig',()=>SETS.every(setOn),{a:10});
@@ -849,18 +851,19 @@ A('f1','Meister des Bestiariums','Erlege von jeder Dämonenart 1000',()=>Object.
 A('f2','Elite-Kenner','Erlege von jeder Dämonenart 10 Elite',()=>Object.keys(DEMONS).every(k=>k==='boss'||(save.st.ke[k]||0)>=10),{b:500});
 for(const k in CMOD)A('o'+k,'Bezwinger: '+CMOD[k].name,`Besiege einen Fürsten unter dem Kreis-Modifikator „${CMOD[k].name}“`,()=>!!(save.st.bm&&save.st.bm[k]),{g:3});
 const AFF_ACH={shield:['s0','Schildbrecher','Schildträger'],fast:['s1','Windfänger','Flink'],armor:['s2','Panzerknacker','Gepanzert'],expl:['s3','Sprengmeister','Explosiv'],vamp:['s4','Pfähler','Vampirisch'],summ:['s5','Bannbrecher','Beschwörer'],mirror:['s6','Spiegelscherbe','Spiegelnd'],tele:['s7','Geisterfänger','Teleportierend'],frost:['s8','Frostbrecher','Frostig'],burn:['s9','Glutlöscher','Brennend']};
-for(const k in AFF_ACH)A(AFF_ACH[k][0],AFF_ACH[k][1],`Vernichte 100 Elite mit dem Affix „${AFF_ACH[k][2]}“`,()=>((save.st.ka||{})[k]||0)>=100,{b:300});
-for(const k in AFF_ACH)A(AFF_ACH[k][0]+'x','Erz'+AFF_ACH[k][1].toLowerCase(),`Vernichte 1000 Elite mit dem Affix „${AFF_ACH[k][2]}“`,()=>((save.st.ka||{})[k]||0)>=1000,{g:5});
+for(const k in AFF_ACH)AN(AFF_ACH[k][0],AFF_ACH[k][1],`Vernichte 100 Elite mit dem Affix „${AFF_ACH[k][2]}“`,()=>((save.st.ka||{})[k]||0),100,{b:300});
+for(const k in AFF_ACH)AN(AFF_ACH[k][0]+'x','Erz'+AFF_ACH[k][1].toLowerCase(),`Vernichte 1000 Elite mit dem Affix „${AFF_ACH[k][2]}“`,()=>((save.st.ka||{})[k]||0),1000,{g:5});
 A('oall','Allbezwinger','Besiege unter jedem Kreis-Modifikator 10 Fürsten',()=>Object.keys(CMOD).every(k=>((save.st.bm||{})[k]||0)>=10),{a:15});
-A('shb0','Schildspalter','Zerbrich 100-mal den Schutz eines Schildträgers per Bannstrahl',()=>(save.st.shb||0)>=100,{g:5});
-A('sb0','Seelenfänger','Banne 100 Seelenträger (Kreis-Modifikator Seelenbann)',()=>(save.st.sb||0)>=100,{g:5});
-A('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths')>=1,{s:25});
+AN('shb0','Schildspalter','Zerbrich 100-mal den Schutz eines Schildträgers per Bannstrahl',()=>(save.st.shb||0),100,{g:5});
+AN('sb0','Seelenfänger','Banne 100 Seelenträger (Kreis-Modifikator Seelenbann)',()=>(save.st.sb||0),100,{g:5});
+AN('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths'),1,{s:25});
 const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
 function curAdd(c,v){if(c==='s')save.souls+=v;else if(c==='b')save.brim+=v;else if(c==='g')save.sig+=v;else{save.frag+=v;save.fragTotal=(save.fragTotal||0)+v;}}
 const rewTxt=r=>Object.entries(r).map(([c,v])=>`<span class="cur ${c}" style="font-size:17px"><i></i>${fmt(v)}</span>`).join(' ');
 // Kategorien der Erfolge (Reihenfolge = Anzeige), jede id passt auf genau eine
 const ACH_CAT=[['Jagd & Gemetzel',/^[kprd]\d/],['Fürsten & Kreise',/^[bc]\d/],['Bannstrahl & Ultimates',/^[mu]\d|^shb|^sb/],['Orden & Aufstieg',/^[hna]\d/],['Dämonen & Bestiarium',/^[gef]\d/],['Elite-Affixe',/^s\d/],['Kreis-Modifikatoren',/^o/],['Reliquien',/^x/]];
 const achOpen=new Set();
+function achBar([v,n]){v=Math.min(v,n);return `<div class="bar" style="margin:4px 0;height:14px"><div style="width:${v/n*100}%;background:linear-gradient(#ffb04a,#a8481e)"></div><span style="font-size:12px">${fmt(v)} / ${fmt(n)}</span></div>`;}
 function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
 function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
   if(n){persist();computeStats();}return n;}
@@ -1731,7 +1734,7 @@ function chronik(tab){
   else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div>`;
     for(const [cat,rx] of ACH_CAT){const as=ACH.filter(a=>rx.test(a.id)),n=as.filter(a=>save.ach[a.id]).length;
       h+=`<details data-cat="${cat}" ${achOpen.has(cat)?'open':''} style="margin-bottom:6px"><summary style="cursor:pointer;color:${n===as.length?'#ffd76a':'#c8b8a8'};font-size:20px">${cat} <span style="color:var(--dim)">${n}/${as.length}</span></summary><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-top:6px">`;
-      for(const a of as){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
+      for(const a of as){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}${!d&&a.pg?achBar(a.pg()):'<br>'}${rewTxt(a.rew)}</div>`;}
       h+='</div></details>';}}
   else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten. Sind alle erreichbaren auf Stufe ${ART_MAX}, schmilzt die <b style="color:#ff6ad8">Seelen-Schmiede</b> neue zu Höllenfragmenten (1 + 1 je 10 Kreise).</div>`;
     h+=`<div style="color:#ff6ad8;text-align:center;margin-bottom:6px">Sets – alle drei Reliquien auf Stufe ${SET_LVL}:</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:12px">`;
