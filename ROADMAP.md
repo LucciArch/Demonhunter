@@ -22,8 +22,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.15: Reliquien fallen als leuchtende Beute-Kugel (mit Sprite) und werden eingesammelt, eigener Glocken-Sound; nicht eingesammelte gehen am Rundenende nicht verloren
 - v0.16: Esc schließt Dialoge im Hub und pausiert/fortsetzt die Jagd (Pause-Overlay, Zeit steht still)
 - v0.17: 3 neue Reliquien ab Kreis 10 – Kettenblitz-Rune (+Kettenblitz/Kettenschaden), Dornenmantel (+Dornen), Fürstenschädel (+Schaden gegen Fürsten & Elite); Chronik zeigt „Erst ab Kreis 10“
+- v0.18: Automatische Pause, wenn das Fenster den Fokus verliert (Einstellung „Pause bei Fensterwechsel“)
 
 ## Als Nächstes
 15. Weitere Affixe ab Kreis 8 (Vampirisch, Beschwörer, Spiegelnd) + Erfolg „Elitejäger“
 16. Seelen-Schmiede: überschüssige Reliquien (Stufe 10) in Höllenfragmente umwandeln
-17. Automatische Pause, wenn das Fenster den Fokus verliert (abschaltbar in den Einstellungen)
+18. Bestiarium in der Chronik: alle Dämonen mit Sprite, Werten und Kill-Zähler
+19. Höllenkreis-Modifikatoren ab Kreis 12 (z. B. Blutnebel: Dämonen regenerieren, Seelensturm: +50% Seelen)
+20. Reliquien-Set-Bonus: drei bestimmte Reliquien auf Stufe 5 schalten einen Zusatzeffekt frei

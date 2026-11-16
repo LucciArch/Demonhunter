@@ -770,7 +770,7 @@ function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){save.last=Date.now();try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
-save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true},save.opt);
+save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true,autoPause:true},save.opt);
 save.st.kt=save.st.kt||{};save.ach=save.ach||{};save.quests=save.quests||[];
 // ===== ERFOLGE & AUFTRÄGE =====
 const stv=k=>save.st[k]||0;
@@ -1490,14 +1490,16 @@ function menu(){
    <label>Lautstärke <input type="range" id="oVol" min="0" max="1" step=".05" value="${save.opt.vol}" style="width:200px;vertical-align:middle"></label>
    <label class="chk"><input type="checkbox" id="oMusic" ${save.opt.music?'checked':''}> Musik</label>
    <label class="chk"><input type="checkbox" id="oDmg" ${save.opt.dmg?'checked':''}> Schadenszahlen anzeigen</label>
-   <label class="chk"><input type="checkbox" id="oShake" ${save.opt.shake?'checked':''}> Bildschirmwackeln</label></div>
+   <label class="chk"><input type="checkbox" id="oShake" ${save.opt.shake?'checked':''}> Bildschirmwackeln</label>
+   <label class="chk"><input type="checkbox" id="oPause" ${save.opt.autoPause?'checked':''}> Pause bei Fensterwechsel</label></div>
   <div class="row" style="margin-top:12px"><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
   $('#mClose').onclick=closeModal;
   $('#oVol').oninput=e=>{save.opt.vol=+e.target.value;if(audio())MG.gain.value=save.opt.vol;persist();};
   $('#oVol').onchange=()=>sfx('pick');
-  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
+  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake'],['oPause','autoPause']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
   $('#mReset').onclick=()=>{const b=$('#mReset');if(b.dataset.c){save=defSave();persist();closeModal();toHub();cam.x=cam.y=0;toast('Neuer Schwur geleistet.');}else{b.dataset.c=1;b.textContent='Wirklich? Nochmal klicken';}};
 }
+addEventListener('blur',()=>{if(save.opt.autoPause&&mode==='run'&&R&&!R.over&&!R.paused){R.paused=true;$('#ultBtn').disabled=true;}});
 addEventListener('pointerdown',()=>{if(audio()&&AC.state==='suspended')AC.resume();});
 $('#btnHunt').onclick=()=>{startRun();};
 $('#ultBtn').onclick=()=>castUlt();
