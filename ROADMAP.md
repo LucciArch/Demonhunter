@@ -39,12 +39,15 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.32: Bestiarium zählt Elite-Kills pro Dämonenart und zeigt sie neben dem Kill-Zähler
 - v0.33: Grafik & Animation – Nahkampfwaffen (Schwert, Sense, Hammer, Templer-Klinge) als eigenes Sprite: ausholen, durchziehen, Nachzieh-Spur, Hiebbogen im Schlagmoment; Dämonen springen beim Angriff auf den Jäger zu; neuer Bannstrahl (Lichtsäule vom Himmel, Einschlag-Glühen, Runenkreis, Strahlen, Funken, leichtes Wackeln); Fackelschein um den Jäger und aufsteigende Glut in der Jagd
 
+- v0.34: Neuer Kreis-Modifikator ab Kreis 30 – Siegelflut (doppelte Siegel vom Fürsten, Fürst mit +50% Leben)
+- v0.35: Neues Elite-Affix ab Kreis 26 – Brennend (hinterlässt eine flackernde Feuerspur, die den Jäger verbrennt)
+
 ## Als Nächstes
-32. Kreis-Modifikator „Siegelflut“ ab Kreis 30 (doppelte Siegel, Fürst mit +50% Leben)
-33. Elite-Affix „Brennend“ ab Kreis 26 (hinterlässt Feuerspur, die den Jäger verletzt)
 34. Sechstes Set „Seelenfürst“ (Seelenlaterne, Sündenauge, Fürstenschädel)
 35. Bestiarium-Erfolge: „Forscher“ (alle Arten entdeckt), „Meister des Bestiariums“ (alle Arten 1000 Kills)
 36. Erfolg „Elite-Kenner“: von jeder Dämonenart 10 Elite erlegt
 37. Fernkampf-Animationen: Rückstoß der Armbrust (Hexenjägerin), Leuchten beim Pulsen (Exorzistin), Wurfbewegung (Pestarzt)
 38. Dämonen-Animationen: eigene Angriffs-Frames (Imp-Kratzer, Höllenhund-Biss, Golem-Faustschlag), Treffer-Rückstoß
 39. Fürsten-Intro: Bodenriss und Kamerazoom beim Erscheinen des Fürsten
+40. Bestiarium/Hilfe: Liste aller Elite-Affixe und Kreis-Modifikatoren mit Beschreibung und Freischalt-Kreis
+41. Kreis-Modifikator „Glutregen“ ab Kreis 35 (Feuerbälle fallen zufällig vom Himmel, +40% Schwefel)
