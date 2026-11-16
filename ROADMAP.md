@@ -69,11 +69,12 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.61: Seelenträger fliehen vor dem Jäger (hält Abstand unter 220 px, 75% Tempo) – Bannstrahl oder Fernkampf lohnt sich
 - v0.62: Pestarzt trägt einen Phiolen-Gürtel (eigenes Sprite) – nach dem Wurf fehlt eine Phiole, dann greift er sichtbar die nächste aus dem Gürtel
 - v0.63: Gebannte Seelenträger werden in der Statistik gezählt, Erfolg „Seelenfänger“ (100 Seelenträger, +5 Siegel)
+- v0.64: 10 gestufte Affix-Erfolge „Erz…“ (z. B. Erzschildbrecher) – je 1000 Elite eines Affixes, +5 Siegel
 
 ## Als Nächstes
-60. Gestufte Affix-Erfolge (1000 Elite pro Affix) mit Siegel-Belohnung
 61. Bannstrahl auf einen Schildträger zerbricht sichtbar die Schutzverbindungen (Splitter-Effekt)
 64. Fürsten-Tod: Seelenwirbel in groß, Siegel fliegen sichtbar zur Anzeige
 65. Fürsten-Feuernova-Kugeln mit eigenem, größerem Glut-Schweif und Hitzeflimmern
 68. Templerin: Schild als eigenes Sprite, hebt ihn sichtbar bei eingehenden Treffern
 69. Neuer Dämon ab Kreis 50: Knochenwurm (gräbt sich ein, taucht neben dem Jäger auf)
+70. Chronik: Erfolge nach Kategorie gruppiert und einklappbar (die Liste ist inzwischen sehr lang)
