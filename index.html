@@ -515,6 +515,11 @@ const BOSSES=[
 ];
 function walkRows(rows){const n=rows.length,w=Math.max(...rows.map(r=>r.length)),ls=n-Math.max(3,Math.round(n*.22)),mid=Math.floor(w/2);
   return rows.map((r,j)=>{if(j<ls)return r;const nx=(rows[j+1]||'').padEnd(w,'.');const cur=r.padEnd(w,'.');return nx.slice(0,mid)+cur.slice(mid);});}
+// Pestarzt: Phiolen-Gürtel (voll / ein Platz leer) und Phiole in der Hand
+const BELT_PAL={b:'#5a3a22',B:'#c8a040',k:'#8a6a3a',w:'#d8ffd0',g:'#7aff6a',G:'#2a8a2a'};
+SPR.belt=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk.kk","wg.wg.wg","GG.GG.GG"]});
+SPR.belt2=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk...","wg.wg...","GG.GG..."]});
+SPR.vial=mkSprite({pal:BELT_PAL,rows:["kk","wg","GG"]});
 for(const k of ['imp','hound','succ','golem','cult','brute','inq','hex','exo','blut','rune','pest','templ'])SPR[k].f2=mkSprite({pal:SPR_DEF[k].pal,rows:walkRows(SPR_DEF[k].rows)});
 const BOSS_WALK=walkRows(SPR_DEF.boss.rows);
 BOSSES.forEach((b,i)=>{const pal=Object.assign({},SPR_DEF.boss.pal,b.pal);SPR['boss'+i]=mkSprite({pal,rows:SPR_DEF.boss.rows});SPR['boss'+i].f2=mkSprite({pal,rows:BOSS_WALK});});
@@ -1392,7 +1397,14 @@ function drawHero(hp,sc){
       else if(h.type==='pulse'){o.sx*=1+.08*q;o.sy*=1+.08*q;ctx.save();ctx.globalCompositeOperation='lighter';const gr=ctx.createRadialGradient(x,y-s.h*sc*.5,0,x,y-s.h*sc*.5,s.h*sc*.9);
         gr.addColorStop(0,`rgba(255,224,138,${.55*q})`);gr.addColorStop(1,'rgba(255,224,138,0)');ctx.fillStyle=gr;ctx.fillRect(x-s.h*sc,y-s.h*sc*1.4,s.h*sc*2,s.h*sc*1.8);ctx.restore();}
       else if(h.type==='cloud'){const k=1-R.hero.ra/R.hero.raD;o.rot=-.25*Math.sin(k*Math.PI*2);x+=d*3*q;}}
-    if(!wp)return drawSpr(s,x,y,sc,R.hero.flip,R.hero.flash>0,undefined,false,o);}
+    if(!wp){if(h.type!=='cloud')return drawSpr(s,x,y,sc,R.hero.flip,R.hero.flash>0,undefined,false,o);
+      // Nach dem Wurf fehlt eine Phiole im Gürtel, dann greift der Pestarzt die nächste
+      const k=R.hero.rl>0?1-R.hero.rl/R.hero.rlD:1,g=k>=.55&&k<1?(k-.55)/.45:-1;if(g>=0)o.rot=(o.rot||0)+.12*Math.sin(g*Math.PI);
+      drawSpr(s,x,y,sc,R.hero.flip,R.hero.flash>0,undefined,false,o);
+      ctx.save();ctx.translate(Math.round(x),Math.round(y));if(R.hero.flip)ctx.scale(-1,1);if(o.rot)ctx.rotate(o.rot);ctx.scale(o.sx,o.sy);
+      const X=Math.round(-s.w*sc/2),Y=Math.round(-s.h*sc),bt=k<1?SPR.belt2:SPR.belt;ctx.drawImage(bt.c,X+3*sc,Y+10*sc,bt.w*sc,bt.h*sc);
+      if(g>=0){const v=SPR.vial,vx=9+3*g,vy=11-1.5*g-3*Math.sin(g*Math.PI);ctx.drawImage(v.c,X+vx*sc,Y+vy*sc,v.w*sc,v.h*sc);}
+      return ctx.restore();}}
   const b=wp.body,X=Math.round(-b.w*sc/2),Y=Math.round(-b.h*sc),fl=R.hero.flash>0;
   ctx.save();ctx.translate(Math.round(x),Math.round(y));if(R.hero.flip)ctx.scale(-1,1);ctx.rotate(rot);ctx.scale(o.sx,o.sy);
   ctx.drawImage(b.c,X,Y,b.w*sc,b.h*sc);if(fl){ctx.globalAlpha=.55;ctx.drawImage(b.wc,X,Y,b.w*sc,b.h*sc);ctx.globalAlpha=1;}
