@@ -977,7 +977,7 @@ function achBar([v,n]){v=Math.min(v,n);return `<div class="bar" style="margin:4p
 function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
 function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
   if(n){persist();computeStats();}return n;}
-const BEST_EL={worm:'Bricht mit einem Knochensplitter-Ring hervor, der den Jäger in der Nähe trifft.',cult:'Schleudert drei Feuerbälle im Fächer.',succ:'Hinterlässt rosa Lustnebel, der den Jäger betört und verlangsamt.'};// Sonderfähigkeiten, die nur Elite-Varianten haben
+const BEST_EL={worm:'Bricht mit einem Knochensplitter-Ring hervor, der den Jäger in der Nähe trifft.',cult:'Schleudert drei Feuerbälle im Fächer.',succ:'Hinterlässt rosa Lustnebel, der den Jäger betört und verlangsamt.',golem:'Stampft alle paar Sekunden eine Schockwelle, die den Jäger in der Nähe trifft.',hound:'Heult beim Anblick des Jägers und ruft ein Rudel aus drei Höllenhunden.'};// Sonderfähigkeiten, die nur Elite-Varianten haben
 const BEST={thief:'Selten. Flieht mit einem Sack voller Seelen und verschwindet nach 8 s durch ein Portal – erwische ihn mit dem Bannstrahl!',imp:'Flinker Kleinteufel, kommt in Scharen.',bat:'Fliegt schnell und flatterhaft.',hound:'Hetzt mit hohem Tempo und beißt kräftig zu.',wraith:'Schwebender Geist, zäh, hinterlässt Schwefel.',brute:'Gehörnter Koloss mit viel Leben und Wucht.',succ:'Tänzelt im Zickzack und saugt Leben.',golem:'Steinern und langsam, schluckt 40% Schaden.',cult:'Wirft aus der Ferne Feuerbälle – Bannstrahl zerstört sie.',worm:'Gräbt sich ein, ist unter der Erde unverwundbar und bricht direkt neben dem Jäger hervor.',boss:'Herrscher eines Höllenkreises, mit Ansturm, Beschwörung und Feuernova. Ab Kreis 50 herrscht in jedem 5. Kreis der Knochenkönig: er ruft Knochenwürmer und lässt Knochenspeere aus dem Boden schießen.'};
 const PL={imp:'Imps',bat:'Nachtmahre',hound:'Höllenhunde',wraith:'Schemen',brute:'Hornbestien',succ:'Sukkuben',golem:'Golems',cult:'Kultisten',worm:'Knochenwürmer'};
 const QT={
@@ -1560,6 +1560,8 @@ function updateRun(dt){
       e.abT-=dt;if(e.abT<=0){bossAbility(e);if(e.rage){e.abT*=.6;const n=8,o=Math.random()*6;for(let i=0;i<n;i++)fireball(e.x,e.y-e.r*1.5,o+i/n*Math.PI*2,e.dmg*.4,150);}}}
     if(e.refT>0)e.refT-=dt;
     if(R.mod==='blood')e.hp=Math.min(e.max,e.hp+e.max*.02*dt);
+    if(e.elite&&e.type==='golem'&&d<160&&(e.stT=(e.stT===undefined?rnd(1,2):e.stT)-dt)<=0){e.stT=4;R.fx.push({k:'ring',x:e.x,y:e.y,r:110,col:'#ffb04a',t:0,dur:.45});dirtBurst(e.x,e.y,18);shake=Math.max(shake,6);sfx('hurt');if(Math.hypot(hp.x-e.x,(hp.y-e.y)/.6)<110)hurtHero(e.dmg*1.2,null);}// Elite-Golem: Stampf-Schockwelle
+    if(e.elite&&e.type==='hound'&&!e.howl&&d<320&&R.en.length<60){e.howl=1;R.tx.push({x:e.x,y:e.y-40,str:'AUUUUH!',t:0,col:'#ff6a1e'});R.fx.push({k:'ring',x:e.x,y:e.y,r:70,col:'#ff6a1e',t:0,dur:.4});for(let i=0;i<3;i++){const m=spawnDemon('hound');m.x=clamp(e.x+rnd(-60,60),20,W-20);m.y=clamp(e.y+rnd(-40,40),100,H-20);}}// Elite-Höllenhund ruft sein Rudel
     if(e.elite&&e.type==='succ'&&e.spawn<=0&&(e.mT=(e.mT||0)-dt)<=0&&R.ice.length<40){e.mT=.5;R.ice.push({x:e.x,y:e.y,r:24,t:0,dur:3,pink:1});}
     if(hasAff(e,'burn')&&(e.fT=(e.fT||0)-dt)<=0&&R.fires.length<60){e.fT=.35;R.fires.push({x:e.x,y:e.y,r:22,t:0,dur:3,dmg:e.dmg*.25});}
     if(hasAff(e,'vamp'))e.hp=Math.min(e.max,e.hp+e.max*.03*dt);
