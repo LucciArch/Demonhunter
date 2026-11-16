@@ -1193,7 +1193,7 @@ function updateRun(dt){
   R.fireT-=dt;for(const f of R.fires){f.t+=dt;if(R.fireT<=0&&Math.hypot(f.x-hp.x,f.y-hp.y)<f.r+10){R.fireT=.5;hurtHero(f.dmg,null);if(R.over)return;}}
   R.fires=R.fires.filter(f=>f.t<f.dur);
   if(R.mod==='ember'&&(R.emT=(R.emT||1.5)-dt)<=0){R.emT=rnd(1,1.8);const mx=Math.random()<.35?hp.x+rnd(-60,60):rnd(40,W-40),my=Math.random()<.35?hp.y+rnd(-30,30):rnd(130,H-30),dm=R.dmgM*3;
-    R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1});shake=Math.max(shake,5);sfxL('hurt');if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
+    R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
   if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
