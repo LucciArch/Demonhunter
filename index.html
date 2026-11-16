@@ -920,6 +920,7 @@ for(const k in AFF_ACH)AN(AFF_ACH[k][0]+'x','Erz'+AFF_ACH[k][1].toLowerCase(),`V
 A('oall','Allbezwinger','Besiege unter jedem Kreis-Modifikator 10 Fürsten',()=>Object.keys(CMOD).every(k=>((save.st.bm||{})[k]||0)>=10),{a:15});
 AN('shb0','Schildspalter','Zerbrich 100-mal den Schutz eines Schildträgers per Bannstrahl',()=>(save.st.shb||0),100,{g:5});
 AN('lf0','Luftfänger','Fange 100 goldene Seelen-Kugeln per Bannstrahl in der Luft',()=>(save.st.lf||0),100,{g:5});
+[[25,'Blutrausch'],[100,'Apokalypse'],[200,'Götterdämmerung']].forEach(([n,nm],i)=>AN('cb'+i,nm,`Erreiche eine ${n}er-Kombo`,()=>(save.st.combo||0),n,{g:2+i*3}));
 AN('np0','Novabrecher','Lass 100 Fürsten-Nova-Kugeln per Bannstrahl zerplatzen',()=>(save.st.np||0),100,{g:5});
 AN('sb0','Seelenfänger','Banne 100 Seelenträger (Kreis-Modifikator Seelenbann)',()=>(save.st.sb||0),100,{g:5});
 AN('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths'),1,{s:25});
@@ -927,7 +928,7 @@ const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
 function curAdd(c,v){if(c==='s')save.souls+=v;else if(c==='b')save.brim+=v;else if(c==='g')save.sig+=v;else{save.frag+=v;save.fragTotal=(save.fragTotal||0)+v;}}
 const rewTxt=r=>Object.entries(r).map(([c,v])=>`<span class="cur ${c}" style="font-size:17px"><i></i>${fmt(v)}</span>`).join(' ');
 // Kategorien der Erfolge (Reihenfolge = Anzeige), jede id passt auf genau eine
-const ACH_CAT=[['Jagd & Gemetzel',/^[kprd]\d/],['Fürsten & Kreise',/^[bc]\d/],['Bannstrahl & Ultimates',/^[mu]\d|^shb|^sb|^np|^lf/],['Orden & Aufstieg',/^[hna]\d/],['Dämonen & Bestiarium',/^[gef]\d/],['Elite-Affixe',/^s\d/],['Kreis-Modifikatoren',/^o/],['Reliquien',/^x/]];
+const ACH_CAT=[['Jagd & Gemetzel',/^[kprd]\d|^cb/],['Fürsten & Kreise',/^[bc]\d/],['Bannstrahl & Ultimates',/^[mu]\d|^shb|^sb|^np|^lf/],['Orden & Aufstieg',/^[hna]\d/],['Dämonen & Bestiarium',/^[gef]\d/],['Elite-Affixe',/^s\d/],['Kreis-Modifikatoren',/^o/],['Reliquien',/^x/]];
 const achOpen=new Set();
 function achNear(a){if(save.ach[a.id]||!a.pg)return false;const [v,t]=a.pg();return v/t>=.9;}
 function achBar([v,n]){v=Math.min(v,n);return `<div class="bar" style="margin:4px 0;height:14px"><div style="width:${v/n*100}%;background:linear-gradient(#ffb04a,#a8481e)"></div><span style="font-size:12px">${fmt(v)} / ${fmt(n)}</span></div>`;}
@@ -1108,6 +1109,19 @@ function drawShrine(){const s=R.shrine;if(!s)return;const S=SHRINES[s.k],sp=SPR[
   ctx.font='16px "Pixelify Sans"';ctx.textAlign='center';ctx.fillStyle='#000';ctx.fillText(S.n,s.x+1,s.y-sp.h*sc-9+b*2);ctx.fillStyle=S.c;ctx.fillText(S.n,s.x,s.y-sp.h*sc-10+b*2);
   if(Math.hypot(ptr.x-s.x,ptr.y-s.y+20)<60){ctx.font='15px VT323';ctx.fillStyle='#000c';const w=ctx.measureText(S.d).width+12;ctx.fillRect(s.x-w/2,s.y+6,w,20);ctx.fillStyle='#fff';ctx.fillText(S.d,s.x,s.y+21);}}
 
+// ================= KOMBO (schnelle Kills in Folge: bis +100% Seelen) =================
+const COMBO_TIERS=[[10,'GEMETZEL','#ffd76a'],[25,'BLUTRAUSCH','#ff9a3a'],[50,'HÖLLENSTURM','#ff4a4a'],[100,'APOKALYPSE','#ff3ad8'],[200,'GÖTTERDÄMMERUNG','#ffffff']];
+const comboMul=()=>1+Math.min(1,(R.combo||0)*.01);
+function comboKill(){R.combo=(R.combo||0)+1;R.comboT=3;R.comboPop=.15;if(R.combo>(save.st.combo||0))save.st.combo=R.combo;
+  const t=COMBO_TIERS.find(t=>t[0]===R.combo);if(t){R.comboTier=t;R.comboAnn=1.2;sfx('relic');shake=Math.max(shake,4);}}
+function updCombo(dt){if(R.combo&&(R.comboT-=dt)<=0){R.combo=0;R.comboTier=null;}R.comboPop=Math.max(0,(R.comboPop||0)-dt);R.comboAnn=Math.max(0,(R.comboAnn||0)-dt);}
+function drawCombo(){if(!R.combo||R.combo<3)return;const t=R.comboTier,col=t?t[2]:'#ffe8c8',x=W-24,y=H*.36,p=1+(R.comboPop||0)*2;
+  ctx.save();ctx.textAlign='right';ctx.translate(x,y);ctx.scale(p,p);ctx.font='bold 46px "Pixelify Sans"';ctx.fillStyle='#000';ctx.fillText(R.combo+'×',3,3);ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=t?14:0;ctx.fillText(R.combo+'×',0,0);ctx.restore();
+  ctx.save();ctx.textAlign='right';ctx.font='18px "Pixelify Sans"';ctx.fillStyle='#000';ctx.fillText((t?t[1]+' · ':'KOMBO · ')+'+'+Math.round((comboMul()-1)*100)+'% Seelen',x+1,y+25);ctx.fillStyle=col;ctx.fillText((t?t[1]+' · ':'KOMBO · ')+'+'+Math.round((comboMul()-1)*100)+'% Seelen',x,y+24);
+  ctx.fillStyle='#000a';ctx.fillRect(x-160,y+32,160,6);ctx.fillStyle=col;ctx.fillRect(x-160*R.comboT/3,y+32,160*R.comboT/3,6);
+  if(R.comboAnn>0&&t){const a=Math.min(1,R.comboAnn*2),s=1+(1.2-R.comboAnn)*.3;ctx.globalAlpha=a;ctx.textAlign='center';ctx.translate(W/2,H*.3);ctx.scale(s,s);ctx.font='bold 54px "Pixelify Sans"';ctx.fillStyle='#000';ctx.fillText(t[1]+'!',3,3);ctx.fillStyle=t[2];ctx.shadowColor=t[2];ctx.shadowBlur=20;ctx.fillText(t[1]+'!',0,0);}
+  ctx.restore();}
+
 // ================= ARENA (Rückwand, Säulen, Fackeln, Deko je Höllenkreis) =================
 const PROP_PAL={k:'#e8dcb8',K:'#b0a480',d:'#6a5c44',x:'#1a1014',s:'#3a3036',S:'#5e5058',h:'#7a6c74',t:'#3a2a18',T:'#6a4a26',m:'#c03a2a',M:'#ff8a6a',g:'#4a7a2a',G:'#9be04a'};
 const PROPS={
@@ -1272,7 +1286,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;boonGain(e);save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
+  if(e.dead)return;e.dead=true;R.kills++;boonGain(e);comboKill();save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime){R.time+=ST.killTime;if(R.time>R.maxTime)R.maxTime=R.time;}
   // particles
   if(e.aff2){R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:.8});shake=Math.max(shake,3);}
   R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
@@ -1280,7 +1294,7 @@ function killDemon(e,o){
   const col=e.type==='wraith'?'#9bf0ff':e.type==='bat'?'#c06aff':'#ff6a3a';
   for(let i=0;i<(e.boss?60:10);i++)R.pt.push({x:e.x,y:e.y-e.r,vx:rnd(-160,160),vy:rnd(-220,40),t:0,life:rnd(.4,.9),c:Math.random()<.5?col:'#2a1018',s:ri(2,5)});
   // loot
-  const d=e.d;let souls=(d.souls*R.rewM*ST.soul+ST.soulFlat)*(o.smite?ST.clickSoul:1);if(e.boss)souls*=ST.bossLoot;if(R.mod==='storm')souls*=1.5;if(R.mod==='dark')souls*=1.25;if((save.st.kt[e.type]||0)>=10000)souls*=1.05;if(e.soulB){souls*=5;save.st.sb=(save.st.sb||0)+1;R.fx.push({k:'ring',x:e.x,y:e.y-e.r,r:60,t:0,dur:.5,col:'#7ae8ff'});}
+  const d=e.d;let souls=(d.souls*R.rewM*ST.soul+ST.soulFlat)*(o.smite?ST.clickSoul:1);if(e.boss)souls*=ST.bossLoot;if(R.mod==='storm')souls*=1.5;souls*=comboMul();if(R.mod==='dark')souls*=1.25;if((save.st.kt[e.type]||0)>=10000)souls*=1.05;if(e.soulB){souls*=5;save.st.sb=(save.st.sb||0)+1;R.fx.push({k:'ring',x:e.x,y:e.y-e.r,r:60,t:0,dur:.5,col:'#7ae8ff'});}
   if(Math.random()<ST.dbl)souls*=2;
   if(R.mod==='frost'&&!e.boss&&R.ice.length<40)R.ice.push({x:e.x,y:e.y,r:28,t:0,dur:5});
   const orbs=e.boss?24:e.aff2?8:e.elite?4:1;
@@ -1471,7 +1485,7 @@ function updateRun(dt){
   if(R.mod==='bann'&&(R.bnT=(R.bnT??3)-dt)<=0){R.bnT=10;const c=R.en.filter(e=>!e.dead&&!e.boss&&!e.soulB&&e.spawn<=0);if(c.length)c[ri(0,c.length-1)].soulB=1;}
   if(R.mod==='ember'&&(R.emT=(R.emT||1.5)-dt)<=0){R.emT=rnd(1,1.8);const mx=Math.random()<.35?hp.x+rnd(-60,60):rnd(40,W-40),my=Math.random()<.35?hp.y+rnd(-30,30):rnd(130,H-30),dm=R.dmgM*3;
     R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1,foe:1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
-  updShrines(dt);
+  updShrines(dt);updCombo(dt);
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
   if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.rl=Math.max(0,(R.hero.rl||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);R.hero.blk=Math.max(0,(R.hero.blk||0)-dt);R.hero.bsh=Math.max(0,(R.hero.bsh||0)-dt);
@@ -1967,7 +1981,7 @@ function chronik(tab){
     h+='</div>';
     const mc=Math.max(save.maxCircle,stv('maxC')),lst=(o,col)=>Object.values(o).map(x=>`<div class="htn ${mc>=x.c?'':'lock'}" style="cursor:default;opacity:${mc>=x.c?1:.55}"><b style="color:${col||x.col}">${x.name}</b> <span style="color:var(--dim)">ab Kreis ${x.c}</span><br>${x.d}</div>`).join('');
     h+=`<div style="color:#ff9a4a;text-align:center;margin:12px 0 6px">Elite-Affixe</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(AFFIX)}</div><div style="color:#ff6ad8;text-align:center;margin:12px 0 6px">Höllenkreis-Modifikatoren</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(CMOD,'#ff6ad8')}</div>`;}
-  else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Elite vernichtet',fmt(st.elites||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Reliquien geschmolzen',fmt(st.forged||0)],['Erfolge',achCount()+' / '+ACH.length]];
+  else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Elite vernichtet',fmt(st.elites||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Beste Kombo',fmt(st.combo||0)],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Reliquien geschmolzen',fmt(st.forged||0)],['Erfolge',achCount()+' / '+ACH.length]];
     for(const k in CMOD)if(st.bm&&st.bm[k])rows.push(['Fürsten unter '+CMOD[k].name,fmt(st.bm[k])]);
     if(st.sb)rows.push(['Seelenträger gebannt',fmt(st.sb)]);
     if(st.shb)rows.push(['Schilde zerbrochen',fmt(st.shb)]);
@@ -2050,7 +2064,7 @@ function frame(now){
     let sx=0,sy=0;if(shake>0&&save.opt.shake){sx=rnd(-shake,shake);sy=rnd(-shake,shake);shake=Math.max(0,shake-dt*40);}
     ctx.save();ctx.translate(sx,sy);R.zz=null;
     if(R.zoom){const Z=R.zoom;if(!R.paused)Z.t+=dt;const p=Z.t/Z.dur;if(p>=1)R.zoom=null;else{const z=1+.18*Math.sin(Math.PI*Math.min(1,p*1.6))*(p<.6?1:(1-p)/.4),fx=W/2+(Z.x-W/2)*.6,fy=H/2+(Z.y-H/2)*.6;R.zz={z,fx,fy};ctx.translate(fx,fy);ctx.scale(z,z);ctx.translate(-fx,-fy);}}
-    renderRun();ctx.restore();
+    renderRun();ctx.restore();drawCombo();
     if(R.paused){ctx.save();ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffd9b0';ctx.textAlign='center';ctx.font='48px "Pixelify Sans"';ctx.fillText('PAUSE',W/2,H/2);ctx.font='22px "Pixelify Sans"';ctx.fillText('Esc zum Fortsetzen',W/2,H/2+36);ctx.restore();}
     // HUD
     $('#hpFill').style.width=$('#hpTrail').style.width=(100*Math.max(0,R.hp)/R.maxHp)+'%';$('#hpTxt').textContent=`${fmt(Math.max(0,R.hp))} / ${fmt(R.maxHp)}`;
