@@ -480,6 +480,13 @@ const ARTS=[
  {id:'schaedel',c:10,name:'Fürstenschädel',d:v=>`+${v*6}% Schaden gegen Fürsten & Elite`,f:(s,l)=>s.bossDmg+=.06*l,rows:["..bbbbbb..",".bbbbbbbb.","bbbbbbbbbb","bKKbbbbKKb","bKRbbbbRKb","bbbbKKbbbb",".bbbbbbbb.","..bKbKbK..","..bbbbbb..","...b.b.b.."]},
  {id:'uhr',name:'Sanduhr des Richters',d:v=>`+${v/2}s Jagdzeit`,f:(s,l)=>s.time+=.5*l,rows:["YYYYYYYY",".GTTTTG.","..GTTG..","...GG...","..GTTG..",".GTTTTG.","YYYYYYYY"]}];
 const ART_MAX=10;
+// Set-Bonus: alle drei Reliquien auf Stufe SET_LVL
+const SET_LVL=5,SETS=[
+ {name:'Blutpakt',ids:['kelch','krone','herz'],d:'+25% Schaden, +3% Lebensraub',f:s=>{s.dmg*=1.25;s.ls+=.03;}},
+ {name:'Seelenhandel',ids:['laterne','horn','uhr'],d:'+30% Seelen & Schwefel, +3s Jagdzeit',f:s=>{s.soul*=1.3;s.brim*=1.3;s.time+=3;}},
+ {name:'Gewitter des Richters',ids:['feder','auge','rune'],d:'+20% Angriffstempo, +5% Krit, +1 Kettenblitz',f:s=>{s.aps*=1.2;s.crit=Math.min(95,s.crit+5);s.chain+=1;}},
+ {name:'Fürstenmord',ids:['schaedel','dornen','krone'],d:'+30% Schaden gegen Fürsten & Elite, +50% Dornen',f:s=>{s.bossDmg+=.3;s.thorns+=.5;}}];
+const setOn=t=>t.ids.every(i=>(save.arts[i]||0)>=SET_LVL);
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
 const SPR={};for(const k in SPR_DEF)SPR[k]=mkSprite(SPR_DEF[k]);
 // Fürsten-Varianten (Farbvarianten + eigene Fähigkeit)
@@ -894,6 +901,7 @@ function computeStats(){
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.frenzy=g('frenzy')/100;s.killTime=g('killTime');
   s.crit=Math.min(95,s.crit);s.enemyHp=Math.max(.3,s.enemyHp);
   for(const a of ARTS)if(save.arts[a.id])a.f(s,save.arts[a.id]);
+  for(const t of SETS)if(setOn(t))t.f(s);
   s.range=h.range*(h.type==='pulse'?s.aoe:1);
   ST=s;return s;
 }
@@ -1026,7 +1034,8 @@ function dropArt(e){const ok=ARTS.filter(a=>R.c>=(a.c||0)),open=ok.filter(a=>(sa
 const forgeGain=()=>1+Math.floor(R.c/10);
 function gainArt(a){if((save.arts[a.id]||0)>=ART_MAX){const f=forgeGain();curAdd('a',f);save.st.forged=(save.st.forged||0)+1;toast('Seelen-Schmiede: '+a.name+' → +'+f+' Höllenfragmente');return;}
   save.arts[a.id]=Math.min(ART_MAX,(save.arts[a.id]||0)+1);(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
-  toast('Reliquie: '+a.name+' (Stufe '+save.arts[a.id]+')');}
+  toast('Reliquie: '+a.name+' (Stufe '+save.arts[a.id]+')');
+  if(save.arts[a.id]===SET_LVL)for(const t of SETS)if(t.ids.includes(a.id)&&setOn(t)){toast('Set-Bonus „'+t.name+'“: '+t.d);computeStats();}}
 function dropLoot(e,cur,v,gold){
   const a=Math.random()*Math.PI*2,sp=rnd(60,180);
   R.loot.push({x:e.x,y:e.y-e.r,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-80,z:0,cur,v,gold,age:0,fly:0,tx:0,ty:0});
@@ -1532,7 +1541,10 @@ function chronik(tab){
   else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
     for(const a of ACH){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
     h+='</div>';}
-  else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten. Sind alle erreichbaren auf Stufe ${ART_MAX}, schmilzt die <b style="color:#ff6ad8">Seelen-Schmiede</b> neue zu Höllenfragmenten (1 + 1 je 10 Kreise).</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
+  else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten. Sind alle erreichbaren auf Stufe ${ART_MAX}, schmilzt die <b style="color:#ff6ad8">Seelen-Schmiede</b> neue zu Höllenfragmenten (1 + 1 je 10 Kreise).</div>`;
+    h+=`<div style="color:#ff6ad8;text-align:center;margin-bottom:6px">Sets – alle drei Reliquien auf Stufe ${SET_LVL}:</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:12px">`;
+    for(const t of SETS){const on=setOn(t);h+=`<div class="htn ${on?'max':''}" style="cursor:default;opacity:${on?1:.7}"><b style="color:${on?'#ff6ad8':'#c8b8a8'}">${on?'✦ ':''}${t.name}</b> ${t.ids.map(i=>`<img src="${sprURL('art_'+i,2)}" title="${save.arts[i]?ARTS.find(a=>a.id===i).name:'???'}" style="vertical-align:middle;image-rendering:pixelated;${save.arts[i]?'':'filter:brightness(0)'}"><span style="color:${(save.arts[i]||0)>=SET_LVL?'#7bff8a':'var(--dim)'}">${save.arts[i]||0}</span>`).join(' ')}<br>${t.d}</div>`;}
+    h+='</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">';
     for(const a of ARTS){const l=save.arts[a.id]||0;h+=`<div class="htn ${l>=ART_MAX?'max':l?'':'lock'}" style="cursor:default;opacity:${l?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('art_'+a.id,4)}" style="image-rendering:pixelated;${l?'':'filter:brightness(0)'}"><div><b style="color:${l?'#ffd76a':'#c8b8a8'}">${l?a.name:'???'}</b> ${l?'Stufe '+l+'/'+ART_MAX:''}<br>${a.d(Math.max(1,l))}${l?'':' (Stufe 1)'}${!l&&a.c?`<br><span style="color:#ff8a6a">Erst ab Kreis ${a.c}</span>`:''}</div></div>`;}
     h+='</div>';}
   else if(tab==='b'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Erlege eine Dämonenart, um ihren Eintrag aufzudecken. Werte relativ zum Imp des jeweiligen Kreises. Ab 100 und 1000 Kills einer Art je +5% Schaden gegen sie.</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">`;
