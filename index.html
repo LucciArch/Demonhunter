@@ -817,6 +817,7 @@ A('x1','Vollendeter Sammler','Bringe einen Set-Bonus auf Stufe 2',()=>SETS.some(
 A('f0','Forscher','Entdecke alle Dämonenarten im Bestiarium',()=>Object.keys(DEMONS).every(k=>save.st.kt[k]),{g:5});
 A('f1','Meister des Bestiariums','Erlege von jeder Dämonenart 1000',()=>Object.keys(DEMONS).every(k=>(save.st.kt[k]||0)>=1000),{a:10});
 A('f2','Elite-Kenner','Erlege von jeder Dämonenart 10 Elite',()=>Object.keys(DEMONS).every(k=>k==='boss'||(save.st.ke[k]||0)>=10),{b:500});
+for(const k in CMOD)A('o'+k,'Bezwinger: '+CMOD[k].name,`Besiege einen Fürsten unter dem Kreis-Modifikator „${CMOD[k].name}“`,()=>!!(save.st.bm&&save.st.bm[k]),{g:3});
 A('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths')>=1,{s:25});
 const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
 function curAdd(c,v){if(c==='s')save.souls+=v;else if(c==='b')save.brim+=v;else if(c==='g')save.sig+=v;else{save.frag+=v;save.fragTotal=(save.fragTotal||0)+v;}}
@@ -1037,7 +1038,7 @@ function killDemon(e,o){
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2)*(e.aff2?2:1):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;if(R.mod==='rage')b*=1.5;if(R.mod==='curse')b*=1.25;if(R.mod==='ember')b*=1.4;dropLoot(e,'b',b);}
   if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
   if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1);dropLoot(e,'g',s*ST.bossLoot);
-    R.bossDead=true;save.st.bosses++;questProg('boss');R.time+=5;R.maxTime+=5;shake=16;
+    R.bossDead=true;save.st.bosses++;if(R.mod)(save.st.bm=save.st.bm||{})[R.mod]=1;questProg('boss');R.time+=5;R.maxTime+=5;shake=16;
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
     const bb=$('#bossBanner');bb.textContent=(e.name||'FÜRST').toUpperCase()+' GEBANNT! +5s';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1600);}
   if(hasAff(e,'expl')){R.fx.push({k:'boom',x:e.x,y:e.y-e.r*.6,r:80,t:0,dur:.4});shake=Math.max(shake,8);const h=heroPos();if(Math.hypot(h.x-e.x,h.y-e.y)<80)hurtHero(e.dmg*2,e);}
