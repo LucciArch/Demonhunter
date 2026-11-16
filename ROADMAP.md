@@ -77,10 +77,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.69: Templerin-Schild als eigenes Sprite – bei eingehenden Treffern reißt sie ihn nach vorn oben, er leuchtet auf und goldene Funken sprühen
 - v0.70: Chronik – Erfolge nach 8 Kategorien gruppiert und einklappbar (mit Fortschritt je Kategorie, Auf/Zu bleibt beim Tab-Wechsel erhalten)
 - v0.71: Fürsten-Tod – 24 Seelen-Kugeln schießen als Fontäne hoch, fallen mit Schatten zurück, springen einmal auf und werden erst nach der Landung eingesammelt
+- v0.72: Neuer Dämon ab Kreis 50 – Knochenwurm (eigenes Sprite): gräbt sich ein, wühlt als Erdhügel unverwundbar zum Jäger und bricht mit Erdfontäne direkt neben ihm hervor
 
 ## Als Nächstes
-69. Neuer Dämon ab Kreis 50: Knochenwurm (gräbt sich ein, taucht neben dem Jäger auf)
 73. Bannstrahl auf eine Nova-Kugel lässt sie in Fürsten-Farbe zerplatzen (eigener Funkenregen)
 74. Templerin: Schildstoß-Angriff mit vorschnellendem Schild statt nur Klinge
 75. Chronik: Kategorie mit erreichbarem, aber noch offenem Erfolg mit Fortschrittsbalken (z. B. 640/1000)
 76. Goldene Seelen-Kugeln aus der Fürsten-Fontäne mit eigenem Klingel-Sound beim Aufprall
+77. Knochenwurm-Erfolg „Wurmfänger“ (200 Knochenwürmer) und Bannstrahl auf den Erdhügel treibt ihn sofort heraus
