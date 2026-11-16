@@ -26,9 +26,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.19: Neue Elite-Affixe ab Kreis 8 – Vampirisch (regeneriert, heilt sich bei Treffern), Beschwörer (ruft alle 4 s Wichte), Spiegelnd (wirft Schaden auf den Jäger zurück) + Erfolge „Elitejäger“/„Elitenschreck“, Elite-Zähler in der Statistik
 - v0.20: Seelen-Schmiede – sind alle erreichbaren Reliquien auf Stufe 10, werden neue Reliquien zu Höllenfragmenten geschmolzen (1 + 1 je 10 Kreise); Zähler in der Statistik
 - v0.21: Bestiarium in der Chronik – alle Dämonenarten mit Sprite, Beschreibung, Werten und Kill-Zähler; unbekannte als Silhouette
+- v0.22: Höllenkreis-Modifikatoren ab Kreis 12 – Blutnebel (Regeneration), Horde (doppelt so viele Dämonen, +50% Fürsten-Quote), Raserei (+30% Tempo, +50% Schwefel), Seelensturm (+50% Seelen); Anzeige in Kreis-Leiste, Schnellreise und Jagd-Banner
 
 ## Als Nächstes
-19. Höllenkreis-Modifikatoren ab Kreis 12 (z. B. Blutnebel: Dämonen regenerieren, Seelensturm: +50% Seelen)
 20. Reliquien-Set-Bonus: drei bestimmte Reliquien auf Stufe 5 schalten einen Zusatzeffekt frei
 21. Elite-Affix-Kombinationen ab Kreis 15 (zwei Affixe gleichzeitig, mehr Beute)
 22. Bestiarium-Meilensteine: 100/1000 Kills einer Art geben dauerhaft +5% Schaden gegen diese Art
+23. Weitere Kreis-Modifikatoren ab Kreis 20 (z. B. Finsternis: kleiner Sichtradius, Fluch: Jäger-Regeneration halbiert, doppelte Siegel)
