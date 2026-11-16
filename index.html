@@ -1524,7 +1524,9 @@ function updateRun(dt){
     if(e.d.thief){e.life=(e.life||0)+dt;e.flip=dx>0;e.moving=1;if(Math.random()<dt*20)R.pt.push({x:e.x+rnd(-6,6),y:e.y-12,vx:rnd(-20,20),vy:rnd(-50,-10),t:0,life:.5,c:Math.random()<.5?'#ffd76a':'#9be8ff',s:2});// Seelendieb flieht vor dem Jäger
       if(e.life>8){e.dead=true;R.fx.push({k:'portal',x:e.x,y:e.y,r:30,t:0,dur:.6});R.tx.push({x:e.x,y:e.y-40,str:'ENTKOMMEN!',t:0,col:'#9be8ff'});sfx('tele');continue;}
       let fx=-dx/d,fy=-dy/d;if(e.x<70||e.x>W-70)fx*=-.3;if(e.y<140||e.y>H-50)fy*=-.3;fx+=Math.sin(e.life*2.3+e.bob)*.7;e.x=clamp(e.x+fx*e.spd*dt,30,W-30);e.y=clamp(e.y+fy*e.spd*.8*dt,120,H-20);continue;}
-    if(e.bv){e.abT-=dt;if(e.abT<=0)bossAbility(e);}
+    if(e.bv){if(!e.rage&&e.hp<e.max*.5){e.rage=1;e.spd*=1.4;e.abT=Math.min(e.abT,.8);shake=Math.max(shake,10);sfx('boss');R.fx.push({k:'ring',x:e.x,y:e.y,r:140,col:'#ff3a3a',t:0,dur:.6});// Phase 2: Wut
+        const bb=$('#bossBanner');bb.textContent=e.name.toUpperCase()+' TOBT!';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1500);}
+      e.abT-=dt;if(e.abT<=0){bossAbility(e);if(e.rage){e.abT*=.6;const n=8,o=Math.random()*6;for(let i=0;i<n;i++)fireball(e.x,e.y-e.r*1.5,o+i/n*Math.PI*2,e.dmg*.4,150);}}}
     if(e.refT>0)e.refT-=dt;
     if(R.mod==='blood')e.hp=Math.min(e.max,e.hp+e.max*.02*dt);
     if(hasAff(e,'burn')&&(e.fT=(e.fT||0)-dt)<=0&&R.fires.length<60){e.fT=.35;R.fires.push({x:e.x,y:e.y,r:22,t:0,dur:3,dmg:e.dmg*.25});}
@@ -1734,7 +1736,7 @@ function drawDemon(e,sc){
   const s=SPR[e.spr||e.d.spr];const k=sc*(e.d.sc||1)*(e.esc||1);
   const fy=e.d.fly?Math.sin(e.bob)*4-10:0;
   drawShadow(e.x,e.y,s.w*k*.32);
-  if(e.boss||e.elite||e.d.thief){ctx.save();ctx.globalAlpha=.25+.1*Math.sin(e.bob);ctx.fillStyle=e.d.thief?'#ffd76a':e.boss?'#ff3a3a':e.aff?AFFIX[e.aff].col:'#ffb04a';ctx.beginPath();ctx.ellipse(e.x,e.y,s.w*k*.5,s.w*k*.18,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+  if(e.boss||e.elite||e.d.thief){ctx.save();ctx.globalAlpha=.25+.1*Math.sin(e.bob);if(e.rage)ctx.globalAlpha=.45+.25*Math.sin(e.bob*2);ctx.fillStyle=e.d.thief?'#ffd76a':e.boss?'#ff3a3a':e.aff?AFFIX[e.aff].col:'#ffb04a';ctx.beginPath();ctx.ellipse(e.x,e.y,s.w*k*.5,s.w*k*.18,0,0,Math.PI*2);ctx.fill();ctx.restore();}
   const sq=e.d.fly?0:Math.abs(Math.sin(e.bob))*1.5;e.drawSc=k;
   const fr=(!e.d.fly&&e.moving&&s.f2&&Math.floor(e.bob/2.4)%2)?s.f2:s;
   let o=e.d.fly?{sy:1+.08*Math.sin(e.bob*2),sx:1-.04*Math.sin(e.bob*2)}:null,lx=0,ly=0;
