@@ -66,6 +66,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.58: Fällt eine Doppel-Affix-Elite, blitzt es kurz auf und ein Seelenwirbel steigt auf
 - v0.59: Kultisten-Feuerbälle ziehen einen glühenden Schweif mit Glutfunken und zerstieben beim Einschlag (oder per Bannstrahl) in Funken
 - v0.60: Neuer Kreis-Modifikator ab Kreis 45 – Seelenbann (alle 10 s wird ein Dämon zum Seelenträger mit blauer Aura und Seelenfunken, sein Tod bringt 5× Seelen); eigener Bezwinger-Erfolg, zählt für Allbezwinger
+- v0.61: Seelenträger fliehen vor dem Jäger (hält Abstand unter 220 px, 75% Tempo) – Bannstrahl oder Fernkampf lohnt sich
 
 ## Als Nächstes
 57. Pestarzt: Phiolen-Gürtel als eigenes Sprite, Griff zur Phiole vor dem Wurf
@@ -73,4 +74,4 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 61. Bannstrahl auf einen Schildträger zerbricht sichtbar die Schutzverbindungen (Splitter-Effekt)
 64. Fürsten-Tod: Seelenwirbel in groß, Siegel fliegen sichtbar zur Anzeige
 65. Fürsten-Feuernova-Kugeln mit eigenem, größerem Glut-Schweif und Hitzeflimmern
-66. Seelenträger flieht vor dem Jäger (hält Abstand), damit der 5×-Kill ein kleines Jagdziel wird
+67. Seelenträger-Kill zählt in der Statistik, Erfolg „Seelenfänger“ (100 Seelenträger)

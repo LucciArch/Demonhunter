@@ -1234,6 +1234,7 @@ function updateRun(dt){
     if(hasAff(e,'summ')&&(e.smT-=dt)<=0&&R.en.length<60){e.smT=4;for(let i=0;i<2;i++){const m=spawnDemon('imp');m.x=clamp(e.x+rnd(-50,50),20,W-20);m.y=clamp(e.y+rnd(-30,40),100,H-20);}}
     if(hasAff(e,'tele')&&(e.tpT-=dt)<=0&&d>reach+40){e.tpT=3;R.fx.push({k:'ring',x:e.x,y:e.y,r:50,col:'#ff4af0',t:0,dur:.35});const a=Math.random()*Math.PI*2;e.x=hp.x+Math.cos(a)*(reach+20);e.y=hp.y+Math.sin(a)*(reach+20)*.7;R.fx.push({k:'ring',x:e.x,y:e.y,r:50,col:'#ff4af0',t:0,dur:.35});sfx('tele');continue;}
     let sp=e.spd*(e.charge>0?4:1);if(e.charge>0)e.charge-=dt;
+    if(e.soulB&&d<220){e.moving=1;e.flip=!e.flip;e.x=clamp(e.x-dx/d*sp*.75*dt,20,W-20);e.y=clamp(e.y-dy/d*sp*.75*dt,100,H-20);continue;}// Seelenträger hält Abstand
     if(e.d.ranged&&d<e.d.ranged&&d>reach){e.castT=(e.castT===undefined?rnd(.5,1.5):e.castT)-dt;if(e.castT<=0){e.castT=2.2;R.fx.push({k:'glyph',x:e.x,y:e.y-e.r*1.4,t:0,dur:.5});fireball(e.x,e.y-e.r*1.4,Math.atan2(hp.y-20-(e.y-e.r*1.4),hp.x-e.x),e.dmg*1.2);}}
     else if(d>reach){e.moving=1;let mx=dx/d,my=dy/d;if(e.d.zig){const z=Math.sin(e.bob*.6)*.9;const ox=-my*z,oy=mx*z;mx+=ox;my+=oy;}e.x+=mx*sp*dt;e.y+=my*sp*dt;}
     else{e.hitT-=dt;e.hitAnim=Math.max(0,(e.hitAnim||0)-dt);if(e.hitT<=0){e.hitT=1;e.hitAnim=.22;atkFx(e,hp);hurtHero(e.dmg,e);if(hasAff(e,'frost'))R.frost=2;if((e.d.drain||hasAff(e,'vamp'))&&!e.dead)e.hp=Math.min(e.max,e.hp+e.max*.25);if(R.over)return;}}
