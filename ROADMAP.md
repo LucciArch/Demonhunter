@@ -84,10 +84,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.76: Templerin-Schildstoß – der Schild schnellt beim Angriff sichtbar vor und leuchtet, goldene Stoßwelle und Funkenregen
 - v0.77: Fürsten-Fontäne – jede 6. Seelen-Kugel ist golden (doppelter Wert) und klingelt beim Aufprall hell
 - v0.78: Statistik zählt zerplatzte Fürsten-Nova-Kugeln, Erfolg „Novabrecher“ (100 Kugeln, +5 Siegel)
+- v0.79: Elite-Knochenwurm schleudert beim Hervorbrechen einen Knochensplitter-Ring (1,5× Schaden im Umkreis)
 
 ## Als Nächstes
-78. Knochenwurm als Elite: hinterlässt beim Auftauchen einen Knochensplitter-Ring, der kurz Schaden macht
 80. Chronik: Kategorie-Zeile markiert, wenn ein Erfolg darin kurz vor dem Abschluss steht (≥90%)
 81. Templerin: Heiliger Wall als sichtbare goldene Kuppel mit Runen, die bei Treffern aufflackert
 82. Fürsten-Fontäne: Klick auf eine noch fliegende goldene Kugel fängt sie in der Luft (+50% Wert, Funkeln)
 83. Neuer Fürst „Knochenkönig“ ab Kreis 50: beschwört Knochenwürmer und lässt Knochenspeere aus dem Boden schießen
+84. Bestiarium: Hinweis auf Elite-Sonderfähigkeiten (z. B. Splitterring des Knochenwurms)

@@ -1028,6 +1028,7 @@ function spawnDemon(type){
   e.max=e.hp=6*d.hp*R.hpM*(d.boss?(1+.08*R.c)*(R.mod==='flood'?1.5:1):1);
   R.en.push(e);return e;
 }
+function boneRing(e){R.fx.push({k:'ring',x:e.x,y:e.y,r:80,col:'#f4ecd0',t:0,dur:.4});for(let i=0;i<16;i++){const a=i/16*Math.PI*2;R.pt.push({x:e.x,y:e.y-4,vx:Math.cos(a)*240,vy:Math.sin(a)*150-60,t:0,life:.35,c:i%2?'#f4ecd0':'#c8bc98',s:3});}const h=heroPos();if(Math.hypot(h.x-e.x,(h.y-e.y)/.6)<80)hurtHero(e.dmg*1.5,null);}// Elite-Knochenwurm: Splitterring beim Hervorbrechen
 function dirtBurst(x,y,n){for(let i=0;i<n;i++)R.pt.push({x:x+rnd(-14,14),y:y-2,vx:rnd(-120,120),vy:rnd(-200,-40),t:0,life:rnd(.3,.7),c:Math.random()<.6?'#5a3a22':'#c8bc98',s:ri(2,4)});}
 function spawnTick(){
   if(R.en.length>60)return;
@@ -1277,7 +1278,7 @@ function updateRun(dt){
     e.shdBrk=Math.max(0,(e.shdBrk||0)-dt);
     if(hasAff(e,'shield')&&e.spawn<=0&&!(e.shdBrk>0))for(const o of R.en)if(o!==e&&!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<140){o.shd=.2;o.shdBy=e;}
     if(e.under){const dx=hp.x-e.x,dy=hp.y-e.y,d=Math.hypot(dx,dy)||1;e.under-=dt;e.bob+=dt*4;e.flip=dx<0; // Knochenwurm wühlt sich zum Jäger
-      if(d<26+e.r||e.under<=0){e.under=0;e.spawn=e.sp0=.3;e.hitT=.5;e.burT=rnd(4,6);dirtBurst(e.x,e.y,22);shake=Math.max(shake,4);sfx('hurt');}
+      if(d<26+e.r||e.under<=0){e.under=0;e.spawn=e.sp0=.3;e.hitT=.5;e.burT=rnd(4,6);dirtBurst(e.x,e.y,22);shake=Math.max(shake,4);sfx('hurt');if(e.elite)boneRing(e);}
       else{e.x+=dx/d*e.spd*3*dt;e.y+=dy/d*e.spd*3*dt;if(Math.random()<dt*18)dirtBurst(e.x,e.y,1);}continue;}
     e.rec=Math.max(0,(e.rec||0)-dt);if(e.spawn>0){e.spawn-=dt;continue;}
     if(e.kb>0){e.kb-=dt;e.x+=e.kx*dt;e.y+=e.ky*dt;continue;}
