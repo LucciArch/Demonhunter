@@ -977,7 +977,7 @@ function achBar([v,n]){v=Math.min(v,n);return `<div class="bar" style="margin:4p
 function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
 function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
   if(n){persist();computeStats();}return n;}
-const BEST_EL={worm:'Bricht mit einem Knochensplitter-Ring hervor, der den Jäger in der Nähe trifft.'};// Sonderfähigkeiten, die nur Elite-Varianten haben
+const BEST_EL={worm:'Bricht mit einem Knochensplitter-Ring hervor, der den Jäger in der Nähe trifft.',cult:'Schleudert drei Feuerbälle im Fächer.',succ:'Hinterlässt rosa Lustnebel, der den Jäger betört und verlangsamt.'};// Sonderfähigkeiten, die nur Elite-Varianten haben
 const BEST={thief:'Selten. Flieht mit einem Sack voller Seelen und verschwindet nach 8 s durch ein Portal – erwische ihn mit dem Bannstrahl!',imp:'Flinker Kleinteufel, kommt in Scharen.',bat:'Fliegt schnell und flatterhaft.',hound:'Hetzt mit hohem Tempo und beißt kräftig zu.',wraith:'Schwebender Geist, zäh, hinterlässt Schwefel.',brute:'Gehörnter Koloss mit viel Leben und Wucht.',succ:'Tänzelt im Zickzack und saugt Leben.',golem:'Steinern und langsam, schluckt 40% Schaden.',cult:'Wirft aus der Ferne Feuerbälle – Bannstrahl zerstört sie.',worm:'Gräbt sich ein, ist unter der Erde unverwundbar und bricht direkt neben dem Jäger hervor.',boss:'Herrscher eines Höllenkreises, mit Ansturm, Beschwörung und Feuernova. Ab Kreis 50 herrscht in jedem 5. Kreis der Knochenkönig: er ruft Knochenwürmer und lässt Knochenspeere aus dem Boden schießen.'};
 const PL={imp:'Imps',bat:'Nachtmahre',hound:'Höllenhunde',wraith:'Schemen',brute:'Hornbestien',succ:'Sukkuben',golem:'Golems',cult:'Kultisten',worm:'Knochenwürmer'};
 const QT={
@@ -1560,6 +1560,7 @@ function updateRun(dt){
       e.abT-=dt;if(e.abT<=0){bossAbility(e);if(e.rage){e.abT*=.6;const n=8,o=Math.random()*6;for(let i=0;i<n;i++)fireball(e.x,e.y-e.r*1.5,o+i/n*Math.PI*2,e.dmg*.4,150);}}}
     if(e.refT>0)e.refT-=dt;
     if(R.mod==='blood')e.hp=Math.min(e.max,e.hp+e.max*.02*dt);
+    if(e.elite&&e.type==='succ'&&e.spawn<=0&&(e.mT=(e.mT||0)-dt)<=0&&R.ice.length<40){e.mT=.5;R.ice.push({x:e.x,y:e.y,r:24,t:0,dur:3,pink:1});}
     if(hasAff(e,'burn')&&(e.fT=(e.fT||0)-dt)<=0&&R.fires.length<60){e.fT=.35;R.fires.push({x:e.x,y:e.y,r:22,t:0,dur:3,dmg:e.dmg*.25});}
     if(hasAff(e,'vamp'))e.hp=Math.min(e.max,e.hp+e.max*.03*dt);
     if(hasAff(e,'summ')&&(e.smT-=dt)<=0&&R.en.length<60){e.smT=4;for(let i=0;i<2;i++){const m=spawnDemon('imp');m.x=clamp(e.x+rnd(-50,50),20,W-20);m.y=clamp(e.y+rnd(-30,40),100,H-20);}}
@@ -1567,7 +1568,7 @@ function updateRun(dt){
     let sp=e.spd*(e.charge>0?4:1);if(e.charge>0)e.charge-=dt;
     if(e.soulB&&d<220){e.moving=1;e.flip=!e.flip;e.x=clamp(e.x-dx/d*sp*.75*dt,20,W-20);e.y=clamp(e.y-dy/d*sp*.75*dt,100,H-20);continue;}// Seelenträger hält Abstand
     if(e.d.burrow&&d>150&&(e.burT=(e.burT===undefined?rnd(1,3):e.burT)-dt)<=0){e.under=3;e.spawn=99;dirtBurst(e.x,e.y,14);continue;}// unter der Erde: spawn>0 macht ihn unangreifbar
-    if(e.d.ranged&&d<e.d.ranged&&d>reach){e.castT=(e.castT===undefined?rnd(.5,1.5):e.castT)-dt;if(e.castT<=0){e.castT=2.2;R.fx.push({k:'glyph',x:e.x,y:e.y-e.r*1.4,t:0,dur:.5});fireball(e.x,e.y-e.r*1.4,Math.atan2(hp.y-20-(e.y-e.r*1.4),hp.x-e.x),e.dmg*1.2);}}
+    if(e.d.ranged&&d<e.d.ranged&&d>reach){e.castT=(e.castT===undefined?rnd(.5,1.5):e.castT)-dt;if(e.castT<=0){e.castT=2.2;R.fx.push({k:'glyph',x:e.x,y:e.y-e.r*1.4,t:0,dur:.5});const fa=Math.atan2(hp.y-20-(e.y-e.r*1.4),hp.x-e.x);for(const da of e.elite?[-.25,0,.25]:[0])fireball(e.x,e.y-e.r*1.4,fa+da,e.dmg*1.2);}}
     else if(d>reach){e.moving=1;let mx=dx/d,my=dy/d;if(e.d.zig){const z=Math.sin(e.bob*.6)*.9;const ox=-my*z,oy=mx*z;mx+=ox;my+=oy;}e.x+=mx*sp*dt;e.y+=my*sp*dt;}
     else{e.hitT-=dt;e.hitAnim=Math.max(0,(e.hitAnim||0)-dt);if(e.hitT<=0){e.hitT=1;e.hitAnim=.22;atkFx(e,hp);hurtHero(e.dmg,e);if(hasAff(e,'frost'))R.frost=2;if((e.d.drain||hasAff(e,'vamp'))&&!e.dead)e.hp=Math.min(e.max,e.hp+e.max*.25);if(R.over)return;}}
   }
@@ -1671,7 +1672,7 @@ function renderRun(){
   ctx.save();ctx.globalAlpha=.35;ctx.strokeStyle=tint;ctx.lineWidth=2;
   const rr=Math.min(ST.range,150);ctx.beginPath();ctx.ellipse(hp.x,hp.y,rr,rr*.5,0,0,Math.PI*2);ctx.stroke();
   ctx.globalAlpha=.18;ctx.beginPath();ctx.ellipse(hp.x,hp.y,rr*.75,rr*.375,0,0,Math.PI*2);ctx.stroke();ctx.restore();
-  for(const f of R.ice){const a=Math.min(1,(f.dur-f.t)*2,f.t*6);ctx.fillStyle=`rgba(170,230,255,${a*.35})`;ctx.strokeStyle=`rgba(230,250,255,${a*.7})`;ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r,f.r*.45,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+  for(const f of R.ice){const a=Math.min(1,(f.dur-f.t)*2,f.t*6);ctx.fillStyle=f.pink?`rgba(255,120,190,${a*.35})`:`rgba(170,230,255,${a*.35})`;ctx.strokeStyle=f.pink?`rgba(255,200,230,${a*.6})`:`rgba(230,250,255,${a*.7})`;ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r,f.r*.45,0,0,Math.PI*2);ctx.fill();ctx.stroke();
     ctx.beginPath();ctx.moveTo(f.x-f.r*.5,f.y-2);ctx.lineTo(f.x+f.r*.1,f.y+3);ctx.lineTo(f.x+f.r*.5,f.y-4);ctx.stroke();ctx.fillStyle=`rgba(255,255,255,${a*.8})`;ctx.fillRect(f.x-f.r*.3,f.y-4,2,2);}
   for(const f of R.fires){const a=Math.min(1,(f.dur-f.t)*2,f.t*6);ctx.fillStyle=`rgba(255,${90+Math.sin(R.t*12+f.x)*30|0},20,${a*.4})`;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r,f.r*.45,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=`rgba(255,220,90,${a*.8})`;for(let i=0;i<3;i++){const q=(R.t*1.8+i/3+f.x*.01)%1;ctx.fillRect(f.x+Math.sin(i*2.3+f.y)*f.r*.6,f.y-q*16,2,3);}}
   drawFx(1);
