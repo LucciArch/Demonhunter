@@ -41,9 +41,9 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 
 - v0.34: Neuer Kreis-Modifikator ab Kreis 30 – Siegelflut (doppelte Siegel vom Fürsten, Fürst mit +50% Leben)
 - v0.35: Neues Elite-Affix ab Kreis 26 – Brennend (hinterlässt eine flackernde Feuerspur, die den Jäger verbrennt)
+- v0.36: Sechstes Reliquien-Set „Seelenfürst“ (Seelenlaterne, Sündenauge, Fürstenschädel): +25% Seelen, +5% Krit, +40% Fürsten-Beute
 
 ## Als Nächstes
-34. Sechstes Set „Seelenfürst“ (Seelenlaterne, Sündenauge, Fürstenschädel)
 35. Bestiarium-Erfolge: „Forscher“ (alle Arten entdeckt), „Meister des Bestiariums“ (alle Arten 1000 Kills)
 36. Erfolg „Elite-Kenner“: von jeder Dämonenart 10 Elite erlegt
 37. Fernkampf-Animationen: Rückstoß der Armbrust (Hexenjägerin), Leuchten beim Pulsen (Exorzistin), Wurfbewegung (Pestarzt)
@@ -51,3 +51,4 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 39. Fürsten-Intro: Bodenriss und Kamerazoom beim Erscheinen des Fürsten
 40. Bestiarium/Hilfe: Liste aller Elite-Affixe und Kreis-Modifikatoren mit Beschreibung und Freischalt-Kreis
 41. Kreis-Modifikator „Glutregen“ ab Kreis 35 (Feuerbälle fallen zufällig vom Himmel, +40% Schwefel)
+42. Siebtes Set „Eisenwall“ (Eisernes Herz, Dornenmantel, Engelsfeder) mit Fokus auf Überleben
