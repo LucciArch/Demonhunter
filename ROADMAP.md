@@ -90,10 +90,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.82: Goldene Seelen-Kugeln lassen sich per Klick in der Luft fangen (+50% Wert, Funkeln, „+50%“-Anzeige)
 - v0.83: Statistik zählt in der Luft gefangene Goldkugeln, Erfolg „Luftfänger“ (100 Kugeln, +5 Siegel)
 - v0.84: Neuer Fürst Knochenkönig (ab Kreis 50 jeder 5. Kreis): ruft Knochenwürmer, Knochenspeere mit Warnkreis
+- v0.85: Bestiarium zeigt Elite-Sonderfähigkeiten (sobald eine Elite der Art erlegt wurde)
 
 ## Als Nächstes
-84. Bestiarium: Hinweis auf Elite-Sonderfähigkeiten (z. B. Splitterring des Knochenwurms)
 85. Chronik-Knopf im Hauptmenü leuchtet, wenn ein Auftrag abgeschlossen oder ein Erfolg fast geschafft ist
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
 88. Fürsten-Fontäne: Tooltip/Hinweis beim ersten Fürsten-Kill, dass goldene Kugeln in der Luft fangbar sind
 89. Knochenkönig: eigener Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen)
+90. Weitere Elite-Sonderfähigkeiten (z. B. Elite-Kultist wirft Dreifach-Feuerball, Elite-Sukkubus hinterlässt Lustnebel) – im Bestiarium per BEST_EL eintragen
