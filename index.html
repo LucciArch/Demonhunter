@@ -20,6 +20,7 @@ button:hover{border-color:#7a4655;background:#2e1c27}
 button:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
 button:disabled{opacity:.45;cursor:default}
 button.big{font-size:22px;padding:12px 26px;background:linear-gradient(#8e1d29,#5a0f19);border-color:#d0484f;color:#fff3dc;text-shadow:0 2px 0 #300}
+#btnChron.glow{border-color:#7bff8a;animation:chGlow 1.4s ease-in-out infinite}@keyframes chGlow{50%{box-shadow:0 0 14px #7bff8a99}}
 button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 .cur{display:inline-flex;align-items:center;gap:6px;font-size:24px}
 .cur i{display:inline-block;width:14px;height:14px;transform:rotate(45deg);border:2px solid #000}
@@ -866,6 +867,7 @@ const rewTxt=r=>Object.entries(r).map(([c,v])=>`<span class="cur ${c}" style="fo
 // Kategorien der Erfolge (Reihenfolge = Anzeige), jede id passt auf genau eine
 const ACH_CAT=[['Jagd & Gemetzel',/^[kprd]\d/],['Fürsten & Kreise',/^[bc]\d/],['Bannstrahl & Ultimates',/^[mu]\d|^shb|^sb|^np|^lf/],['Orden & Aufstieg',/^[hna]\d/],['Dämonen & Bestiarium',/^[gef]\d/],['Elite-Affixe',/^s\d/],['Kreis-Modifikatoren',/^o/],['Reliquien',/^x/]];
 const achOpen=new Set();
+function achNear(a){if(save.ach[a.id]||!a.pg)return false;const [v,t]=a.pg();return v/t>=.9;}
 function achBar([v,n]){v=Math.min(v,n);return `<div class="bar" style="margin:4px 0;height:14px"><div style="width:${v/n*100}%;background:linear-gradient(#ffb04a,#a8481e)"></div><span style="font-size:12px">${fmt(v)} / ${fmt(n)}</span></div>`;}
 function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
 function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
@@ -1686,6 +1688,7 @@ function refreshCur(){
 }
 function refreshHub(){
   refreshCur();computeStats();const h=HB[save.hero];
+  $('#btnChron').classList.toggle('glow',ACH.some(achNear)||save.quests.some(q=>q.prog/q.target>=.9));// Hinweis: Erfolg oder Auftrag fast geschafft
   $('#sideName').textContent=h.name;$('#sidePass').textContent=h.pass+' Ultimate: '+ULT[h.id].name+'.';
   const rows=[['Schaden',fmt(ST.dmg)],['Angriffe/s',ST.aps.toFixed(2)],['Krit',ST.crit.toFixed(0)+'% ×'+ST.critDmg.toFixed(2)],['Leben',fmt(ST.hp)],['Rüstung',fmt(ST.armor)],['Regeneration',ST.regen.toFixed(1)+'/s'],
     ['Jagdzeit',ST.time+'s'],['Bannstrahl',fmt(ST.click)],['Seelen',`×${ST.soul.toFixed(2)}`],['Beute-Sog',ST.collectDelay.toFixed(1)+'s']];
@@ -1754,7 +1757,7 @@ function chronik(tab){
     for(const q of save.quests){const pc=q.prog/q.target;h+=`<div class="htn" style="margin-bottom:8px;cursor:default"><b style="color:#ffd76a">${QT[q.k].t(q.target,q.x)}</b><div class="bar" style="margin:6px 0"><div style="width:${pc*100}%;background:linear-gradient(#ffb04a,#a8481e)"></div><span>${fmt(q.prog)} / ${fmt(q.target)}</span></div>Belohnung: ${rewTxt(q.rew)}</div>`;}
     h+=`<div class="row"><button id="qReroll">Aufträge neu würfeln (${fmt(Math.ceil(20*Math.pow(1.45,save.maxCircle-1)))} Seelen)</button></div>`;}
   else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div>`;
-    for(const [cat,rx] of ACH_CAT){const as=ACH.filter(a=>rx.test(a.id)),n=as.filter(a=>save.ach[a.id]).length,near=as.some(a=>{if(save.ach[a.id]||!a.pg)return false;const [v,t]=a.pg();return v/t>=.9;});
+    for(const [cat,rx] of ACH_CAT){const as=ACH.filter(a=>rx.test(a.id)),n=as.filter(a=>save.ach[a.id]).length,near=as.some(achNear);
       h+=`<details data-cat="${cat}" ${achOpen.has(cat)?'open':''} style="margin-bottom:6px"><summary style="cursor:pointer;color:${n===as.length?'#ffd76a':'#c8b8a8'};font-size:20px">${cat} <span style="color:var(--dim)">${n}/${as.length}</span>${near?' <span style="color:#7bff8a" title="Ein Erfolg ist fast geschafft">● fast geschafft</span>':''}</summary><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-top:6px">`;
       for(const a of as){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}${!d&&a.pg?achBar(a.pg()):'<br>'}${rewTxt(a.rew)}</div>`;}
       h+='</div></details>';}}
