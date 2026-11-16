@@ -95,9 +95,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.87: Neue Arena: Rückwand mit Säulen und flackernden Fackeln, Deko je Höllenkreis (Knochen, Gräber, Pilze, Eiskristalle, Dornen, Schlote), glühende Pfützen, Vignette; neues HUD mit Porträt, dickem Lebensbalken mit Schadens-Nachlauf und Kreisname
 - v0.88: Segnungen – Kills füllen eine Leiste, dann 1 von 3 Segnungen für die Jagd wählen (13 Arten, 15% geweiht mit doppelter Wirkung), Auto-Jagd wählt selbst
 - v0.89: Schreine in der Arena (anklicken): Blutaltar (−30% Leben, +40% Schaden), Seelenbrunnen (Heilung, +3s), Truhe (Seelenschatz oder Mimic), Segensstein (sofort Segnung)
+- v0.90: Neu gepixelte Dämonen: Imp, Fledermaus, Höllenhund, Geist, Knochenwurm, Sukkubus (mehr Schattierung, Krallen, Schwänze, Augenhöhlen)
 
 ## Als Nächstes
-C. Sprites detaillierter überarbeiten (Jäger, Dämonen, Fürst)
+C. Sprites weiter überarbeiten: Brute, Golem, Kultist, Fürst und die 7 Jäger detaillierter
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
 88. Fürsten-Fontäne: Tooltip/Hinweis beim ersten Fürsten-Kill, dass goldene Kugeln in der Luft fangbar sind
 89. Knochenkönig: eigener Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen)
@@ -105,3 +106,5 @@ C. Sprites detaillierter überarbeiten (Jäger, Dämonen, Fürst)
 91. Chronik-Aufträge-Tab: fast geschaffte Aufträge ebenfalls grün markieren
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
+F. Hub-Hintergrund: Ordenshalle statt Ziegelmuster (Kerzen, Banner, Waffenständer)
+G. Kombo-Zähler: schnelle Kills nacheinander steigern Seelen-Multiplikator
