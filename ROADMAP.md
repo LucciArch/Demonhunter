@@ -109,10 +109,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.101: Balance – Dämonen-Leben +65% statt +55% pro Kreis; jede gekaufte Baum-Stufe verteuert Seelen-/Schwefel-Knoten um 1% (Siegel ausgenommen), Anzeige „Teuerung“ in der Seitenleiste und beim Schwur. Per Simulation geprüft: vorher 1 Kreis pro Jagd bis ~Kreis 50, jetzt ~2 Jagden pro Kreis mit echten Wänden
 - v0.102: Schwarzer Tod verfärbt getroffene Dämonen grünlich (gecachte Seuchen-Silhouette) und lässt Blasen aufsteigen
 - v0.103: Elite-Kultist wirft drei Feuerbälle im Fächer, Elite-Sukkubus hinterlässt rosa Lustnebel (verlangsamt den Jäger) – beides im Bestiarium
+- v0.104: Chronik-Aufträge: fast geschaffte Aufträge (≥90%) grün umrandet mit „● fast geschafft“, grüner Punkt am Aufträge-Reiter
 
 ## Als Nächstes
 92. Weitere Elite-Sonderfähigkeiten: Elite-Golem stampft Schockwelle, Elite-Höllenhund ruft Rudel (BEST_EL)
-91. Chronik-Aufträge-Tab: fast geschaffte Aufträge ebenfalls grün markieren
+93. Hub: grüner Punkt auch am Chronik-Knopf statt nur Leuchten, wenn ein Auftrag fast geschafft ist
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
