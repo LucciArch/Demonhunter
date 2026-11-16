@@ -1238,7 +1238,7 @@ function smite(x,y,auto){
     if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;if(hasAff(e,'shield')&&!(e.shdBrk>0))shieldBreak(e);dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
 }
 function hurtHero(amt,src){
-  if(R.wall>0){if(src&&!src.dead)dealDmg(src,ST.dmg*2*ST.ultDmg,{col:'#ffe08a'});return;}
+  if(R.wall>0){R.wallHit=.3;if(src&&!src.dead)dealDmg(src,ST.dmg*2*ST.ultDmg,{col:'#ffe08a'});return;}
   amt*=1-(HB[save.hero].dr||0);
   const a=Math.max(amt*.15,amt-ST.armor);R.hp-=a;R.hero.flash=.1;sfxL('hurt');
   if(save.hero==='templ'){if(!(R.hero.blk>.2)){const d=R.hero.flip?-1:1;for(let i=0;i<6;i++)R.pt.push({x:W/2+d*10,y:H/2+2,vx:d*rnd(40,160),vy:rnd(-120,20),t:0,life:rnd(.15,.3),c:Math.random()<.5?'#ffe08a':'#ffffff',s:2});}R.hero.blk=.35;}
@@ -1259,7 +1259,7 @@ function updateRun(dt){
   R.atkT-=dt;if(R.atkT<=0){if(heroAttack())R.atkT=1/(ST.aps*(1+Math.min(1,ST.frenzy*Math.floor(R.kills/10)))*(R.moon>0?2:1))*(R.frost>0?1.6:1);else R.atkT=.05;}
   if(ST.autoSmite){R.smiteT-=dt;if(R.smiteT<=0){R.smiteT=1/ST.autoSmite;const al=R.en.filter(e=>!e.dead&&e.x>0&&e.x<W&&e.y>0&&e.y<H);
     for(let i=0;i<ST.smiteN&&al.length;i++){const e=al[ri(0,al.length-1)];smite(e.x,e.y-e.r,1);if(ST.smiteTwice)smite(e.x,e.y-e.r,1);}}}
-  R.moon=Math.max(0,R.moon-dt);R.wall=Math.max(0,R.wall-dt);R.frost=Math.max(0,(R.frost||0)-dt);
+  R.moon=Math.max(0,R.moon-dt);R.wall=Math.max(0,R.wall-dt);R.wallHit=Math.max(0,(R.wallHit||0)-dt);R.frost=Math.max(0,(R.frost||0)-dt);
   for(const c of R.clouds){c.t+=dt;c.tk-=dt;if(c.tk<=0){c.tk=.5;for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-c.x,e.y-c.y)<c.r+e.r){const cr=critRoll(ST.crit);dealDmg(e,ST.dmg*c.m*(cr?ST.critDmg:1),{crit:cr,ls:1,col:'#9bff7a'});}}}
   R.clouds=R.clouds.filter(c=>c.t<c.dur);
   R.fireT-=dt;for(const f of R.fires){f.t+=dt;if(R.fireT<=0&&Math.hypot(f.x-hp.x,f.y-hp.y)<f.r+10){R.fireT=.5;hurtHero(f.dmg,null);if(R.over)return;}
@@ -1405,7 +1405,15 @@ function renderRun(){
   for(const c of R.clouds){const a=Math.min(1,(c.dur-c.t)*2)*.35;ctx.fillStyle=`rgba(90,200,70,${a})`;ctx.beginPath();ctx.ellipse(c.x,c.y,c.r,c.r*.55,0,0,Math.PI*2);ctx.fill();
     ctx.fillStyle=`rgba(180,255,140,${a*1.4})`;for(let i=0;i<5;i++){const q=(c.t*.8+i/5)%1;ctx.fillRect(c.x+Math.sin(i*2.3)*c.r*.6,c.y-q*c.r*.6,3,3);}}
   if(R.frost>0){ctx.fillStyle=`rgba(159,232,255,${.18*Math.min(1,R.frost)})`;ctx.beginPath();ctx.ellipse(hp.x,hp.y-20,34,46,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e8faff';for(let i=0;i<6;i++){const q=(R.t*.7+i/6)%1;ctx.fillRect(hp.x+Math.sin(i*2.1+R.t)*26,hp.y-60+q*50,2,2);}}
-  if(R.wall>0){ctx.strokeStyle=`rgba(255,224,138,${.5+.3*Math.sin(R.t*10)})`;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(hp.x,hp.y-20,46,56,0,0,Math.PI*2);ctx.stroke();}
+  if(R.wall>0){// Heiliger Wall: goldene Kuppel mit kreisenden Runen, flackert bei Treffern auf
+    const fl=(R.wallHit||0)/.3,fade=Math.min(1,R.wall*2),a=fade*(.55+.2*Math.sin(R.t*6)+.45*fl),cy=hp.y+4,rx=64+fl*5,ry=96+fl*5;
+    ctx.save();const g=ctx.createRadialGradient(hp.x,cy-ry*.5,4,hp.x,cy-ry*.5,ry);g.addColorStop(0,`rgba(255,240,180,${.05*fade})`);g.addColorStop(1,`rgba(255,210,100,${(.22+.3*fl)*fade})`);
+    ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(hp.x,cy,rx,ry,0,Math.PI,0);ctx.closePath();ctx.fill();
+    ctx.strokeStyle=`rgba(255,224,138,${a})`;ctx.lineWidth=3+fl*2;ctx.stroke();
+    ctx.strokeStyle=`rgba(255,224,138,${a*.6})`;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(hp.x,cy,rx,rx*.28,0,0,Math.PI*2);ctx.stroke();
+    ctx.font='20px "VT323"';ctx.textAlign='center';const rn='ᚠᚢᚦᚨᚱᚲᛉᛏ';
+    for(let i=0;i<8;i++){const q=R.t*.9+i/8*Math.PI*2,sn=Math.sin(q);ctx.fillStyle=`rgba(255,${230+25*fl|0},${150+100*fl|0},${fade*(.45+.4*(sn+1)/2+.3*fl)})`;ctx.fillText(rn[i],hp.x+Math.cos(q)*rx*.85,cy-ry*.55+sn*ry*.12+Math.sin(R.t*3+i)*3);}
+    ctx.restore();}
   // loot shadows/orbs drawn below units
   for(const l of R.loot)drawLoot(l);
   // collect drawables
