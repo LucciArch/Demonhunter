@@ -466,7 +466,7 @@ SPR_DEF.templ={pal:{p:'#c0303a',A:'#c8d0dc',a:'#8a96a8',d:'#4f5866',w:'#f0ece0',
 "....aaa..aaa....",
 "...AAAA..AAAA..."]};
 // ---- Reliquien (Artefakte) ----
-const ARTPAL={Y:'#e8b84a',y:'#a87828',r:'#c0202a',R:'#ff4a4a',g:'#6ad8ff',W:'#f0f0ff',w:'#a8b0d0',c:'#8a7a6a',P:'#7a2aa0',E:'#ffe04a',K:'#100810',I:'#8a8a98',S:'#6ad8ff',s:'#2a8ab0',k:'#3a3038',O:'#ff8a2a',o:'#a8481e',b:'#e8dcc0',T:'#e8c878',G:'#3a4a5a'};
+const ARTPAL={Y:'#e8b84a',y:'#a87828',r:'#c0202a',R:'#ff4a4a',g:'#6ad8ff',W:'#f0f0ff',w:'#a8b0d0',c:'#8a7a6a',P:'#7a2aa0',E:'#ffe04a',K:'#100810',I:'#8a8a98',S:'#6ad8ff',s:'#2a8ab0',k:'#3a3038',O:'#ff8a2a',o:'#a8481e',b:'#e8dcc0',T:'#e8c878',G:'#3a4a5a',V:'#6a9a2a',v:'#2e4a14'};
 const ARTS=[
  {id:'kelch',name:'Blutkelch',d:v=>`+${v}% Lebensraub`,f:(s,l)=>s.ls+=.01*l,rows:["..........",".YYYYYYYY.",".YRRRRRRY.",".yrRrrrry.","..yrrrry..","...yyyy...","....YY....","....yY....","...yYYY...","..yyyyyy.."]},
  {id:'krone',name:'Fürstenkrone',d:v=>`+${v*8}% Schaden`,f:(s,l)=>s.dmg*=1+.08*l,rows:["Y...YY...Y","YY..YY..YY","YYY.YY.YYY","YYYYYYYYYY","YrYYgYYrYY","yyyyyyyyyy"]},
@@ -475,6 +475,9 @@ const ARTS=[
  {id:'herz',name:'Eisernes Herz',d:v=>`+${v*10}% Leben`,f:(s,l)=>s.hp*=1+.1*l,rows:[".II...II..","IIrI.IrII.","IrrrIrrrI.","IrrrrrrrI.",".IrrrrrI..","..IrrrI...","...IrI....","....I....."]},
  {id:'laterne',name:'Seelenlaterne',d:v=>`+${v*10}% Seelen`,f:(s,l)=>s.soul*=1+.1*l,rows:["....kk....","...k..k...","..kkkkkk..","..kSSSSk..","..kSssSk..","..kSSSSk..","..kkkkkk..","...kkkk..."]},
  {id:'horn',name:'Schwefelhorn',d:v=>`+${v*10}% Schwefel`,f:(s,l)=>s.brim*=1+.1*l,rows:["........O.",".......Oo.","......Oo..",".....bOo..","....bbo...","..bbbb....",".bbbb.....","bbbb......"]},
+ {id:'rune',c:10,name:'Kettenblitz-Rune',d:v=>`+${Math.ceil(v/4)} Kettenblitz, +${v*10}% Kettenschaden`,f:(s,l)=>{s.chain+=Math.ceil(l/4);s.chainDmg+=.1*l;},rows:["..GGGGGG..",".GIIIIIIG.","GIIIIggIIG","GIIIggIIIG","GIIggggIIG","GIIIIggIIG","GIIIggIIIG","GIIIgIIIIG",".GIIIIIIG.","..GGGGGG.."]},
+ {id:'dornen',c:10,name:'Dornenmantel',d:v=>`Reflektiert +${v*15}% Schaden`,f:(s,l)=>s.thorns+=.15*l,rows:["...vvvv...","..vVVVVv..","V.vVKKVv.V",".vVVVVVVv.","vVVvVVvVVv",".vVVVVVVv.","vVvVVVVvVv",".vVVVVVVv.","vVVvVVvVVv","V.vvvvvv.V"]},
+ {id:'schaedel',c:10,name:'Fürstenschädel',d:v=>`+${v*6}% Schaden gegen Fürsten & Elite`,f:(s,l)=>s.bossDmg+=.06*l,rows:["..bbbbbb..",".bbbbbbbb.","bbbbbbbbbb","bKKbbbbKKb","bKRbbbbRKb","bbbbKKbbbb",".bbbbbbbb.","..bKbKbK..","..bbbbbb..","...b.b.b.."]},
  {id:'uhr',name:'Sanduhr des Richters',d:v=>`+${v/2}s Jagdzeit`,f:(s,l)=>s.time+=.5*l,rows:["YYYYYYYY",".GTTTTG.","..GTTG..","...GG...","..GTTG..",".GTTTTG.","YYYYYYYY"]}];
 const ART_MAX=10;
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
@@ -1008,7 +1011,7 @@ function killDemon(e,o){
   }
   if(!R.bossSpawned&&R.kills>=R.quota)spawnBoss();
 }
-function dropArt(e){const open=ARTS.filter(a=>(save.arts[a.id]||0)<ART_MAX);if(!open.length)return;
+function dropArt(e){const open=ARTS.filter(a=>(save.arts[a.id]||0)<ART_MAX&&R.c>=(a.c||0));if(!open.length)return;
   dropLoot(e,'a',open[ri(0,open.length-1)]);}
 function gainArt(a){save.arts[a.id]=Math.min(ART_MAX,(save.arts[a.id]||0)+1);(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
   toast('Reliquie: '+a.name+' (Stufe '+save.arts[a.id]+')');}
@@ -1512,7 +1515,7 @@ function chronik(tab){
     for(const a of ACH){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
     h+='</div>';}
   else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten.</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
-    for(const a of ARTS){const l=save.arts[a.id]||0;h+=`<div class="htn ${l>=ART_MAX?'max':l?'':'lock'}" style="cursor:default;opacity:${l?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('art_'+a.id,4)}" style="image-rendering:pixelated;${l?'':'filter:brightness(0)'}"><div><b style="color:${l?'#ffd76a':'#c8b8a8'}">${l?a.name:'???'}</b> ${l?'Stufe '+l+'/'+ART_MAX:''}<br>${a.d(Math.max(1,l))}${l?'':' (Stufe 1)'}</div></div>`;}
+    for(const a of ARTS){const l=save.arts[a.id]||0;h+=`<div class="htn ${l>=ART_MAX?'max':l?'':'lock'}" style="cursor:default;opacity:${l?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('art_'+a.id,4)}" style="image-rendering:pixelated;${l?'':'filter:brightness(0)'}"><div><b style="color:${l?'#ffd76a':'#c8b8a8'}">${l?a.name:'???'}</b> ${l?'Stufe '+l+'/'+ART_MAX:''}<br>${a.d(Math.max(1,l))}${l?'':' (Stufe 1)'}${!l&&a.c?`<br><span style="color:#ff8a6a">Erst ab Kreis ${a.c}</span>`:''}</div></div>`;}
     h+='</div>';}
   else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Erfolge',achCount()+' / '+ACH.length]];
     for(const k in DEMONS)rows.push([DEMONS[k].name+' getötet',fmt(st.kt[k]||0)]);
