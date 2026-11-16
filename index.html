@@ -117,10 +117,10 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
     <div id="stats"></div>
   </div>
   <div id="bottom">
-    <div id="circleSel"><button id="cPrev">◀</button><span class="lbl" id="cLbl" title="Kreis wählen">1. Höllenkreis</span><button id="cNext">▶</button></div>
-    <button class="big" id="btnHunt">⚔ JAGD BEGINNEN</button>
-    <button id="btnHeroes">Jäger &amp; Ultimates</button>
-    <button id="btnChron">📜 Chronik</button>
+    <div id="circleSel"><button id="cPrev" title="← Pfeiltaste">◀</button><span class="lbl" id="cLbl" title="Kreis wählen">1. Höllenkreis</span><button id="cNext" title="→ Pfeiltaste">▶</button></div>
+    <button class="big" id="btnHunt" title="Leertaste">⚔ JAGD BEGINNEN</button>
+    <button id="btnHeroes" title="Taste H">Jäger &amp; Ultimates</button>
+    <button id="btnChron" title="Taste C">📜 Chronik</button>
     <button id="btnAsc" class="hide" style="border-color:#a03a90;color:#ffb0f0">✦ Aufstieg</button>
     <button id="btnMenu">⚙</button>
   </div>
@@ -1555,7 +1555,9 @@ function pUp(e){
 cv.addEventListener('pointerup',pUp);cv.addEventListener('pointercancel',pUp);
 cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){ptr.active=false;hoverNode=null;$('#tip').classList.add('hide');}});
 cv.addEventListener('wheel',e=>{if(mode!=='hub')return;e.preventDefault();const before=s2w(e.clientX,e.clientY);cam.z=clamp(cam.z*Math.pow(1.0015,-e.deltaY),.35,2.2);const after=s2w(e.clientX,e.clientY);cam.x+=before.x-after.x;cam.y+=before.y-after.y;},{passive:false});
-addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='KeyQ')&&mode==='run'){e.preventDefault();castUlt();return;}if(e.code==='Space'&&mode==='hub'&&$('#modal').classList.contains('hide')){e.preventDefault();startRun();}});
+addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='KeyQ')&&mode==='run'){e.preventDefault();castUlt();return;}if(mode!=='hub'||!$('#modal').classList.contains('hide'))return;
+  const b={Space:'#btnHunt',KeyH:'#btnHeroes',KeyC:'#btnChron',ArrowLeft:'#cPrev',ArrowRight:'#cNext'}[e.code];
+  if(b&&!$(b).disabled){e.preventDefault();$(b).click();}});
 
 // ================= LOOP =================
 let last=performance.now();
