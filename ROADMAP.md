@@ -36,10 +36,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.29: Neues Elite-Affix ab Kreis 22 – Frostig (Treffer verlangsamen die Angriffe des Jägers 2 s lang um 60%, Frost-Aura mit Schneeflocken am Jäger)
 - v0.30: Fünftes Reliquien-Set „Gewittermantel“ (Kettenblitz-Rune, Dornenmantel, Sanduhr): +1 Kettenblitz, +50% Kettenschaden, +50% Dornen, +2s Jagdzeit
 - v0.31: Statistik zeigt „Aktive Boni“ – alle aktiven Reliquien-Sets und Bestiarium-Boni auf einen Blick
+- v0.32: Bestiarium zählt Elite-Kills pro Dämonenart und zeigt sie neben dem Kill-Zähler
 
 ## Als Nächstes
-30. Bestiarium: Elite-Kills pro Art zählen und anzeigen
 32. Kreis-Modifikator „Siegelflut“ ab Kreis 30 (doppelte Siegel, Fürst mit +50% Leben)
 33. Elite-Affix „Brennend“ ab Kreis 26 (hinterlässt Feuerspur, die den Jäger verletzt)
 34. Sechstes Set „Seelenfürst“ (Seelenlaterne, Sündenauge, Fürstenschädel)
 35. Bestiarium-Erfolge: „Forscher“ (alle Arten entdeckt), „Meister des Bestiariums“ (alle Arten 1000 Kills)
+36. Erfolg „Elite-Kenner“: von jeder Dämonenart 10 Elite erlegt
