@@ -89,10 +89,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.81: Templerin – Heiliger Wall als goldene Kuppel mit kreisenden Runen, die bei abgewehrten Treffern aufflackert und kurz anschwillt
 - v0.82: Goldene Seelen-Kugeln lassen sich per Klick in der Luft fangen (+50% Wert, Funkeln, „+50%“-Anzeige)
 - v0.83: Statistik zählt in der Luft gefangene Goldkugeln, Erfolg „Luftfänger“ (100 Kugeln, +5 Siegel)
+- v0.84: Neuer Fürst Knochenkönig (ab Kreis 50 jeder 5. Kreis): ruft Knochenwürmer, Knochenspeere mit Warnkreis
 
 ## Als Nächstes
-83. Neuer Fürst „Knochenkönig“ ab Kreis 50: beschwört Knochenwürmer und lässt Knochenspeere aus dem Boden schießen
 84. Bestiarium: Hinweis auf Elite-Sonderfähigkeiten (z. B. Splitterring des Knochenwurms)
 85. Chronik-Knopf im Hauptmenü leuchtet, wenn ein Auftrag abgeschlossen oder ein Erfolg fast geschafft ist
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
 88. Fürsten-Fontäne: Tooltip/Hinweis beim ersten Fürsten-Kill, dass goldene Kugeln in der Luft fangbar sind
+89. Knochenkönig: eigener Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen)

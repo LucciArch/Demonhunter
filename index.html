@@ -533,6 +533,7 @@ const BOSSES=[
  {name:'Dornenkönig',ab:'nova',pal:{b:'#1e1a10',B:'#4a3a1e',w:'#14100a',W:'#2a2214',E:'#e0703a',f:'#7a9a3a',F:'#c0e07a',h:'#6a4a2a'}},
  {name:'Glutkoloss',ab:'charge',pal:{b:'#3a1408',B:'#7a2a0e',w:'#2a0e06',W:'#4a1a0a',E:'#ffd04a',f:'#ff9a3a',F:'#ffe8a0'}},
  {name:'Abgrundfürst',ab:'all',add:'hound',pal:{b:'#100810',B:'#2a1028',w:'#080408',W:'#1a0a18',E:'#ff3a8a',f:'#ff3a8a',F:'#ffc0e0',h:'#e0d0f0'}},
+ {name:'Knochenkönig',ab:'bone',add:'worm',pal:{b:'#c8bc98',B:'#f4ecd0',w:'#8a7e60',W:'#a89c7a',E:'#7affd0',f:'#e8dcb8',F:'#ffffff',h:'#4a4030',g:'#7affd0'}},
 ];
 function walkRows(rows){const n=rows.length,w=Math.max(...rows.map(r=>r.length)),ls=n-Math.max(3,Math.round(n*.22)),mid=Math.floor(w/2);
   return rows.map((r,j)=>{if(j<ls)return r;const nx=(rows[j+1]||'').padEnd(w,'.');const cur=r.padEnd(w,'.');return nx.slice(0,mid)+cur.slice(mid);});}
@@ -544,7 +545,7 @@ SPR.vial=mkSprite({pal:BELT_PAL,rows:["kk","wg","GG"]});
 for(const k of ['imp','hound','succ','golem','cult','brute','inq','hex','exo','blut','rune','pest','templ'])SPR[k].f2=mkSprite({pal:SPR_DEF[k].pal,rows:walkRows(SPR_DEF[k].rows)});
 const BOSS_WALK=walkRows(SPR_DEF.boss.rows);
 BOSSES.forEach((b,i)=>{const pal=Object.assign({},SPR_DEF.boss.pal,b.pal);SPR['boss'+i]=mkSprite({pal,rows:SPR_DEF.boss.rows});SPR['boss'+i].f2=mkSprite({pal,rows:BOSS_WALK});});
-const bossOf=c=>BOSSES[(c-1)%BOSSES.length];
+const bossOf=c=>BOSSES[c>=50&&c%5===0?10:(c-1)%10];// ab Kreis 50: jeder 5. Kreis gehört dem Knochenkönig
 
 function drawSpr(s,x,y,sc,flip,flash,alpha,black,o){
   const img=black?s.kc:s.c;
@@ -869,7 +870,7 @@ function achBar([v,n]){v=Math.min(v,n);return `<div class="bar" style="margin:4p
 function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
 function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
   if(n){persist();computeStats();}return n;}
-const BEST={imp:'Flinker Kleinteufel, kommt in Scharen.',bat:'Fliegt schnell und flatterhaft.',hound:'Hetzt mit hohem Tempo und beißt kräftig zu.',wraith:'Schwebender Geist, zäh, hinterlässt Schwefel.',brute:'Gehörnter Koloss mit viel Leben und Wucht.',succ:'Tänzelt im Zickzack und saugt Leben.',golem:'Steinern und langsam, schluckt 40% Schaden.',cult:'Wirft aus der Ferne Feuerbälle – Bannstrahl zerstört sie.',worm:'Gräbt sich ein, ist unter der Erde unverwundbar und bricht direkt neben dem Jäger hervor.',boss:'Herrscher eines Höllenkreises, mit Ansturm, Beschwörung und Feuernova.'};
+const BEST={imp:'Flinker Kleinteufel, kommt in Scharen.',bat:'Fliegt schnell und flatterhaft.',hound:'Hetzt mit hohem Tempo und beißt kräftig zu.',wraith:'Schwebender Geist, zäh, hinterlässt Schwefel.',brute:'Gehörnter Koloss mit viel Leben und Wucht.',succ:'Tänzelt im Zickzack und saugt Leben.',golem:'Steinern und langsam, schluckt 40% Schaden.',cult:'Wirft aus der Ferne Feuerbälle – Bannstrahl zerstört sie.',worm:'Gräbt sich ein, ist unter der Erde unverwundbar und bricht direkt neben dem Jäger hervor.',boss:'Herrscher eines Höllenkreises, mit Ansturm, Beschwörung und Feuernova. Ab Kreis 50 herrscht in jedem 5. Kreis der Knochenkönig: er ruft Knochenwürmer und lässt Knochenspeere aus dem Boden schießen.'};
 const PL={imp:'Imps',bat:'Nachtmahre',hound:'Höllenhunde',wraith:'Schemen',brute:'Hornbestien',succ:'Sukkuben',golem:'Golems',cult:'Kultisten',worm:'Knochenwürmer'};
 const QT={
  kill:{t:n=>`Vernichte ${n} Dämonen`,base:60,sc:1},
@@ -1051,7 +1052,7 @@ function spawnBoss(){
   b.spawn=b.sp0=1.2;R.zoom={x:b.x,y:b.y,t:0,dur:1.6}; // Intro: Fürst steigt aus dem Riss, Kamera zoomt kurz heran
   const cr=[];for(let i=0;i<9;i++){let a=i/9*Math.PI*2+rnd(-.25,.25),x=0,y=0;const seg=[[0,0]];for(let j=0;j<4;j++){a+=rnd(-.5,.5);const l=rnd(14,26);x+=Math.cos(a)*l;y+=Math.sin(a)*l*.5;seg.push([x,y]);}cr.push(seg);}
   R.fx.push({k:'rift',x:b.x,y:b.y,cr,t:0,dur:2.2});for(let i=0;i<30;i++)R.pt.push({x:b.x+rnd(-40,40),y:b.y,vx:rnd(-60,60),vy:rnd(-260,-80),t:0,life:rnd(.5,1.1),c:Math.random()<.5?'#ff6a1a':'#3a1a10',s:ri(2,5)});
-  const v=bossOf(R.c);b.spr='boss'+((R.c-1)%BOSSES.length);b.bv=v;b.abT=2.5;b.name=v.name;
+  const v=bossOf(R.c);b.spr='boss'+BOSSES.indexOf(v);b.bv=v;b.abT=2.5;b.name=v.name;
   const bb=$('#bossBanner');bb.textContent=v.name.toUpperCase()+' ERWACHT';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1800);
 }
 function heroPos(){return {x:W/2,y:H/2+30};}
@@ -1208,9 +1209,11 @@ function castUlt(){
 function emberBurst(x,y,n){for(let i=0;i<n;i++)R.pt.push({x,y,vx:rnd(-180,180),vy:rnd(-220,60),t:0,life:rnd(.25,.55),c:['#ffe05a','#ff8a2a','#ff4a1a'][ri(0,2)],s:ri(2,3)});}
 function fireball(x,y,a,dmg,sp,nova){R.ep.push({x,y,vx:Math.cos(a)*(sp||220),vy:Math.sin(a)*(sp||220),dmg,t:0,nova});}
 function bossAbility(e){
-  const v=e.bv,hp=heroPos();const ab=v.ab==='all'?['charge','summon','nova'][ri(0,2)]:v.ab;
+  const v=e.bv,hp=heroPos();const ab=v.ab==='all'?['charge','summon','nova'][ri(0,2)]:v.ab==='bone'?(Math.random()<.35?'summon':'spear'):v.ab;
   if(ab==='charge'){e.charge=.6;e.abT=4;R.tx.push({x:e.x,y:e.y-e.r*3,str:'ANSTURM!',t:0,col:'#ff8a3a'});}
   else if(ab==='summon'){e.abT=3.5;for(let i=0;i<2+Math.floor(R.c/4);i++){const m=spawnDemon(v.add||'imp');m.x=clamp(e.x+rnd(-70,70),20,W-20);m.y=clamp(e.y+rnd(-30,50),100,H-20);R.fx.push({k:'portal',x:m.x,y:m.y,r:24,t:0,dur:.5});}}
+  else if(ab==='spear'){e.abT=3;R.tx.push({x:e.x,y:e.y-e.r*3,str:'KNOCHENSPEERE!',t:0,col:'#f4ecd0'});for(let i=0;i<3+Math.floor(R.c/20);i++){const sx=clamp(hp.x+(i?rnd(-110,110):0),30,W-30),sy=clamp(hp.y+(i?rnd(-50,50):0),110,H-20),dl=.9+i*.12;
+    R.fx.push({k:'meteor',x:sx,y:sy,r:30,t:0,dur:dl,col:'244,236,208'});R.later.push({t:dl,fn:()=>{const h=heroPos();R.fx.push({k:'spear',x:sx,y:sy,r:30,t:0,dur:.7});shake=Math.max(shake,3);sfxL('hurt');if(Math.hypot(sx-h.x,(sy-h.y)/.6)<34)hurtHero(e.dmg*.8,null);}});}}
   else{e.abT=3;const n=10+R.c;const o=Math.random()*6;const nv={c:v.pal.f||'#ff6a1e',k:v.pal.F||'#ffe05a'};for(let i=0;i<n;i++)fireball(e.x,e.y-e.r*1.5,o+i/n*Math.PI*2,e.dmg*.6,170,nv);}
 }
 function chainFrom(e,amt){
@@ -1534,7 +1537,8 @@ function drawFx(g){
     if(f.k==='slash'){ctx.strokeStyle=`rgba(255,240,220,${1-p})`;ctx.lineWidth=6*(1-p)+1;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(.6+.4*p),f.a-1.1,f.a+1.1);ctx.stroke();
       ctx.strokeStyle=`rgba(255,90,80,${.6*(1-p)})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(.5+.4*p),f.a-.9,f.a+.9);ctx.stroke();}
     else if(f.k==='sweep'){ctx.strokeStyle=`rgba(255,60,80,${.9*(1-p)})`;ctx.lineWidth=8*(1-p)+1;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(.7+.3*p),p*6,p*6+4.5);ctx.stroke();}
-    else if(f.k==='meteor'){ctx.strokeStyle=`rgba(255,60,30,${.4+.5*p})`;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r,f.r*.45,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle=`rgba(255,60,30,${.25*p})`;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*.45*p,0,0,Math.PI*2);ctx.fill();
+    else if(f.k==='spear'){const u=p<.2?p/.2:p>.7?(1-p)/.3:1;for(let j=0;j<5;j++){const ox=(j-2)*9,hh=(j%2?26:40)*u;ctx.fillStyle='#c8bc98';ctx.beginPath();ctx.moveTo(f.x+ox-4,f.y+2);ctx.lineTo(f.x+ox+(j-2),f.y-hh);ctx.lineTo(f.x+ox+4,f.y+2);ctx.fill();ctx.fillStyle='#f4ecd0';ctx.fillRect(f.x+ox-1,f.y-hh*.8,2,hh*.7);}}// Knochenspeere brechen aus dem Boden
+    else if(f.k==='meteor'){const mc=f.col||'255,60,30';ctx.strokeStyle=`rgba(${mc},${.4+.5*p})`;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r,f.r*.45,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle=`rgba(${mc},${.25*p})`;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*.45*p,0,0,Math.PI*2);ctx.fill();
       const my=f.y-(1-p)*420,mx=f.x+(1-p)*120;ctx.fillStyle='rgba(255,140,40,.35)';ctx.beginPath();ctx.moveTo(mx-6,my);ctx.lineTo(mx+40,my-80);ctx.lineTo(mx+6,my);ctx.fill();ctx.fillStyle='#ff6a1a';ctx.fillRect(mx-7,my-7,14,14);ctx.fillStyle='#ffd76a';ctx.fillRect(mx-4,my-4,8,8);}
     else if(f.k==='ring'){ctx.strokeStyle=f.col;ctx.globalAlpha=1-p;ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*p*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=(1-p)*.15;ctx.fillStyle=f.col;ctx.fill();}
     else if(f.k==='rift'){const g=Math.min(1,p*3),a=p<.75?1:(1-p)*4;ctx.lineCap='round';ctx.fillStyle=`rgba(255,80,20,${.3*a})`;ctx.beginPath();ctx.ellipse(f.x,f.y,60*g,24*g,0,0,Math.PI*2);ctx.fill();
