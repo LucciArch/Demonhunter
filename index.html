@@ -839,6 +839,7 @@ function A(id,name,desc,fn,rew){ACH.push({id,name,desc,fn,rew});}
 A('g0','Steinbrecher','Vernichte 100 Golems',()=>(save.st.kt.golem||0)>=100,{b:50});
 A('g1','Ketzerjäger','Vernichte 200 Kultisten',()=>(save.st.kt.cult||0)>=200,{b:40});
 A('g2','Unbetört','Vernichte 200 Sukkuben',()=>(save.st.kt.succ||0)>=200,{b:40});
+A('g3','Wurmfänger','Vernichte 200 Knochenwürmer',()=>(save.st.kt.worm||0)>=200,{b:60});
 [[100,'Elitejäger'],[1000,'Elitenschreck']].forEach(([n,nm],i)=>A('e'+i,nm,`Vernichte ${fmt(n)} Elite-Dämonen`,()=>stv('elites')>=n,{b:30*Math.pow(8,i)}));
 A('x0','Sammler','Aktiviere deinen ersten Reliquien-Set-Bonus',()=>SETS.some(setOn),{g:5});
 A('x1','Vollendeter Sammler','Bringe einen Set-Bonus auf Stufe 2',()=>SETS.some(setMax),{a:5});
@@ -1220,7 +1221,8 @@ function smite(x,y,auto){
   R.fx.push({k:'smite',x,y,r,t:0,dur:.42,auto});sfxL('smite');if(!auto)shake=Math.max(shake,2);
   for(let i=0;i<(auto?5:12);i++)R.pt.push({x:x+rnd(-r*.4,r*.4),y,vx:rnd(-120,120),vy:rnd(-380,-120),t:0,life:rnd(.35,.7),c:['#fff6d0','#ffd76a','#e8d0ff'][ri(0,2)],s:ri(2,4)});
   for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+8){f.dead=1;emberBurst(f.x,f.y,6);}
-  for(const e of R.en){if(e.dead)continue;if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;if(hasAff(e,'shield')&&!(e.shdBrk>0))shieldBreak(e);dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
+  for(const e of R.en){if(e.dead)continue;if(e.under){if(Math.hypot(e.x-x,e.y-y)<r+e.r){e.under=1e-6;e.burT=rnd(4,6);}continue;}// Bannstrahl treibt den Knochenwurm am Hügel heraus
+    if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;if(hasAff(e,'shield')&&!(e.shdBrk>0))shieldBreak(e);dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
 }
 function hurtHero(amt,src){
   if(R.wall>0){if(src&&!src.dead)dealDmg(src,ST.dmg*2*ST.ultDmg,{col:'#ffe08a'});return;}

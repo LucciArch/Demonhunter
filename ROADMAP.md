@@ -78,10 +78,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.70: Chronik – Erfolge nach 8 Kategorien gruppiert und einklappbar (mit Fortschritt je Kategorie, Auf/Zu bleibt beim Tab-Wechsel erhalten)
 - v0.71: Fürsten-Tod – 24 Seelen-Kugeln schießen als Fontäne hoch, fallen mit Schatten zurück, springen einmal auf und werden erst nach der Landung eingesammelt
 - v0.72: Neuer Dämon ab Kreis 50 – Knochenwurm (eigenes Sprite): gräbt sich ein, wühlt als Erdhügel unverwundbar zum Jäger und bricht mit Erdfontäne direkt neben ihm hervor
+- v0.73: Erfolg „Wurmfänger“ (200 Knochenwürmer, +60 Schwefel); Bannstrahl auf den Erdhügel treibt den Knochenwurm sofort heraus, fern vom Jäger
 
 ## Als Nächstes
 73. Bannstrahl auf eine Nova-Kugel lässt sie in Fürsten-Farbe zerplatzen (eigener Funkenregen)
 74. Templerin: Schildstoß-Angriff mit vorschnellendem Schild statt nur Klinge
 75. Chronik: Kategorie mit erreichbarem, aber noch offenem Erfolg mit Fortschrittsbalken (z. B. 640/1000)
 76. Goldene Seelen-Kugeln aus der Fürsten-Fontäne mit eigenem Klingel-Sound beim Aufprall
-77. Knochenwurm-Erfolg „Wurmfänger“ (200 Knochenwürmer) und Bannstrahl auf den Erdhügel treibt ihn sofort heraus
+78. Knochenwurm als Elite: hinterlässt beim Auftauchen einen Knochensplitter-Ring, der kurz Schaden macht
