@@ -912,6 +912,7 @@ let AC=null,MG=null;
 function audio(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.connect(AC.destination);}catch(e){return null;}}MG.gain.value=save.opt.vol;return AC;}
 function sfx(type){
   if(!save.opt.vol||!audio())return;
+  if(type==='relic'){[72,76,79,84].forEach((m,i)=>note(m,AC.currentTime+i*.08,.5,'triangle',.07));return;}
   const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(MG);
   const P={hit:[180,90,.04,'square',.05],crit:[420,120,.07,'square',.07],kill:[260,60,.08,'sawtooth',.05],pick:[880,1320,.05,'triangle',.04],smite:[1200,200,.12,'sawtooth',.05],boss:[90,40,.8,'sawtooth',.12],hurt:[120,60,.1,'square',.06],buy:[520,1040,.1,'triangle',.06]}[type];
   if(!P)return;o.type=P[3];o.frequency.setValueAtTime(P[0],t);o.frequency.exponentialRampToValueAtTime(Math.max(20,P[1]),t+P[2]);
@@ -994,7 +995,7 @@ function killDemon(e,o){
   const orbs=e.boss?12:e.elite?4:1;
   for(let i=0;i<orbs;i++){let v=souls/orbs,gold=false;if(Math.random()<ST.golden){v*=10;gold=true;}dropLoot(e,'s',v,gold);}
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;dropLoot(e,'b',b);}
-  if(e.boss||(e.elite&&Math.random()<.02))gainArt();
+  if(e.boss||(e.elite&&Math.random()<.02))dropArt(e);
   if(e.boss){const s=(1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat;dropLoot(e,'g',s*ST.bossLoot);
     R.bossDead=true;save.st.bosses++;questProg('boss');R.time+=5;R.maxTime+=5;shake=16;
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
@@ -1007,14 +1008,16 @@ function killDemon(e,o){
   }
   if(!R.bossSpawned&&R.kills>=R.quota)spawnBoss();
 }
-function gainArt(){const open=ARTS.filter(a=>(save.arts[a.id]||0)<ART_MAX);if(!open.length)return;
-  const a=open[ri(0,open.length-1)];save.arts[a.id]=(save.arts[a.id]||0)+1;(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
+function dropArt(e){const open=ARTS.filter(a=>(save.arts[a.id]||0)<ART_MAX);if(!open.length)return;
+  dropLoot(e,'a',open[ri(0,open.length-1)]);}
+function gainArt(a){save.arts[a.id]=Math.min(ART_MAX,(save.arts[a.id]||0)+1);(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
   toast('Reliquie: '+a.name+' (Stufe '+save.arts[a.id]+')');}
 function dropLoot(e,cur,v,gold){
   const a=Math.random()*Math.PI*2,sp=rnd(60,180);
   R.loot.push({x:e.x,y:e.y-e.r,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-80,z:0,cur,v,gold,age:0,fly:0,tx:0,ty:0});
 }
 function collect(l){
+  if(l.cur==='a'){gainArt(l.v);sfx('relic');return;}
   if(l.cur==='s')R.souls+=l.v;else if(l.cur==='b')R.brim+=l.v;else R.sig+=l.v;
   sfxL('pick');
 }
@@ -1183,7 +1186,8 @@ function updateFx(dt){
 }
 function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
-  // remaining loot is lost; give what was gathered
+  // remaining loot is lost; give what was gathered (Reliquien nie verlieren)
+  for(const l of R.loot)if(l.cur==='a')gainArt(l.v);
   if(R.t>3)save.st.rate=Math.max(R.souls/R.t,(save.st.rate||0)*.9);
   save.souls+=R.souls;save.brim+=R.brim;save.sig+=R.sig;save.st.runs++;save.st.best=Math.max(save.st.best,R.kills);
   save.st.soulsTotal=(save.st.soulsTotal||0)+R.souls;if(why==='dead')save.st.deaths=(save.st.deaths||0)+1;save.st.maxC=Math.max(save.st.maxC||0,save.maxCircle);
@@ -1304,6 +1308,9 @@ function drawDemon(e,sc){
   if(e.aff&&e.spawn<=0){ctx.save();ctx.font='12px "Pixelify Sans"';ctx.textAlign='center';ctx.fillStyle=AFFIX[e.aff].col;ctx.fillText(AFFIX[e.aff].name,e.x,e.y+fy-s.h*k-10);ctx.restore();}
 }
 function drawLoot(l){
+  if(l.cur==='a'){const s=SPR['art_'+l.v.id],sc=3,b=Math.sin(l.age*5)*3;ctx.save();ctx.translate(l.x,l.y+b);
+    ctx.globalAlpha=.35+.15*Math.sin(l.age*8);ctx.fillStyle='#ff6ae0';ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+    ctx.shadowColor='#ff6ae0';ctx.shadowBlur=16;ctx.drawImage(s.c,-s.w*sc/2,-s.h*sc/2,s.w*sc,s.h*sc);ctx.restore();return;}
   const col=l.cur==='s'?(l.gold?'#ffd76a':'#8fd8ff'):l.cur==='b'?'#ff8a3d':'#ffd76a';
   const s=l.cur==='g'?7:l.gold?6:5;const pulse=1+.15*Math.sin(l.age*10);
   ctx.save();ctx.translate(l.x,l.y);ctx.shadowColor=col;ctx.shadowBlur=10;
