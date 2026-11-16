@@ -598,8 +598,8 @@ const DEMONS={
 };
 const CIRCLES=['Asche','Klagen','Blut','Fäulnis','Eis','Schwefel','Leere','Dornen','Glut','Abgrund'];
 const CIRCLE_TINT=[['#2a1a1c','#3a2226','#ff6a2a'],['#221a2c','#30243e','#c06aff'],['#2c1214','#401a1c','#ff3030'],['#1a2418','#25331f','#9be04a'],['#16202c','#1f2e3e','#7ad0ff'],['#2a2214','#3a3018','#ffc23a'],['#121018','#1c1824','#8a7aff'],['#1e1a14','#2c241a','#e0703a'],['#2c1810','#3e2216','#ff9a3a'],['#0e0a10','#1a121c','#ff3a8a']];
-const CMOD={blood:{name:'Blutnebel',c:12,d:'Dämonen regenerieren 2% Leben pro Sekunde'},storm:{name:'Seelensturm',c:12,d:'+50% Seelen'},rage:{name:'Raserei',c:12,d:'Dämonen +30% Tempo, +50% Schwefel'},horde:{name:'Horde',c:12,d:'Doppelt so viele Dämonen, der Fürst braucht 50% mehr Kills'},dark:{name:'Finsternis',c:20,d:'Sicht nur rund um den Jäger, +25% Seelen'},curse:{name:'Fluch',c:20,d:'Heilung des Jägers halbiert, +25% Schwefel'},flood:{name:'Siegelflut',c:30,d:'Doppelte Siegel, der Fürst hat +50% Leben'}};
-const circleMod=c=>c>=30?Object.keys(CMOD)[c*3%7]:c>=20?Object.keys(CMOD)[c*5%6]:c>=12?Object.keys(CMOD)[c*3%4]:null;
+const CMOD={blood:{name:'Blutnebel',c:12,d:'Dämonen regenerieren 2% Leben pro Sekunde'},storm:{name:'Seelensturm',c:12,d:'+50% Seelen'},rage:{name:'Raserei',c:12,d:'Dämonen +30% Tempo, +50% Schwefel'},horde:{name:'Horde',c:12,d:'Doppelt so viele Dämonen, der Fürst braucht 50% mehr Kills'},dark:{name:'Finsternis',c:20,d:'Sicht nur rund um den Jäger, +25% Seelen'},curse:{name:'Fluch',c:20,d:'Heilung des Jägers halbiert, +25% Schwefel'},flood:{name:'Siegelflut',c:30,d:'Doppelte Siegel, der Fürst hat +50% Leben'},ember:{name:'Glutregen',c:35,d:'Feuerbälle stürzen vom Himmel (roter Warnkreis), +40% Schwefel'}};
+const circleMod=c=>c>=35?Object.keys(CMOD)[c*5%8]:c>=30?Object.keys(CMOD)[c*3%7]:c>=20?Object.keys(CMOD)[c*5%6]:c>=12?Object.keys(CMOD)[c*3%4]:null;
 const modTag=c=>{const m=circleMod(c);return m?' · '+CMOD[m].name:'';};
 const circleName=c=>c+'. Höllenkreis · '+CIRCLES[(c-1)%CIRCLES.length]+(c>CIRCLES.length?' '+(Math.floor((c-1)/CIRCLES.length)+1):'');
 
@@ -1030,7 +1030,7 @@ function killDemon(e,o){
   if(Math.random()<ST.dbl)souls*=2;
   const orbs=e.boss?12:e.aff2?8:e.elite?4:1;
   for(let i=0;i<orbs;i++){let v=souls/orbs,gold=false;if(Math.random()<ST.golden){v*=10;gold=true;}dropLoot(e,'s',v,gold);}
-  if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2)*(e.aff2?2:1):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;if(R.mod==='rage')b*=1.5;if(R.mod==='curse')b*=1.25;dropLoot(e,'b',b);}
+  if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2)*(e.aff2?2:1):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;if(R.mod==='rage')b*=1.5;if(R.mod==='curse')b*=1.25;if(R.mod==='ember')b*=1.4;dropLoot(e,'b',b);}
   if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
   if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1);dropLoot(e,'g',s*ST.bossLoot);
     R.bossDead=true;save.st.bosses++;questProg('boss');R.time+=5;R.maxTime+=5;shake=16;
@@ -1186,6 +1186,8 @@ function updateRun(dt){
   R.clouds=R.clouds.filter(c=>c.t<c.dur);
   R.fireT-=dt;for(const f of R.fires){f.t+=dt;if(R.fireT<=0&&Math.hypot(f.x-hp.x,f.y-hp.y)<f.r+10){R.fireT=.5;hurtHero(f.dmg,null);if(R.over)return;}}
   R.fires=R.fires.filter(f=>f.t<f.dur);
+  if(R.mod==='ember'&&(R.emT=(R.emT||1.5)-dt)<=0){R.emT=rnd(1,1.8);const mx=Math.random()<.35?hp.x+rnd(-60,60):rnd(40,W-40),my=Math.random()<.35?hp.y+rnd(-30,30):rnd(130,H-30),dm=R.dmgM*3;
+    R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1});shake=Math.max(shake,5);sfxL('hurt');if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
   if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);
@@ -1397,6 +1399,8 @@ function drawFx(){
     if(f.k==='slash'){ctx.strokeStyle=`rgba(255,240,220,${1-p})`;ctx.lineWidth=6*(1-p)+1;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(.6+.4*p),f.a-1.1,f.a+1.1);ctx.stroke();
       ctx.strokeStyle=`rgba(255,90,80,${.6*(1-p)})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(.5+.4*p),f.a-.9,f.a+.9);ctx.stroke();}
     else if(f.k==='sweep'){ctx.strokeStyle=`rgba(255,60,80,${.9*(1-p)})`;ctx.lineWidth=8*(1-p)+1;ctx.beginPath();ctx.arc(f.x,f.y,f.r*(.7+.3*p),p*6,p*6+4.5);ctx.stroke();}
+    else if(f.k==='meteor'){ctx.strokeStyle=`rgba(255,60,30,${.4+.5*p})`;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r,f.r*.45,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle=`rgba(255,60,30,${.25*p})`;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*.45*p,0,0,Math.PI*2);ctx.fill();
+      const my=f.y-(1-p)*420,mx=f.x+(1-p)*120;ctx.fillStyle='rgba(255,140,40,.35)';ctx.beginPath();ctx.moveTo(mx-6,my);ctx.lineTo(mx+40,my-80);ctx.lineTo(mx+6,my);ctx.fill();ctx.fillStyle='#ff6a1a';ctx.fillRect(mx-7,my-7,14,14);ctx.fillStyle='#ffd76a';ctx.fillRect(mx-4,my-4,8,8);}
     else if(f.k==='ring'){ctx.strokeStyle=f.col;ctx.globalAlpha=1-p;ctx.lineWidth=5;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*p*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=(1-p)*.15;ctx.fillStyle=f.col;ctx.fill();}
     else if(f.k==='quake'){ctx.strokeStyle=`rgba(95,224,255,${1-p})`;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*p,f.r*p*.5,0,0,Math.PI*2);ctx.stroke();
       for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.fillStyle=`rgba(95,224,255,${1-p})`;ctx.fillRect(f.x+Math.cos(a)*f.r*p-2,f.y+Math.sin(a)*f.r*p*.5-2,4,4);}}
