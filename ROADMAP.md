@@ -101,9 +101,9 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.93: Seelendieb – in 40% der Jagden ab Kreis 2 flieht ein Dämon mit Seelensack, entkommt nach 8 s durch ein Portal; gefangen regnet es 20 Beutekugeln. Bestiarium-Eintrag, 2 Erfolge, Statistik
 - v0.94: Hub als Ordenshalle: Spitzbogenfenster mit Höllenhimmel, Ordensbanner, flackernde Kerzenständer, roter Läufer
 - v0.95: Fürsten-Wutphase unter 50% Leben: „… TOBT!“, +40% Tempo, Fähigkeiten 40% häufiger plus Feuerring, pulsierende Aura
+- v0.96: Neu gepixelt: Hornbestie (18×22, glühender Bauch, Hufe), Golem (Lava-Kern, Moos, Steinkanten), Kultist (Kapuze mit Goldsaum, Feuer in beiden Händen), Fürst (26×24, Krone mit Juwelen, Zahnmaul, Gürtel – alle 10 Varianten)
 
 ## Als Nächstes
-C. Sprites weiter überarbeiten: Brute, Golem, Kultist, Fürst
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
 88. Fürsten-Fontäne: Tooltip/Hinweis beim ersten Fürsten-Kill, dass goldene Kugeln in der Luft fangbar sind
 89. Knochenkönig: eigener Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen)
