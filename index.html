@@ -984,6 +984,7 @@ function audio(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioCont
 function sfx(type){
   if(!save.opt.vol||!audio())return;
   if(type==='tele'){note(88,AC.currentTime,.12,'sine',.05);note(76,AC.currentTime+.06,.15,'sine',.05);return;}
+  if(type==='pop'){note(84,AC.currentTime,.1,'square',.03);note(91,AC.currentTime+.04,.18,'triangle',.05);return;}
   if(type==='relic'){[72,76,79,84].forEach((m,i)=>note(m,AC.currentTime+i*.08,.5,'triangle',.07));return;}
   const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(MG);
   const P={hit:[180,90,.04,'square',.05],crit:[420,120,.07,'square',.07],kill:[260,60,.08,'sawtooth',.05],pick:[880,1320,.05,'triangle',.04],smite:[1200,200,.12,'sawtooth',.05],boss:[90,40,.8,'sawtooth',.12],hurt:[120,60,.1,'square',.06],buy:[520,1040,.1,'triangle',.06]}[type];
@@ -1215,12 +1216,16 @@ function chainFrom(e,amt){
 function shieldBreak(e){e.shdBrk=2;sfxL('crit');save.st.shb=(save.st.shb||0)+1;
   for(const o of R.en)if(o.shdBy===e&&o.shd>0&&!o.dead){o.shd=0;for(let i=0;i<8;i++){const q=i/7,px=e.x+(o.x-e.x)*q,py=e.y+(o.y-e.y)*q;R.pt.push({x:px,y:py,vx:rnd(-140,140),vy:rnd(-200,40),t:0,life:rnd(.3,.6),c:Math.random()<.6?'#ffe27a':'#fff6d0',s:ri(2,4)});}}
   for(let i=0;i<16;i++){const a=i/16*Math.PI*2;R.pt.push({x:e.x+Math.cos(a)*30,y:e.y-e.r+Math.sin(a)*24,vx:Math.cos(a)*180,vy:Math.sin(a)*140-60,t:0,life:rnd(.3,.55),c:'#ffe27a',s:ri(2,3)});}}
+// Bannstrahl zerplatzt eine Nova-Kugel in Fürsten-Farbe
+function novaPop(f){const c=f.nova.c,k=f.nova.k;R.fx.push({k:'ring',x:f.x,y:f.y,r:46,t:0,dur:.35,col:c});R.fx.push({k:'boom',x:f.x,y:f.y,r:26,t:0,dur:.22});sfxL('pop');
+  for(let i=0;i<22;i++){const a=i/22*Math.PI*2+rnd(-.15,.15),v=rnd(120,300);R.pt.push({x:f.x,y:f.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-60,t:0,life:rnd(.35,.7),c:i%3?c:k,s:ri(2,4)});}
+  for(let i=0;i<10;i++)R.pt.push({x:f.x+rnd(-6,6),y:f.y+rnd(-6,6),vx:rnd(-40,40),vy:rnd(-160,-60),t:0,life:rnd(.6,1),c:'#ffffff',s:1});}
 function smite(x,y,auto){
   const r=ST.clickR;const c=critRoll(ST.clickCrit);const amt=ST.click*(c?ST.clickCritDmg:1);
   save.st.smites=(save.st.smites||0)+1;questProg('smite');
   R.fx.push({k:'smite',x,y,r,t:0,dur:.42,auto});sfxL('smite');if(!auto)shake=Math.max(shake,2);
   for(let i=0;i<(auto?5:12);i++)R.pt.push({x:x+rnd(-r*.4,r*.4),y,vx:rnd(-120,120),vy:rnd(-380,-120),t:0,life:rnd(.35,.7),c:['#fff6d0','#ffd76a','#e8d0ff'][ri(0,2)],s:ri(2,4)});
-  for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+8){f.dead=1;emberBurst(f.x,f.y,6);}
+  for(const f of R.ep)if(Math.hypot(f.x-x,f.y-y)<r+(f.nova?14:8)){f.dead=1;if(f.nova)novaPop(f);else emberBurst(f.x,f.y,6);}
   for(const e of R.en){if(e.dead)continue;if(e.under){if(Math.hypot(e.x-x,e.y-y)<r+e.r){e.under=1e-6;e.burT=rnd(4,6);}continue;}// Bannstrahl treibt den Knochenwurm am Hügel heraus
     if(Math.hypot(e.x-x,(e.y-e.r)-y)<r+e.r){e.mark=3;if(hasAff(e,'shield')&&!(e.shdBrk>0))shieldBreak(e);dealDmg(e,amt,{crit:c,smite:1,col:'#e8d0ff'});}}
 }
