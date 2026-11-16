@@ -92,8 +92,12 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.84: Neuer Fürst Knochenkönig (ab Kreis 50 jeder 5. Kreis): ruft Knochenwürmer, Knochenspeere mit Warnkreis
 - v0.85: Bestiarium zeigt Elite-Sonderfähigkeiten (sobald eine Elite der Art erlegt wurde)
 - v0.86: Chronik-Knopf leuchtet grün, wenn ein Auftrag oder Erfolg zu ≥90% geschafft ist
+- v0.87: Neue Arena: Rückwand mit Säulen und flackernden Fackeln, Deko je Höllenkreis (Knochen, Gräber, Pilze, Eiskristalle, Dornen, Schlote), glühende Pfützen, Vignette; neues HUD mit Porträt, dickem Lebensbalken mit Schadens-Nachlauf und Kreisname
 
 ## Als Nächstes
+A. Segnungen: Kills füllen eine Leiste, dann 1 von 3 Segnungen für die laufende Jagd wählen
+B. Schreine in der Arena (Blutaltar, Seelenbrunnen, Truhe/Mimic)
+C. Sprites detaillierter überarbeiten (Jäger, Dämonen, Fürst)
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
 88. Fürsten-Fontäne: Tooltip/Hinweis beim ersten Fürsten-Kill, dass goldene Kugeln in der Luft fangbar sind
 89. Knochenkönig: eigener Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen)
