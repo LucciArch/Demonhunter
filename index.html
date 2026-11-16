@@ -931,6 +931,7 @@ AN('g0','Steinbrecher','Vernichte 100 Golems',()=>(save.st.kt.golem||0),100,{b:5
 AN('g1','Ketzerjäger','Vernichte 200 Kultisten',()=>(save.st.kt.cult||0),200,{b:40});
 AN('g2','Unbetört','Vernichte 200 Sukkuben',()=>(save.st.kt.succ||0),200,{b:40});
 AN('g3','Wurmfänger','Vernichte 200 Knochenwürmer',()=>(save.st.kt.worm||0),200,{b:60});
+AN('g4','Gebeinbrecher','Besiege den Knochenkönig 5×',()=>(save.st.bk||0),5,{g:5});
 [[100,'Elitejäger'],[1000,'Elitenschreck']].forEach(([n,nm],i)=>AN('e'+i,nm,`Vernichte ${fmt(n)} Elite-Dämonen`,()=>stv('elites'),n,{b:30*Math.pow(8,i)}));
 A('x0','Sammler','Aktiviere deinen ersten Reliquien-Set-Bonus',()=>SETS.some(setOn),{g:5});
 A('x1','Vollendeter Sammler','Bringe einen Set-Bonus auf Stufe 2',()=>SETS.some(setMax),{a:5});
@@ -1332,7 +1333,7 @@ function killDemon(e,o){
   if(e.d.thief){for(let i=0;i<20;i++)dropLoot(e,'s',d.souls*R.rewM*ST.soul/4,i<4);save.st.thief=(save.st.thief||0)+1;R.tx.push({x:e.x,y:e.y-40,str:'BEUTE!',t:0,col:'#ffd76a'});sfx('relic');}
   if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
   if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1);for(let i=0;i<8;i++){dropLoot(e,'g',s*ST.bossLoot/8);R.loot[R.loot.length-1].hud=1;}R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:1.6,sc:2.6});
-    R.bossDead=true;save.st.bosses++;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;R.slow=.5;R.zoom={x:e.x,y:e.y,t:0,dur:.9};// Todesstoß in Zeitlupe
+    R.bossDead=true;save.st.bosses++;if(bossOf(R.c).ab==='bone')save.st.bk=(save.st.bk||0)+1;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;R.slow=.5;R.zoom={x:e.x,y:e.y,t:0,dur:.9};// Todesstoß in Zeitlupe
 
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
     const bb=$('#bossBanner');bb.textContent=(e.name||'FÜRST').toUpperCase()+' GEBANNT! +5s';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,1600);}
@@ -2055,6 +2056,7 @@ function chronik(tab){
     const mc=Math.max(save.maxCircle,stv('maxC')),lst=(o,col)=>Object.values(o).map(x=>`<div class="htn ${mc>=x.c?'':'lock'}" style="cursor:default;opacity:${mc>=x.c?1:.55}"><b style="color:${col||x.col}">${x.name}</b> <span style="color:var(--dim)">ab Kreis ${x.c}</span><br>${x.d}</div>`).join('');
     h+=`<div style="color:#ff9a4a;text-align:center;margin:12px 0 6px">Elite-Affixe</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(AFFIX)}</div><div style="color:#ff6ad8;text-align:center;margin:12px 0 6px">Höllenkreis-Modifikatoren</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(CMOD,'#ff6ad8')}</div>`;}
   else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Elite vernichtet',fmt(st.elites||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Beste Kombo',fmt(st.combo||0)],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Reliquien geschmolzen',fmt(st.forged||0)],['Erfolge',achCount()+' / '+ACH.length]];
+    if(st.bk)rows.push(['Knochenkönig besiegt',fmt(st.bk)]);
     for(const k in CMOD)if(st.bm&&st.bm[k])rows.push(['Fürsten unter '+CMOD[k].name,fmt(st.bm[k])]);
     if(st.sb)rows.push(['Seelenträger gebannt',fmt(st.sb)]);
     if(st.shb)rows.push(['Schilde zerbrochen',fmt(st.shb)]);

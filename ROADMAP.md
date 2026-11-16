@@ -102,11 +102,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.94: Hub als Ordenshalle: Spitzbogenfenster mit Höllenhimmel, Ordensbanner, flackernde Kerzenständer, roter Läufer
 - v0.95: Fürsten-Wutphase unter 50% Leben: „… TOBT!“, +40% Tempo, Fähigkeiten 40% häufiger plus Feuerring, pulsierende Aura
 - v0.96: Neu gepixelt: Hornbestie (18×22, glühender Bauch, Hufe), Golem (Lava-Kern, Moos, Steinkanten), Kultist (Kapuze mit Goldsaum, Feuer in beiden Händen), Fürst (26×24, Krone mit Juwelen, Zahnmaul, Gürtel – alle 10 Varianten)
+- v0.97: Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen, +5 Siegel), Knochenkönig-Siege in der Statistik
 
 ## Als Nächstes
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
 88. Fürsten-Fontäne: Tooltip/Hinweis beim ersten Fürsten-Kill, dass goldene Kugeln in der Luft fangbar sind
-89. Knochenkönig: eigener Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen)
 90. Weitere Elite-Sonderfähigkeiten (z. B. Elite-Kultist wirft Dreifach-Feuerball, Elite-Sukkubus hinterlässt Lustnebel) – im Bestiarium per BEST_EL eintragen
 91. Chronik-Aufträge-Tab: fast geschaffte Aufträge ebenfalls grün markieren
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
