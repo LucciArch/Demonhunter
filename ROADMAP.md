@@ -111,10 +111,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.103: Elite-Kultist wirft drei Feuerbälle im Fächer, Elite-Sukkubus hinterlässt rosa Lustnebel (verlangsamt den Jäger) – beides im Bestiarium
 - v0.104: Chronik-Aufträge: fast geschaffte Aufträge (≥90%) grün umrandet mit „● fast geschafft“, grüner Punkt am Aufträge-Reiter
 - v0.105: Elite-Golem stampft alle 4 s eine Schockwelle (110 px), Elite-Höllenhund heult und ruft ein Rudel aus drei Höllenhunden – beides im Bestiarium
+- v0.106: Hub – grüner Punkt am Chronik-Knopf, wenn ein Auftrag fast geschafft ist (erledigte Aufträge lassen ihn nicht mehr fälschlich leuchten)
 
 ## Als Nächstes
 94. Weitere Elite-Fähigkeiten: Elite-Imp teilt sich beim Tod, Elite-Schemen wird kurz unsichtbar, Elite-Nachtmahr stößt im Sturzflug zu
-93. Hub: grüner Punkt auch am Chronik-Knopf statt nur Leuchten, wenn ein Auftrag fast geschafft ist
+95. Hub: Hinweis-Punkt auch am Schwurbaum-Knopf, wenn ein Knoten bezahlbar ist
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
