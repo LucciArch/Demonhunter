@@ -30,10 +30,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.23: Bestiarium-Meilensteine – ab 100 und 1000 Kills einer Dämonenart je dauerhaft +5% Schaden gegen sie (Hinweis beim Erreichen, Anzeige im Bestiarium)
 - v0.24: Elite-Affix-Kombinationen ab Kreis 15 – 35% der Elite tragen zwei Affixe (×1,5 Leben, größer), doppelte Seelen-Kugeln und Schwefel, doppelte Reliquien-Chance
 - v0.25: Reliquien-Set-Boni – 4 Sets (Blutpakt, Seelenhandel, Gewitter des Richters, Fürstenmord), aktiv wenn alle drei Reliquien Stufe 5 erreichen; Übersicht im Reliquien-Reiter, Hinweis beim Freischalten
+- v0.26: Neues Elite-Affix ab Kreis 18 – Teleportierend (springt alle 3 s mit violettem Portal-Ring und Klang direkt neben den Jäger)
 
 ## Als Nächstes
 23. Weitere Kreis-Modifikatoren ab Kreis 20 (z. B. Finsternis: kleiner Sichtradius, Fluch: Jäger-Regeneration halbiert, doppelte Siegel)
 24. Bestiarium-Meilenstein 10000 Kills: zusätzlich +5% Seelen von dieser Art
-25. Neues Elite-Affix ab Kreis 18: Teleportierend (springt alle 3 s zum Jäger)
 26. Set-Bonus-Stufe 2: alle drei Reliquien auf Stufe 10 verdoppeln den Set-Effekt
 27. Erfolg „Sammler“ für den ersten aktiven Set-Bonus
+28. Neues Elite-Affix ab Kreis 22: Frostig (verlangsamt den Angriff des Jägers bei Treffern)
