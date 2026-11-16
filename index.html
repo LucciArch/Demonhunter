@@ -704,7 +704,7 @@ const SKEY='daemonenjaeger_save_v1';
 let save;
 function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:1,maxCircle:1,st:{runs:0,kills:0,bosses:0,best:0},auto:false,seenIntro:false,frag:0,asc:{},ascCount:0,fragTotal:0};}
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
-function persist(){try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
+function persist(){save.last=Date.now();try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
 save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true},save.opt);
 save.st.kt=save.st.kt||{};save.ach=save.ach||{};save.quests=save.quests||[];
@@ -1096,6 +1096,7 @@ function updateFx(dt){
 function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered
+  if(R.t>3)save.st.rate=Math.max(R.souls/R.t,(save.st.rate||0)*.9);
   save.souls+=R.souls;save.brim+=R.brim;save.sig+=R.sig;save.st.runs++;save.st.best=Math.max(save.st.best,R.kills);
   save.st.soulsTotal=(save.st.soulsTotal||0)+R.souls;if(why==='dead')save.st.deaths=(save.st.deaths||0)+1;save.st.maxC=Math.max(save.st.maxC||0,save.maxCircle);
   R.quests=claimQuests();
@@ -1489,6 +1490,12 @@ function frame(now){
 }
 computeStats();showUI();refreshHub();
 if(!save.seenIntro){save.seenIntro=true;persist();setTimeout(menu,400);}
+else{// Offline-Fortschritt: 25% der zuletzt erjagten Seelen/s, max. 8 Stunden
+  const away=save.last?Math.min(8*3600,(Date.now()-save.last)/1000):0,gain=Math.floor(away*(save.st.rate||0)*.25);
+  if(away>60&&gain>0){save.souls+=gain;persist();refreshHub();
+    openModal(`<h2>WILLKOMMEN ZURÜCK</h2><div style="text-align:center;font-size:21px;line-height:1.2;max-width:420px">Du warst ${fmtTime(away)} fort.${away>=8*3600?' <span style="color:var(--dim)">(höchstens 8 h zählen)</span>':''}<br>Dein Orden jagte weiter und sammelte<br><span class="cur s" style="font-size:28px;margin:8px 0"><i></i>${fmt(gain)} Seelen</span></div><div class="row"><button class="big" id="wbOk">Weiter</button></div>`);
+    $('#wbOk').onclick=closeModal;}}
+addEventListener('pagehide',persist);setInterval(persist,30000);
 requestAnimationFrame(frame);
 // debug hook for testing
 window.__DJ={get save(){return save},get R(){return R},startRun,toHub,computeStats,NODES,ST:()=>ST};
