@@ -60,11 +60,12 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.52: Erfolg „Schildbrecher“ (100 Schildträger-Elite, +300 Schwefel); Kills werden jetzt pro Elite-Affix gezählt
 - v0.53: Statistik zeigt Elite-Kills pro Affix
 - v0.54: 9 neue Affix-Erfolge (Windfänger, Panzerknacker, Sprengmeister, Pfähler, Bannbrecher, Spiegelscherbe, Geisterfänger, Frostbrecher, Glutlöscher) – je 100 Elite eines Affixes, +300 Schwefel
+- v0.55: Schildträger zeigen einen pulsierenden goldenen Verbindungsstrahl zu jedem Dämon, den sie gerade schützen
 
 ## Als Nächstes
 47. Schemen und Kultist: eigene Angriffs-Effekte (Geistergriff, Beschwörungs-Glyphe beim Feuerball)
 51. Neuer Kreis-Modifikator ab Kreis 40: Seelenfrost (Dämonen hinterlassen Eisflächen, die den Jäger verlangsamen; +40% Siegel)
 55. Elite-Tod: kurzes Aufblitzen und kleiner Seelenwirbel, wenn eine Doppel-Affix-Elite fällt
-56. Schildträger-Schild optisch mit Verbindungsstrahl zwischen Träger und geschütztem Dämon
 57. Pestarzt: Phiolen-Gürtel als eigenes Sprite, Griff zur Phiole vor dem Wurf
 60. Gestufte Affix-Erfolge (1000 Elite pro Affix) mit Siegel-Belohnung
+61. Bannstrahl auf einen Schildträger zerbricht sichtbar die Schutzverbindungen (Splitter-Effekt)

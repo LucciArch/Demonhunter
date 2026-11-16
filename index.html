@@ -1215,7 +1215,7 @@ function updateRun(dt){
   // enemies
   for(const e of R.en){
     if(e.dead)continue;e.flash=Math.max(0,e.flash-dt);e.mark=Math.max(0,e.mark-dt);e.shd=Math.max(0,(e.shd||0)-dt);e.bob+=dt*8;
-    if(hasAff(e,'shield')&&e.spawn<=0)for(const o of R.en)if(o!==e&&!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<140)o.shd=.2;
+    if(hasAff(e,'shield')&&e.spawn<=0)for(const o of R.en)if(o!==e&&!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<140){o.shd=.2;o.shdBy=e;}
     e.rec=Math.max(0,(e.rec||0)-dt);if(e.spawn>0){e.spawn-=dt;continue;}
     if(e.kb>0){e.kb-=dt;e.x+=e.kx*dt;e.y+=e.ky*dt;continue;}
     const dx=hp.x-e.x,dy=hp.y-e.y,d=Math.hypot(dx,dy)||1;const reach=18+e.r;
@@ -1411,7 +1411,7 @@ function drawDemon(e,sc){
   if(e.spawn>0){const q=1-e.spawn/(e.sp0||.35);drawSpr(s,e.x,e.y+fy+(1-q)*10,k,e.flip,false,q,true,{sy:q,sx:2-q});}
   else drawSpr(fr,e.x+lx,e.y+fy-sq+ly,k,e.flip,e.flash>0,undefined,false,o);
   if(e.shd>0&&e.spawn<=0){ctx.save();ctx.globalAlpha=.35+.15*Math.sin(e.bob*.5);ctx.strokeStyle='#ffe27a';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(e.x,e.y+fy-s.h*k*.45,s.w*k*.55,s.h*k*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha*=.3;ctx.fillStyle='#ffe27a';ctx.fill();ctx.restore();}
-  if(hasAff(e,'shield')&&e.spawn<=0){ctx.save();ctx.globalAlpha=.12;ctx.strokeStyle='#ffe27a';ctx.setLineDash([6,6]);ctx.beginPath();ctx.ellipse(e.x,e.y,140,98,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
+  if(hasAff(e,'shield')&&e.spawn<=0){ctx.save();ctx.strokeStyle='#ffe27a';ctx.lineWidth=2;ctx.globalAlpha=.3+.2*Math.sin(e.bob*.7);for(const o of R.en)if(o.shdBy===e&&o.shd>0&&!o.dead){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(o.x,o.y);ctx.stroke();}ctx.restore();ctx.save();ctx.globalAlpha=.12;ctx.strokeStyle='#ffe27a';ctx.setLineDash([6,6]);ctx.beginPath();ctx.ellipse(e.x,e.y,140,98,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
   if(e.mark>0){ctx.fillStyle='rgba(220,190,255,.8)';ctx.fillRect(e.x-3,e.y+fy-s.h*k-10,6,6);}
   // hp bar
   if(e.hp<e.max){const w=e.boss?90:Math.max(24,s.w*k*.7);const y=e.y+fy-s.h*k-6;ctx.fillStyle='#000';ctx.fillRect(e.x-w/2-1,y-1,w+2,e.boss?7:5);
