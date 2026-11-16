@@ -1820,10 +1820,49 @@ function w2s(x,y){return {x:(x-cam.x)*cam.z+W/2,y:(y-cam.y)*cam.z+H/2};}
 function s2w(x,y){return {x:(x-W/2)/cam.z+cam.x,y:(y-H/2)/cam.z+cam.y};}
 function nodeAt(sx,sy){const w=s2w(sx,sy);let best=null;for(const n of NODES){if(!nodeVisible(n))continue;const d=Math.hypot(n.x-w.x,n.y-w.y);if(d<n.r+6&&(!best||d<best.d))best={n,d};}return best&&best.n;}
 const embers=[];for(let i=0;i<70;i++)embers.push({x:Math.random(),y:Math.random(),s:rnd(.3,1),p:Math.random()*6});
+// ================= ORDENSHALLE (Hub-Hintergrund: Fenster, Banner, Kerzen) =================
+let HALL=null;
+function hallFor(){const key=W+'|'+H;if(HALL&&HALL.key===key)return HALL;
+  const P=4,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),fy=Math.round(H*.68/P)*P;
+  let seed=4242;const Rn=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  // Rückwand aus Quadern
+  x.fillStyle='#140c12';x.fillRect(0,0,W,fy);
+  for(let j=0;j<fy;j+=8*P)for(let i=-((j/(8*P))%2)*8*P;i<W;i+=16*P){const v=Rn()*10|0;x.fillStyle=`rgb(${34+v},${22+v},${30+v})`;x.fillRect(i+P,j+P,14*P,6*P);x.fillStyle='rgba(255,255,255,.04)';x.fillRect(i+P,j+P,14*P,P);x.fillStyle='rgba(0,0,0,.3)';x.fillRect(i+P,j+6*P,14*P,P);}
+  // Spitzbogenfenster mit Höllenhimmel
+  const nW=Math.max(3,Math.round(W/320)),wins=[],ban=[];
+  for(let n=0;n<nW;n++){const cx=Math.round(((n+.5)/nW*W)/P)*P,ww=18*P,top=Math.round(H*.1/P)*P,bot=Math.round(H*.48/P)*P;wins.push({x:cx,y:(top+bot)/2,h:bot-top});
+    x.fillStyle='#0a0608';x.fillRect(cx-ww/2-2*P,top-2*P,ww+4*P,bot-top+4*P);
+    for(let j=top;j<bot;j+=P){const ar=j-top<ww/2?Math.sqrt(Math.max(0,(ww/2)**2-(ww/2-(j-top))**2)):ww/2;const g=(j-top)/(bot-top);
+      x.fillStyle=`rgb(${120+80*g|0},${20+30*g|0},${30-10*g|0})`;x.fillRect(Math.round((cx-ar)/P)*P,j,Math.round(ar*2/P)*P,P);}
+    x.fillStyle='#0a0608';x.fillRect(cx-P/2,top,P,bot-top);x.fillRect(cx-ww/2,Math.round((top+bot*1.4)/2.4/P)*P,ww,P);
+    for(let k=0;k<6;k++){x.fillStyle='rgba(20,0,0,.6)';const hx=cx-ww/2+Rn()*ww,hy=bot-P*(2+Rn()*6);x.fillRect(Math.round(hx/P)*P,Math.round(hy/P)*P,P*(2+Rn()*3|0),bot-hy);}// ferne Türme
+    x.fillStyle='#3a2a30';x.fillRect(cx-ww/2-3*P,bot+2*P,ww+6*P,2*P);
+    if(n<nW-1)ban.push(Math.round(((n+1)/nW*W)/P)*P);}
+  // Banner des Ordens zwischen den Fenstern
+  for(const bx of ban){const bw=12*P,top=Math.round(H*.08/P)*P,bh=Math.round(H*.36/P)*P;x.fillStyle='#5a3a1e';x.fillRect(bx-bw/2-2*P,top-P,bw+4*P,2*P);
+    for(let j=0;j<bh;j+=P){const cut=j>bh-4*P?Math.abs(j-(bh-4*P))/P:0;x.fillStyle=j<P*2?'#e2b04a':'#7a1424';x.fillRect(bx-bw/2+cut*P*1.5,top+P+j,bw-cut*P*3,P);x.fillStyle='rgba(0,0,0,.25)';x.fillRect(bx+bw/2-2*P,top+P+j,P,P);}
+    x.fillStyle='#e2b04a';const cy=top+bh*.42;x.fillRect(bx-P/2,cy-6*P,P*1.5,13*P);x.fillRect(bx-4*P,cy-3*P,9*P,P*1.5);x.fillRect(bx-2*P,cy+5*P,5*P,P);}
+  // Boden: Platten und roter Läufer
+  x.fillStyle='#100a0e';x.fillRect(0,fy,W,H-fy);
+  for(let j=fy;j<H;j+=10*P)for(let i=-((j/(10*P))%2)*10*P;i<W;i+=20*P){x.fillStyle='#1e1418';x.fillRect(i+P,j+P,18*P,8*P);x.fillStyle='rgba(255,255,255,.03)';x.fillRect(i+P,j+P,18*P,P);}
+  const g=x.createLinearGradient(0,fy,0,fy+60);g.addColorStop(0,'rgba(0,0,0,.8)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,fy,W,60);
+  x.fillStyle='#4a0e18';x.fillRect(W/2-26*P,fy,52*P,H-fy);x.fillStyle='#e2b04a';x.fillRect(W/2-26*P,fy,P,H-fy);x.fillRect(W/2+25*P,fy,P,H-fy);
+  // Kerzenständer entlang der Wand
+  const cand=[];const nC=Math.max(4,Math.round(W/200));for(let n=0;n<nC;n++){const cx=Math.round(((n+.5)/nC*W)/P)*P;if(Math.abs(cx-W/2)<30*P)continue;
+    x.fillStyle='#3a2a1a';x.fillRect(cx-P/2,fy-14*P,P*1.5,14*P);x.fillRect(cx-4*P,fy-P,9*P,P*2);x.fillRect(cx-5*P,fy-14*P,11*P,P);
+    for(const o of [-4,0,4]){x.fillStyle='#e8dcc0';x.fillRect(cx+o*P-P/2,fy-18*P,P*1.5,4*P);cand.push({x:cx+o*P+P/4,y:fy-18*P,ph:Rn()*6});}}
+  HALL={key,c,cand,wins};return HALL;}
+function drawHall(){const A=hallFor();ctx.drawImage(A.c,0,0,W,H);
+  ctx.save();ctx.globalCompositeOperation='lighter';
+  for(const w of A.wins){const g=ctx.createRadialGradient(w.x,w.y,10,w.x,w.y,w.h*.9);g.addColorStop(0,`rgba(255,60,40,${.12+.04*Math.sin(hubT*1.3+w.x)})`);g.addColorStop(1,'rgba(255,40,20,0)');ctx.fillStyle=g;ctx.fillRect(w.x-w.h,w.y-w.h,w.h*2,w.h*2);}
+  for(const c of A.cand){const f=.8+.2*Math.sin(hubT*12+c.ph);const g=ctx.createRadialGradient(c.x,c.y,1,c.x,c.y,50*f);g.addColorStop(0,'rgba(255,170,70,.3)');g.addColorStop(1,'rgba(255,120,40,0)');ctx.fillStyle=g;ctx.fillRect(c.x-50,c.y-50,100,100);}
+  ctx.restore();
+  for(const c of A.cand){const h=5+Math.sin(hubT*15+c.ph)*1.5;ctx.fillStyle='#ff8a2a';ctx.fillRect(c.x-2,c.y-h,4,h);ctx.fillStyle='#fff0b0';ctx.fillRect(c.x-1,c.y-h*.6,2,h*.5);}
+  ctx.fillStyle='rgba(8,4,8,.5)';ctx.fillRect(0,0,W,H);}// abdunkeln, damit der Schwurbaum lesbar bleibt
+
 function renderHub(dt){
   hubT+=dt;
-  ctx.fillStyle='#0b070d';ctx.fillRect(0,0,W,H);
-  ctx.save();ctx.globalAlpha=.35;ctx.fillStyle=bgPattern(1);ctx.translate(-cam.x*cam.z*.3%288,-cam.y*cam.z*.3%288);ctx.fillRect(-300,-300,W+600,H+600);ctx.restore();
+  drawHall();
   // embers
   for(const e of embers){e.y-=dt*.02*e.s;if(e.y<-.02){e.y=1.02;e.x=Math.random();}const x=e.x*W+Math.sin(hubT+e.p)*10,y=e.y*H;ctx.fillStyle=`rgba(255,${120+60*e.s|0},40,${.25+.4*e.s})`;ctx.fillRect(x,y,2*e.s+1,2*e.s+1);}
   // ritual circles

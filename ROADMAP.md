@@ -99,6 +99,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.91: Alle 7 Jäger neu gepixelt in 20×22 (Hutkrempen, Mantelfalten, Plattenrüstung, Schnabelmaske mit Brillengläsern …), Waffen-Drehpunkte, Armbrustsehne, Phiolengürtel und Schild angepasst
 - v0.92: Kombo-System – Kills in Folge (3s Fenster) geben bis +100% Seelen, Stufen Gemetzel/Blutrausch/Höllensturm/Apokalypse/Götterdämmerung mit Ansage, 3 Erfolge, beste Kombo in der Statistik
 - v0.93: Seelendieb – in 40% der Jagden ab Kreis 2 flieht ein Dämon mit Seelensack, entkommt nach 8 s durch ein Portal; gefangen regnet es 20 Beutekugeln. Bestiarium-Eintrag, 2 Erfolge, Statistik
+- v0.94: Hub als Ordenshalle: Spitzbogenfenster mit Höllenhimmel, Ordensbanner, flackernde Kerzenständer, roter Läufer
 
 ## Als Nächstes
 C. Sprites weiter überarbeiten: Brute, Golem, Kultist, Fürst
@@ -109,6 +110,5 @@ C. Sprites weiter überarbeiten: Brute, Golem, Kultist, Fürst
 91. Chronik-Aufträge-Tab: fast geschaffte Aufträge ebenfalls grün markieren
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
-F. Hub-Hintergrund: Ordenshalle statt Ziegelmuster (Kerzen, Banner, Waffenständer)
 H. Ereignis „Blutmond“: seltene Jagd mit doppelten Dämonen und dreifacher Beute
 I. Fürsten mit Phasen: unter 50% Leben neue Angriffsmuster und Wut-Aura
