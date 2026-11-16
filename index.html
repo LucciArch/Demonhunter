@@ -841,6 +841,9 @@ A('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths')>=1,{s:25});
 const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
 function curAdd(c,v){if(c==='s')save.souls+=v;else if(c==='b')save.brim+=v;else if(c==='g')save.sig+=v;else{save.frag+=v;save.fragTotal=(save.fragTotal||0)+v;}}
 const rewTxt=r=>Object.entries(r).map(([c,v])=>`<span class="cur ${c}" style="font-size:17px"><i></i>${fmt(v)}</span>`).join(' ');
+// Kategorien der Erfolge (Reihenfolge = Anzeige), jede id passt auf genau eine
+const ACH_CAT=[['Jagd & Gemetzel',/^[kprd]\d/],['Fürsten & Kreise',/^[bc]\d/],['Bannstrahl & Ultimates',/^[mu]\d|^shb|^sb/],['Orden & Aufstieg',/^[hna]\d/],['Dämonen & Bestiarium',/^[gef]\d/],['Elite-Affixe',/^s\d/],['Kreis-Modifikatoren',/^o/],['Reliquien',/^x/]];
+const achOpen=new Set();
 function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
 function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
   if(n){persist();computeStats();}return n;}
@@ -1692,9 +1695,11 @@ function chronik(tab){
   if(tab==='q'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Drei Aufträge gleichzeitig. Erfüllte Aufträge zahlen nach der Jagd aus und werden ersetzt.</div>`;
     for(const q of save.quests){const pc=q.prog/q.target;h+=`<div class="htn" style="margin-bottom:8px;cursor:default"><b style="color:#ffd76a">${QT[q.k].t(q.target,q.x)}</b><div class="bar" style="margin:6px 0"><div style="width:${pc*100}%;background:linear-gradient(#ffb04a,#a8481e)"></div><span>${fmt(q.prog)} / ${fmt(q.target)}</span></div>Belohnung: ${rewTxt(q.rew)}</div>`;}
     h+=`<div class="row"><button id="qReroll">Aufträge neu würfeln (${fmt(Math.ceil(20*Math.pow(1.45,save.maxCircle-1)))} Seelen)</button></div>`;}
-  else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
-    for(const a of ACH){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
-    h+='</div>';}
+  else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div>`;
+    for(const [cat,rx] of ACH_CAT){const as=ACH.filter(a=>rx.test(a.id)),n=as.filter(a=>save.ach[a.id]).length;
+      h+=`<details data-cat="${cat}" ${achOpen.has(cat)?'open':''} style="margin-bottom:6px"><summary style="cursor:pointer;color:${n===as.length?'#ffd76a':'#c8b8a8'};font-size:20px">${cat} <span style="color:var(--dim)">${n}/${as.length}</span></summary><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-top:6px">`;
+      for(const a of as){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
+      h+='</div></details>';}}
   else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten. Sind alle erreichbaren auf Stufe ${ART_MAX}, schmilzt die <b style="color:#ff6ad8">Seelen-Schmiede</b> neue zu Höllenfragmenten (1 + 1 je 10 Kreise).</div>`;
     h+=`<div style="color:#ff6ad8;text-align:center;margin-bottom:6px">Sets – alle drei Reliquien auf Stufe ${SET_LVL}:</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:12px">`;
     for(const t of SETS){const on=setOn(t);h+=`<div class="htn ${on?'max':''}" style="cursor:default;opacity:${on?1:.7}"><b style="color:${on?'#ff6ad8':'#c8b8a8'}">${on?(setMax(t)?'✦✦ ':'✦ '):''}${t.name}${setMax(t)?' (Stufe 2)':''}</b> ${t.ids.map(i=>`<img src="${sprURL('art_'+i,2)}" title="${save.arts[i]?ARTS.find(a=>a.id===i).name:'???'}" style="vertical-align:middle;image-rendering:pixelated;${save.arts[i]?'':'filter:brightness(0)'}"><span style="color:${(save.arts[i]||0)>=SET_LVL?'#7bff8a':'var(--dim)'}">${save.arts[i]||0}</span>`).join(' ')}<br>${t.d}${setMax(t)?' – <b style="color:#ff6ad8">×2</b>':' <span style="color:var(--dim)">(alle auf Stufe '+ART_MAX+': ×2)</span>'}</div>`;}
@@ -1718,6 +1723,7 @@ function chronik(tab){
   h+=`</div><div class="row" style="margin-top:8px"><button id="chClose">Schließen</button></div>`;
   openModal(h);refreshCur();
   document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>chronik(b.dataset.tab));
+  document.querySelectorAll('details[data-cat]').forEach(d=>d.ontoggle=()=>achOpen[d.open?'add':'delete'](d.dataset.cat));
   $('#chClose').onclick=closeModal;
   const rr=$('#qReroll');if(rr)rr.onclick=()=>{const c=Math.ceil(20*Math.pow(1.45,save.maxCircle-1));if(save.souls<c){toast('Nicht genug Seelen');return;}save.souls-=c;save.quests=[];fillQuests();persist();chronik('q');};
 }

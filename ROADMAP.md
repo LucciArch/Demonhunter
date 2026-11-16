@@ -75,10 +75,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.67: Schildbrüche werden in der Statistik gezählt, Erfolg „Schildspalter“ (100 Brüche, +5 Siegel)
 - v0.68: Fürsten-Feuernova – größere Kugeln in der Farbe des Fürsten (z. B. Eiskönig eisblau) mit langem, flackerndem Schweif und flimmerndem Hitzering
 - v0.69: Templerin-Schild als eigenes Sprite – bei eingehenden Treffern reißt sie ihn nach vorn oben, er leuchtet auf und goldene Funken sprühen
+- v0.70: Chronik – Erfolge nach 8 Kategorien gruppiert und einklappbar (mit Fortschritt je Kategorie, Auf/Zu bleibt beim Tab-Wechsel erhalten)
 
 ## Als Nächstes
 69. Neuer Dämon ab Kreis 50: Knochenwurm (gräbt sich ein, taucht neben dem Jäger auf)
-70. Chronik: Erfolge nach Kategorie gruppiert und einklappbar (die Liste ist inzwischen sehr lang)
 72. Fürsten-Tod: Seelen-Kugeln regnen als Fontäne heraus
 73. Bannstrahl auf eine Nova-Kugel lässt sie in Fürsten-Farbe zerplatzen (eigener Funkenregen)
 74. Templerin: Schildstoß-Angriff mit vorschnellendem Schild statt nur Klinge
+75. Chronik: Kategorie mit erreichbarem, aber noch offenem Erfolg mit Fortschrittsbalken (z. B. 640/1000)
