@@ -105,6 +105,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.97: Erfolg „Gebeinbrecher“ (Knochenkönig 5× besiegen, +5 Siegel), Knochenkönig-Siege in der Statistik
 - v0.98: Beim ersten Fürsten-Sieg erscheint ein Tipp, dass goldene Seelen-Kugeln in der Luft fangbar sind
 - v0.99: Knopf „Beenden“ in der Jagd (auch Taste B, im Pausenbild angezeigt) – Auto-Jagd startet danach nicht neu; Jagdverlängerung durch Kills (Zeitfresser & Co.) höchstens +100% der Grund-Jagdzeit
+- v0.100: Jeder Fürst hat eine eigene Gestalt statt Umfärbung: Klagende Herrin (Banshee), Blutgraf (Vampir mit Stehkragen), Pestfürst (aufgedunsen, Pusteln), Eiskönig (Eiskrone, Bart), Schwefelherzog (Widderhörner, Ketten), Leerenwandler (vieläugiges Schattenwesen), Dornenkönig (Geweih, Rinde), Glutkoloss (Lavagestein), Abgrundfürst (Schlund mit Zahnreihen), Knochenkönig (Skelett mit Krone)
 
 ## Als Nächstes
 86. Pestarzt: Seuchenwolken-Ultimate lässt getroffene Dämonen grünlich verfärben und Blasen werfen
@@ -112,6 +113,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 91. Chronik-Aufträge-Tab: fast geschaffte Aufträge ebenfalls grün markieren
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
+K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 J. Knochenkönig: eigene Todesanimation (zerfällt in Knochenregen) und eigenes Reliquien-Drop „Knochenkrone“
 H. Ereignis „Blutmond“: seltene Jagd mit doppelten Dämonen und dreifacher Beute
