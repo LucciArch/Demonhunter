@@ -59,6 +59,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.51: Hexenjägerin-Armbrust als eigenes Sprite – reißt beim Schuss hoch, kippt zum Nachladen nach unten, Sehne wird sichtbar zurückgezogen, dann zurück in Anschlag
 - v0.52: Erfolg „Schildbrecher“ (100 Schildträger-Elite, +300 Schwefel); Kills werden jetzt pro Elite-Affix gezählt
 - v0.53: Statistik zeigt Elite-Kills pro Affix
+- v0.54: 9 neue Affix-Erfolge (Windfänger, Panzerknacker, Sprengmeister, Pfähler, Bannbrecher, Spiegelscherbe, Geisterfänger, Frostbrecher, Glutlöscher) – je 100 Elite eines Affixes, +300 Schwefel
 
 ## Als Nächstes
 47. Schemen und Kultist: eigene Angriffs-Effekte (Geistergriff, Beschwörungs-Glyphe beim Feuerball)
@@ -66,4 +67,4 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 55. Elite-Tod: kurzes Aufblitzen und kleiner Seelenwirbel, wenn eine Doppel-Affix-Elite fällt
 56. Schildträger-Schild optisch mit Verbindungsstrahl zwischen Träger und geschütztem Dämon
 57. Pestarzt: Phiolen-Gürtel als eigenes Sprite, Griff zur Phiole vor dem Wurf
-59. Erfolge für weitere Affixe (z. B. „Frostbrecher“: 100 Frostige, „Geisterfänger“: 100 Teleportierende)
+60. Gestufte Affix-Erfolge (1000 Elite pro Affix) mit Siegel-Belohnung
