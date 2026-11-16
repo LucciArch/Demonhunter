@@ -28,9 +28,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.21: Bestiarium in der Chronik – alle Dämonenarten mit Sprite, Beschreibung, Werten und Kill-Zähler; unbekannte als Silhouette
 - v0.22: Höllenkreis-Modifikatoren ab Kreis 12 – Blutnebel (Regeneration), Horde (doppelt so viele Dämonen, +50% Fürsten-Quote), Raserei (+30% Tempo, +50% Schwefel), Seelensturm (+50% Seelen); Anzeige in Kreis-Leiste, Schnellreise und Jagd-Banner
 - v0.23: Bestiarium-Meilensteine – ab 100 und 1000 Kills einer Dämonenart je dauerhaft +5% Schaden gegen sie (Hinweis beim Erreichen, Anzeige im Bestiarium)
+- v0.24: Elite-Affix-Kombinationen ab Kreis 15 – 35% der Elite tragen zwei Affixe (×1,5 Leben, größer), doppelte Seelen-Kugeln und Schwefel, doppelte Reliquien-Chance
 
 ## Als Nächstes
 20. Reliquien-Set-Bonus: drei bestimmte Reliquien auf Stufe 5 schalten einen Zusatzeffekt frei
-21. Elite-Affix-Kombinationen ab Kreis 15 (zwei Affixe gleichzeitig, mehr Beute)
 23. Weitere Kreis-Modifikatoren ab Kreis 20 (z. B. Finsternis: kleiner Sichtradius, Fluch: Jäger-Regeneration halbiert, doppelte Siegel)
 24. Bestiarium-Meilenstein 10000 Kills: zusätzlich +5% Seelen von dieser Art
+25. Neues Elite-Affix ab Kreis 18: Teleportierend (springt alle 3 s zum Jäger)
