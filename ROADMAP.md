@@ -71,11 +71,12 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.63: Gebannte Seelenträger werden in der Statistik gezählt, Erfolg „Seelenfänger“ (100 Seelenträger, +5 Siegel)
 - v0.64: 10 gestufte Affix-Erfolge „Erz…“ (z. B. Erzschildbrecher) – je 1000 Elite eines Affixes, +5 Siegel
 - v0.65: Bannstrahl auf einen Schildträger zerbricht seine Schutzverbindungen (goldene Splitter, Klang) – 2 s lang kein Schutz
+- v0.66: Fürsten-Tod – großer Seelenwirbel, Siegel fallen als 8 Kugeln und fliegen sichtbar zur Siegel-Anzeige (die kurz aufploppt); gehen auch bei Rundenende nicht verloren
 
 ## Als Nächstes
-64. Fürsten-Tod: Seelenwirbel in groß, Siegel fliegen sichtbar zur Anzeige
 65. Fürsten-Feuernova-Kugeln mit eigenem, größerem Glut-Schweif und Hitzeflimmern
 68. Templerin: Schild als eigenes Sprite, hebt ihn sichtbar bei eingehenden Treffern
 69. Neuer Dämon ab Kreis 50: Knochenwurm (gräbt sich ein, taucht neben dem Jäger auf)
 70. Chronik: Erfolge nach Kategorie gruppiert und einklappbar (die Liste ist inzwischen sehr lang)
 71. Schildträger-Bruch zählt in der Statistik, Erfolg „Schildspalter“ (100 Brüche)
+72. Fürsten-Tod: Seelen-Kugeln regnen als Fontäne heraus

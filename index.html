@@ -59,6 +59,8 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 #hudRow .grow{flex:1;min-width:180px}
 #hudLoot{display:flex;gap:14px}
 #hudLoot .cur{font-size:22px}
+#hudLoot .cur.pop{animation:pop .25s}
+@keyframes pop{50%{transform:scale(1.35)}}
 #ultWrap{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:center;z-index:6;pointer-events:none}
 #ultBtn{pointer-events:auto;min-width:220px;padding:8px 14px;font-size:18px}
 #ultBtn.ready{border-color:#ffd76a;box-shadow:0 0 16px #ffd76a,0 3px 0 #000;animation:pulse .6s infinite alternate}
@@ -1055,7 +1057,7 @@ function killDemon(e,o){
   for(let i=0;i<orbs;i++){let v=souls/orbs,gold=false;if(Math.random()<ST.golden){v*=10;gold=true;}dropLoot(e,'s',v,gold);}
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2)*(e.aff2?2:1):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;if(R.mod==='rage')b*=1.5;if(R.mod==='curse')b*=1.25;if(R.mod==='ember')b*=1.4;dropLoot(e,'b',b);}
   if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
-  if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1);dropLoot(e,'g',s*ST.bossLoot);
+  if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1);for(let i=0;i<8;i++){dropLoot(e,'g',s*ST.bossLoot/8);R.loot[R.loot.length-1].hud=1;}R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:1.6,sc:2.6});
     R.bossDead=true;save.st.bosses++;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;R.slow=.5;R.zoom={x:e.x,y:e.y,t:0,dur:.9};// Todesstoß in Zeitlupe
 
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
@@ -1083,6 +1085,7 @@ function dropLoot(e,cur,v,gold){
 function collect(l){
   if(l.cur==='a'){gainArt(l.v);sfx('relic');return;}
   if(l.cur==='s')R.souls+=l.v;else if(l.cur==='b')R.brim+=l.v;else R.sig+=l.v;
+  if(l.hud){const c=$('#hG').parentNode;c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop');}
   sfxL('pick');
 }
 
@@ -1268,8 +1271,8 @@ function updateRun(dt){
     l.age+=dt;
     if(!l.fly){l.x+=l.vx*dt;l.y+=l.vy*dt;l.vx*=Math.pow(.02,dt);l.vy=l.vy*Math.pow(.02,dt);
       if(ptr.active&&Math.hypot(ptr.x-l.x,ptr.y-l.y)<ST.magnet)l.fly=1;
-      else if(l.age>ST.collectDelay)l.fly=2;}
-    else{const tx=l.fly===1?ptr.x:hp.x,ty=l.fly===1?ptr.y:hp.y-24;const dx=tx-l.x,dy=ty-l.y,d=Math.hypot(dx,dy);const sp=420+l.age*500;
+      else if(l.age>(l.hud?.8:ST.collectDelay))l.fly=2;}
+    else{let tx=l.fly===1?ptr.x:hp.x,ty=l.fly===1?ptr.y:hp.y-24;if(l.hud){const b=$('#hG').getBoundingClientRect();tx=b.left-12;ty=b.top+b.height/2;}/* Fürsten-Siegel fliegen zur Anzeige */const dx=tx-l.x,dy=ty-l.y,d=Math.hypot(dx,dy);const sp=420+l.age*500;
       if(d<14){l.dead=1;collect(l);}else{l.x+=dx/d*Math.min(d,sp*dt);l.y+=dy/d*Math.min(d,sp*dt);}}
   }
   R.loot=R.loot.filter(l=>!l.dead);
@@ -1284,7 +1287,7 @@ function updateFx(dt){
 function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered (Reliquien nie verlieren)
-  for(const l of R.loot)if(l.cur==='a')gainArt(l.v);
+  for(const l of R.loot)if(l.cur==='a')gainArt(l.v);else if(l.hud)R.sig+=l.v;
   if(R.t>3)save.st.rate=Math.max(R.souls/R.t,(save.st.rate||0)*.9);
   save.souls+=R.souls;save.brim+=R.brim;save.sig+=R.sig;save.st.runs++;save.st.best=Math.max(save.st.best,R.kills);
   save.st.soulsTotal=(save.st.soulsTotal||0)+R.souls;if(why==='dead')save.st.deaths=(save.st.deaths||0)+1;save.st.maxC=Math.max(save.st.maxC||0,save.maxCircle);
@@ -1476,7 +1479,7 @@ function drawFx(g){
     else if(f.k==='portal'){const a=p<.5?p*2:2-p*2;ctx.fillStyle=`rgba(20,0,10,${.8*a})`;ctx.beginPath();ctx.ellipse(f.x,f.y,f.r*a,f.r*a*.4,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle=`rgba(255,60,60,${a})`;ctx.lineWidth=2;ctx.stroke();}
     else if(f.k==='claw'){const a=1-p;ctx.translate(f.x,f.y);if(f.fl)ctx.scale(-1,1);ctx.strokeStyle=`rgba(255,80,70,${a})`;ctx.lineWidth=3*a+1;
       for(let i=-1;i<=1;i++){ctx.beginPath();ctx.moveTo(-12+i*6,-14+i*3);ctx.lineTo(-12+i*6+20*Math.min(1,p*3),-14+i*3+24*Math.min(1,p*3));ctx.stroke();}}
-    else if(f.k==='swirl'){const a=1-p;ctx.translate(f.x,f.y);ctx.globalCompositeOperation='lighter';if(p<.2){ctx.fillStyle=`rgba(255,255,230,${(1-p/.2)*.7})`;ctx.beginPath();ctx.arc(0,0,50*(.4+p*3),0,Math.PI*2);ctx.fill();}
+    else if(f.k==='swirl'){const a=1-p;ctx.translate(f.x,f.y);if(f.sc)ctx.scale(f.sc,f.sc);ctx.globalCompositeOperation='lighter';if(p<.2){ctx.fillStyle=`rgba(255,255,230,${(1-p/.2)*.7})`;ctx.beginPath();ctx.arc(0,0,50*(.4+p*3),0,Math.PI*2);ctx.fill();}
       for(let i=0;i<14;i++){const t=i/14*Math.PI*2+p*7,rr=46*(1-p)+4;ctx.fillStyle=i%2?`rgba(155,240,255,${a})`:`rgba(255,200,90,${a})`;ctx.fillRect(Math.cos(t)*rr-2,Math.sin(t)*rr*.6-p*30-2,4,4);}}
     else if(f.k==='grip'){const a=p<.3?p/.3:1-(p-.3)/.7,c=Math.min(1,p*2.5);ctx.translate(f.x,f.y);if(f.fl)ctx.scale(-1,1);ctx.strokeStyle=`rgba(155,240,255,${a})`;ctx.lineWidth=3;ctx.shadowColor='#9bf0ff';ctx.shadowBlur=10;ctx.lineCap='round';
       for(let i=0;i<4;i++){const b=-1+i*.55,l=18*(1-.5*c);ctx.beginPath();ctx.moveTo(-14,0);ctx.quadraticCurveTo(-14+Math.cos(b)*l,Math.sin(b)*l,-14+Math.cos(b+c*1.2)*l*1.4,Math.sin(b+c*1.2)*l*.9);ctx.stroke();}
