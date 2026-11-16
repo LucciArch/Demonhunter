@@ -1013,9 +1013,11 @@ function killDemon(e,o){
   }
   if(!R.bossSpawned&&R.kills>=R.quota)spawnBoss();
 }
-function dropArt(e){const open=ARTS.filter(a=>(save.arts[a.id]||0)<ART_MAX&&R.c>=(a.c||0));if(!open.length)return;
-  dropLoot(e,'a',open[ri(0,open.length-1)]);}
-function gainArt(a){save.arts[a.id]=Math.min(ART_MAX,(save.arts[a.id]||0)+1);(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
+function dropArt(e){const ok=ARTS.filter(a=>R.c>=(a.c||0)),open=ok.filter(a=>(save.arts[a.id]||0)<ART_MAX),pool=open.length?open:ok;
+  dropLoot(e,'a',pool[ri(0,pool.length-1)]);}
+const forgeGain=()=>1+Math.floor(R.c/10);
+function gainArt(a){if((save.arts[a.id]||0)>=ART_MAX){const f=forgeGain();curAdd('a',f);save.st.forged=(save.st.forged||0)+1;toast('Seelen-Schmiede: '+a.name+' → +'+f+' Höllenfragmente');return;}
+  save.arts[a.id]=Math.min(ART_MAX,(save.arts[a.id]||0)+1);(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
   toast('Reliquie: '+a.name+' (Stufe '+save.arts[a.id]+')');}
 function dropLoot(e,cur,v,gold){
   const a=Math.random()*Math.PI*2,sp=rnd(60,180);
@@ -1521,10 +1523,10 @@ function chronik(tab){
   else if(tab==='a'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Erfolg gibt eine Belohnung und dauerhaft +2% Schaden und Seelen (aktuell +${achCount()*2}%).</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
     for(const a of ACH){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}<br>${rewTxt(a.rew)}</div>`;}
     h+='</div>';}
-  else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten.</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
+  else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten. Sind alle erreichbaren auf Stufe ${ART_MAX}, schmilzt die <b style="color:#ff6ad8">Seelen-Schmiede</b> neue zu Höllenfragmenten (1 + 1 je 10 Kreise).</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">`;
     for(const a of ARTS){const l=save.arts[a.id]||0;h+=`<div class="htn ${l>=ART_MAX?'max':l?'':'lock'}" style="cursor:default;opacity:${l?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('art_'+a.id,4)}" style="image-rendering:pixelated;${l?'':'filter:brightness(0)'}"><div><b style="color:${l?'#ffd76a':'#c8b8a8'}">${l?a.name:'???'}</b> ${l?'Stufe '+l+'/'+ART_MAX:''}<br>${a.d(Math.max(1,l))}${l?'':' (Stufe 1)'}${!l&&a.c?`<br><span style="color:#ff8a6a">Erst ab Kreis ${a.c}</span>`:''}</div></div>`;}
     h+='</div>';}
-  else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Elite vernichtet',fmt(st.elites||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Erfolge',achCount()+' / '+ACH.length]];
+  else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Elite vernichtet',fmt(st.elites||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Reliquien geschmolzen',fmt(st.forged||0)],['Erfolge',achCount()+' / '+ACH.length]];
     for(const k in DEMONS)rows.push([DEMONS[k].name+' getötet',fmt(st.kt[k]||0)]);
     h+=`<div class="sumgrid" style="font-size:20px;max-width:460px;margin:0 auto 12px">${rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join('')}</div>`;}
   h+=`</div><div class="row" style="margin-top:8px"><button id="chClose">Schließen</button></div>`;

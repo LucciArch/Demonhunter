@@ -24,9 +24,9 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.17: 3 neue Reliquien ab Kreis 10 – Kettenblitz-Rune (+Kettenblitz/Kettenschaden), Dornenmantel (+Dornen), Fürstenschädel (+Schaden gegen Fürsten & Elite); Chronik zeigt „Erst ab Kreis 10“
 - v0.18: Automatische Pause, wenn das Fenster den Fokus verliert (Einstellung „Pause bei Fensterwechsel“)
 - v0.19: Neue Elite-Affixe ab Kreis 8 – Vampirisch (regeneriert, heilt sich bei Treffern), Beschwörer (ruft alle 4 s Wichte), Spiegelnd (wirft Schaden auf den Jäger zurück) + Erfolge „Elitejäger“/„Elitenschreck“, Elite-Zähler in der Statistik
+- v0.20: Seelen-Schmiede – sind alle erreichbaren Reliquien auf Stufe 10, werden neue Reliquien zu Höllenfragmenten geschmolzen (1 + 1 je 10 Kreise); Zähler in der Statistik
 
 ## Als Nächstes
-16. Seelen-Schmiede: überschüssige Reliquien (Stufe 10) in Höllenfragmente umwandeln
 18. Bestiarium in der Chronik: alle Dämonen mit Sprite, Werten und Kill-Zähler
 19. Höllenkreis-Modifikatoren ab Kreis 12 (z. B. Blutnebel: Dämonen regenerieren, Seelensturm: +50% Seelen)
 20. Reliquien-Set-Bonus: drei bestimmte Reliquien auf Stufe 5 schalten einen Zusatzeffekt frei
