@@ -58,6 +58,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.50: Erfolg „Allbezwinger“ – unter jedem Kreis-Modifikator 10 Fürsten besiegen (+15 Fragmente)
 - v0.51: Hexenjägerin-Armbrust als eigenes Sprite – reißt beim Schuss hoch, kippt zum Nachladen nach unten, Sehne wird sichtbar zurückgezogen, dann zurück in Anschlag
 - v0.52: Erfolg „Schildbrecher“ (100 Schildträger-Elite, +300 Schwefel); Kills werden jetzt pro Elite-Affix gezählt
+- v0.53: Statistik zeigt Elite-Kills pro Affix
 
 ## Als Nächstes
 47. Schemen und Kultist: eigene Angriffs-Effekte (Geistergriff, Beschwörungs-Glyphe beim Feuerball)
@@ -65,4 +66,4 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 55. Elite-Tod: kurzes Aufblitzen und kleiner Seelenwirbel, wenn eine Doppel-Affix-Elite fällt
 56. Schildträger-Schild optisch mit Verbindungsstrahl zwischen Träger und geschütztem Dämon
 57. Pestarzt: Phiolen-Gürtel als eigenes Sprite, Griff zur Phiole vor dem Wurf
-58. Statistik: Elite-Kills pro Affix anzeigen (Zähler existiert seit v0.52)
+59. Erfolge für weitere Affixe (z. B. „Frostbrecher“: 100 Frostige, „Geisterfänger“: 100 Teleportierende)
