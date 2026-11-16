@@ -813,6 +813,9 @@ A('g2','Unbetört','Vernichte 200 Sukkuben',()=>(save.st.kt.succ||0)>=200,{b:40}
 [[100,'Elitejäger'],[1000,'Elitenschreck']].forEach(([n,nm],i)=>A('e'+i,nm,`Vernichte ${fmt(n)} Elite-Dämonen`,()=>stv('elites')>=n,{b:30*Math.pow(8,i)}));
 A('x0','Sammler','Aktiviere deinen ersten Reliquien-Set-Bonus',()=>SETS.some(setOn),{g:5});
 A('x1','Vollendeter Sammler','Bringe einen Set-Bonus auf Stufe 2',()=>SETS.some(setMax),{a:5});
+A('f0','Forscher','Entdecke alle Dämonenarten im Bestiarium',()=>Object.keys(DEMONS).every(k=>save.st.kt[k]),{g:5});
+A('f1','Meister des Bestiariums','Erlege von jeder Dämonenart 1000',()=>Object.keys(DEMONS).every(k=>(save.st.kt[k]||0)>=1000),{a:10});
+A('f2','Elite-Kenner','Erlege von jeder Dämonenart 10 Elite',()=>Object.keys(DEMONS).every(k=>k==='boss'||(save.st.ke[k]||0)>=10),{b:500});
 A('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths')>=1,{s:25});
 const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
 function curAdd(c,v){if(c==='s')save.souls+=v;else if(c==='b')save.brim+=v;else if(c==='g')save.sig+=v;else{save.frag+=v;save.fragTotal=(save.fragTotal||0)+v;}}
