@@ -81,10 +81,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.73: Erfolg „Wurmfänger“ (200 Knochenwürmer, +60 Schwefel); Bannstrahl auf den Erdhügel treibt den Knochenwurm sofort heraus, fern vom Jäger
 - v0.74: Bannstrahl auf eine Fürsten-Nova-Kugel lässt sie in Fürsten-Farbe zerplatzen (Ring, Splitterregen, eigener Klang); etwas größerer Trefferradius
 - v0.75: Chronik – offene Zähler-Erfolge zeigen einen Fortschrittsbalken (z. B. 640 / 1000)
+- v0.76: Templerin-Schildstoß – der Schild schnellt beim Angriff sichtbar vor und leuchtet, goldene Stoßwelle und Funkenregen
 
 ## Als Nächstes
-74. Templerin: Schildstoß-Angriff mit vorschnellendem Schild statt nur Klinge
 76. Goldene Seelen-Kugeln aus der Fürsten-Fontäne mit eigenem Klingel-Sound beim Aufprall
 78. Knochenwurm als Elite: hinterlässt beim Auftauchen einen Knochensplitter-Ring, der kurz Schaden macht
 79. Statistik/Erfolg: zerplatzte Nova-Kugeln zählen, Erfolg „Novabrecher“ (100 Kugeln)
 80. Chronik: Kategorie-Zeile markiert, wenn ein Erfolg darin kurz vor dem Abschluss steht (≥90%)
+81. Templerin: Heiliger Wall als sichtbare goldene Kuppel mit Runen, die bei Treffern aufflackert

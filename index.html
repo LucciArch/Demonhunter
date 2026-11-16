@@ -1154,7 +1154,8 @@ function heroAttack(){
     swingStart();
     const m=mk();dealDmg(tgt,m.amt,{crit:m.crit,ls:1});
     for(const e of inR.slice(0,3+extra)){if(e.dead||e.boss)continue;const d=Math.hypot(e.x-hp.x,e.y-hp.y)||1;e.kb=.15;e.kx=(e.x-hp.x)/d*420;e.ky=(e.y-hp.y)/d*420;}
-    R.fx.push({k:'slash',x:hp.x,y:hp.y-22,a:Math.atan2(tgt.y-hp.y,tgt.x-hp.x),r:ST.range*.8,t:-R.hero.swD*.3,dur:.18});
+    R.hero.bsh=.22;R.fx.push({k:'ring',x:(hp.x+tgt.x)/2,y:(hp.y+tgt.y)/2-14,r:ST.range*.7,col:'#ffe08a',t:-.06,dur:.25}); // Schild schnellt vor, goldene Stoßwelle
+    for(let i=0;i<8;i++){const d=R.hero.flip?-1:1;R.pt.push({x:hp.x+d*22,y:hp.y-20,vx:d*rnd(120,320),vy:rnd(-140,60),t:0,life:rnd(.18,.35),c:i%2?'#ffe08a':'#ffffff',s:2});}
     if(ST.chain)chainFrom(tgt,m.amt);R.hero.lunge=.12;sfxL('crit');
   }else{
     // cleave / slam
@@ -1266,7 +1267,7 @@ function updateRun(dt){
     R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1,foe:1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
   if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
-  R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.rl=Math.max(0,(R.hero.rl||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);R.hero.blk=Math.max(0,(R.hero.blk||0)-dt);
+  R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.rl=Math.max(0,(R.hero.rl||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);R.hero.blk=Math.max(0,(R.hero.blk||0)-dt);R.hero.bsh=Math.max(0,(R.hero.bsh||0)-dt);
   // enemies
   for(const e of R.en){
     if(e.dead)continue;e.flash=Math.max(0,e.flash-dt);e.mark=Math.max(0,e.mark-dt);e.shd=Math.max(0,(e.shd||0)-dt);e.bob+=dt*8;
@@ -1463,8 +1464,8 @@ function drawHero(hp,sc){
   const b=wp.body,X=Math.round(-b.w*sc/2),Y=Math.round(-b.h*sc),fl=R.hero.flash>0;
   ctx.save();ctx.translate(Math.round(x),Math.round(y));if(R.hero.flip)ctx.scale(-1,1);ctx.rotate(rot);ctx.scale(o.sx,o.sy);
   ctx.drawImage(b.c,X,Y,b.w*sc,b.h*sc);if(fl){ctx.globalAlpha=.55;ctx.drawImage(b.wc,X,Y,b.w*sc,b.h*sc);ctx.globalAlpha=1;}
-  if(wp.sh){const q=Math.min(1,(R.hero.blk||0)/.1),sx=X+Math.round(3*q)*sc,sy=Y-Math.round(3*q)*sc; // Schild nach vorn oben gerissen
-    ctx.drawImage(wp.sh.c,sx,sy,b.w*sc,b.h*sc);if(fl||q>0){ctx.globalAlpha=fl?.7:.25*q;ctx.drawImage(wp.sh.wc,sx,sy,b.w*sc,b.h*sc);ctx.globalAlpha=1;}}
+  if(wp.sh){const q=Math.min(1,(R.hero.blk||0)/.1),th=R.hero.bsh>0?Math.sin((1-R.hero.bsh/.22)*Math.PI):0,sx=X+Math.round(3*q+7*th)*sc,sy=Y-Math.round(3*q+th)*sc; // Schild nach vorn oben gerissen / beim Schildstoß vorgestoßen
+    ctx.drawImage(wp.sh.c,sx,sy,b.w*sc,b.h*sc);if(fl||q>0||th>0){ctx.globalAlpha=fl?.7:Math.max(.25*q,.45*th);ctx.drawImage(wp.sh.wc,sx,sy,b.w*sc,b.h*sc);ctx.globalAlpha=1;}}
   const k=R.hero.rl>0?1-R.hero.rl/R.hero.rlD:1,p=wp.rng||R.hero.sw<=0?-1:1-R.hero.sw/R.hero.swD,a=wp.rng?(k<1?xbowAng(k):.04*Math.sin(R.t*3)):p<0?.05*Math.sin(R.t*3):swingAng(p,wp.amp);
   ctx.translate(X+(wp.px+1)*sc,Y+(wp.py+1)*sc);const ox=-(wp.px+1)*sc,oy=-(wp.py+1)*sc,ww=wp.w.w*sc,wh=wp.w.h*sc;
   if(p>.3&&p<.75){for(let i=3;i>=1;i--){ctx.save();ctx.rotate(a-i*.28*wp.amp);ctx.globalAlpha=.32/i;ctx.drawImage(wp.w.wc,ox,oy,ww,wh);ctx.restore();}}
