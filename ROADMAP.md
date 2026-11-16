@@ -55,11 +55,12 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.47: Erfolg „Unzerstörbar“ (alle Reliquien-Sets gleichzeitig aktiv, +10 Fragmente); Statistik zählt Fürsten-Siege pro Kreis-Modifikator
 - v0.48: Neues Elite-Affix ab Kreis 30 – Schildträger (halbiert den Schaden an Dämonen im Umkreis, goldene Schildblase und gestrichelter Schutzradius)
 - v0.49: Fürsten-Tod – Todesstoß in Zeitlupe (0,5 s mit Viertel-Tempo) und kurzer Kamerazoom auf den Fürsten
+- v0.50: Erfolg „Allbezwinger“ – unter jedem Kreis-Modifikator 10 Fürsten besiegen (+15 Fragmente)
 
 ## Als Nächstes
 46. Hexenjägerin: sichtbare Armbrust als eigenes Sprite mit Nachlade-Animation
 47. Schemen und Kultist: eigene Angriffs-Effekte (Geistergriff, Beschwörungs-Glyphe beim Feuerball)
 51. Neuer Kreis-Modifikator ab Kreis 40: Seelenfrost (Dämonen hinterlassen Eisflächen, die den Jäger verlangsamen; +40% Siegel)
-53. Erfolg „Allbezwinger“: unter jedem Kreis-Modifikator 10 Fürsten besiegt
 54. Erfolg „Schildbrecher“: 100 Schildträger-Elite besiegt
 55. Elite-Tod: kurzes Aufblitzen und kleiner Seelenwirbel, wenn eine Doppel-Affix-Elite fällt
+56. Schildträger-Schild optisch mit Verbindungsstrahl zwischen Träger und geschütztem Dämon
