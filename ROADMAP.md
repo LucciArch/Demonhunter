@@ -65,11 +65,12 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.57: Neuer Kreis-Modifikator ab Kreis 40 – Seelenfrost (getötete Dämonen hinterlassen Eisflächen, die den Jäger verlangsamen, +40% Siegel)
 - v0.58: Fällt eine Doppel-Affix-Elite, blitzt es kurz auf und ein Seelenwirbel steigt auf
 - v0.59: Kultisten-Feuerbälle ziehen einen glühenden Schweif mit Glutfunken und zerstieben beim Einschlag (oder per Bannstrahl) in Funken
+- v0.60: Neuer Kreis-Modifikator ab Kreis 45 – Seelenbann (alle 10 s wird ein Dämon zum Seelenträger mit blauer Aura und Seelenfunken, sein Tod bringt 5× Seelen); eigener Bezwinger-Erfolg, zählt für Allbezwinger
 
 ## Als Nächstes
 57. Pestarzt: Phiolen-Gürtel als eigenes Sprite, Griff zur Phiole vor dem Wurf
 60. Gestufte Affix-Erfolge (1000 Elite pro Affix) mit Siegel-Belohnung
 61. Bannstrahl auf einen Schildträger zerbricht sichtbar die Schutzverbindungen (Splitter-Effekt)
-63. Neuer Kreis-Modifikator ab Kreis 45: Seelenbann (alle 10 s wird ein zufälliger Dämon zum Seelenträger – Kill gibt 5× Seelen)
 64. Fürsten-Tod: Seelenwirbel in groß, Siegel fliegen sichtbar zur Anzeige
 65. Fürsten-Feuernova-Kugeln mit eigenem, größerem Glut-Schweif und Hitzeflimmern
+66. Seelenträger flieht vor dem Jäger (hält Abstand), damit der 5×-Kill ein kleines Jagdziel wird

@@ -600,8 +600,8 @@ const DEMONS={
 };
 const CIRCLES=['Asche','Klagen','Blut','Fäulnis','Eis','Schwefel','Leere','Dornen','Glut','Abgrund'];
 const CIRCLE_TINT=[['#2a1a1c','#3a2226','#ff6a2a'],['#221a2c','#30243e','#c06aff'],['#2c1214','#401a1c','#ff3030'],['#1a2418','#25331f','#9be04a'],['#16202c','#1f2e3e','#7ad0ff'],['#2a2214','#3a3018','#ffc23a'],['#121018','#1c1824','#8a7aff'],['#1e1a14','#2c241a','#e0703a'],['#2c1810','#3e2216','#ff9a3a'],['#0e0a10','#1a121c','#ff3a8a']];
-const CMOD={blood:{name:'Blutnebel',c:12,d:'Dämonen regenerieren 2% Leben pro Sekunde'},storm:{name:'Seelensturm',c:12,d:'+50% Seelen'},rage:{name:'Raserei',c:12,d:'Dämonen +30% Tempo, +50% Schwefel'},horde:{name:'Horde',c:12,d:'Doppelt so viele Dämonen, der Fürst braucht 50% mehr Kills'},dark:{name:'Finsternis',c:20,d:'Sicht nur rund um den Jäger, +25% Seelen'},curse:{name:'Fluch',c:20,d:'Heilung des Jägers halbiert, +25% Schwefel'},flood:{name:'Siegelflut',c:30,d:'Doppelte Siegel, der Fürst hat +50% Leben'},ember:{name:'Glutregen',c:35,d:'Feuerbälle stürzen vom Himmel (roter Warnkreis), +40% Schwefel'},frost:{name:'Seelenfrost',c:40,d:'Getötete Dämonen hinterlassen Eisflächen, die den Jäger verlangsamen, +40% Siegel'}};
-const circleMod=c=>c>=40?Object.keys(CMOD)[c*7%9]:c>=35?Object.keys(CMOD)[c*5%8]:c>=30?Object.keys(CMOD)[c*3%7]:c>=20?Object.keys(CMOD)[c*5%6]:c>=12?Object.keys(CMOD)[c*3%4]:null;
+const CMOD={blood:{name:'Blutnebel',c:12,d:'Dämonen regenerieren 2% Leben pro Sekunde'},storm:{name:'Seelensturm',c:12,d:'+50% Seelen'},rage:{name:'Raserei',c:12,d:'Dämonen +30% Tempo, +50% Schwefel'},horde:{name:'Horde',c:12,d:'Doppelt so viele Dämonen, der Fürst braucht 50% mehr Kills'},dark:{name:'Finsternis',c:20,d:'Sicht nur rund um den Jäger, +25% Seelen'},curse:{name:'Fluch',c:20,d:'Heilung des Jägers halbiert, +25% Schwefel'},flood:{name:'Siegelflut',c:30,d:'Doppelte Siegel, der Fürst hat +50% Leben'},ember:{name:'Glutregen',c:35,d:'Feuerbälle stürzen vom Himmel (roter Warnkreis), +40% Schwefel'},frost:{name:'Seelenfrost',c:40,d:'Getötete Dämonen hinterlassen Eisflächen, die den Jäger verlangsamen, +40% Siegel'},bann:{name:'Seelenbann',c:45,d:'Alle 10 s wird ein Dämon zum Seelenträger – sein Tod bringt 5× Seelen'}};
+const circleMod=c=>c>=45?Object.keys(CMOD)[c*7%10]:c>=40?Object.keys(CMOD)[c*7%9]:c>=35?Object.keys(CMOD)[c*5%8]:c>=30?Object.keys(CMOD)[c*3%7]:c>=20?Object.keys(CMOD)[c*5%6]:c>=12?Object.keys(CMOD)[c*3%4]:null;
 const modTag=c=>{const m=circleMod(c);return m?' · '+CMOD[m].name:'';};
 const circleName=c=>c+'. Höllenkreis · '+CIRCLES[(c-1)%CIRCLES.length]+(c>CIRCLES.length?' '+(Math.floor((c-1)/CIRCLES.length)+1):'');
 
@@ -1041,7 +1041,7 @@ function killDemon(e,o){
   const col=e.type==='wraith'?'#9bf0ff':e.type==='bat'?'#c06aff':'#ff6a3a';
   for(let i=0;i<(e.boss?60:10);i++)R.pt.push({x:e.x,y:e.y-e.r,vx:rnd(-160,160),vy:rnd(-220,40),t:0,life:rnd(.4,.9),c:Math.random()<.5?col:'#2a1018',s:ri(2,5)});
   // loot
-  const d=e.d;let souls=(d.souls*R.rewM*ST.soul+ST.soulFlat)*(o.smite?ST.clickSoul:1);if(e.boss)souls*=ST.bossLoot;if(R.mod==='storm')souls*=1.5;if(R.mod==='dark')souls*=1.25;if((save.st.kt[e.type]||0)>=10000)souls*=1.05;
+  const d=e.d;let souls=(d.souls*R.rewM*ST.soul+ST.soulFlat)*(o.smite?ST.clickSoul:1);if(e.boss)souls*=ST.bossLoot;if(R.mod==='storm')souls*=1.5;if(R.mod==='dark')souls*=1.25;if((save.st.kt[e.type]||0)>=10000)souls*=1.05;if(e.soulB){souls*=5;R.fx.push({k:'ring',x:e.x,y:e.y-e.r,r:60,t:0,dur:.5,col:'#7ae8ff'});}
   if(Math.random()<ST.dbl)souls*=2;
   if(R.mod==='frost'&&!e.boss&&R.ice.length<40)R.ice.push({x:e.x,y:e.y,r:28,t:0,dur:5});
   const orbs=e.boss?12:e.aff2?8:e.elite?4:1;
@@ -1211,6 +1211,7 @@ function updateRun(dt){
     if(f.foe&&(f.eT=(f.eT||0)-dt)<=0){f.eT=.5;for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-f.x,(e.y-f.y)*2)<f.r+e.r)dealDmg(e,ST.dmg*.5,{col:'#ff9a3a'});}}
   R.fires=R.fires.filter(f=>f.t<f.dur);
   for(const f of R.ice){f.t+=dt;if(Math.hypot(f.x-hp.x,(f.y-hp.y)*2)<f.r+10)R.frost=Math.max(R.frost,.4);}R.ice=R.ice.filter(f=>f.t<f.dur);
+  if(R.mod==='bann'&&(R.bnT=(R.bnT??3)-dt)<=0){R.bnT=10;const c=R.en.filter(e=>!e.dead&&!e.boss&&!e.soulB&&e.spawn<=0);if(c.length)c[ri(0,c.length-1)].soulB=1;}
   if(R.mod==='ember'&&(R.emT=(R.emT||1.5)-dt)<=0){R.emT=rnd(1,1.8);const mx=Math.random()<.35?hp.x+rnd(-60,60):rnd(40,W-40),my=Math.random()<.35?hp.y+rnd(-30,30):rnd(130,H-30),dm=R.dmgM*3;
     R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1,foe:1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
@@ -1418,6 +1419,7 @@ function drawDemon(e,sc){
   else drawSpr(fr,e.x+lx,e.y+fy-sq+ly,k,e.flip,e.flash>0,undefined,false,o);
   if(e.shd>0&&e.spawn<=0){ctx.save();ctx.globalAlpha=.35+.15*Math.sin(e.bob*.5);ctx.strokeStyle='#ffe27a';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(e.x,e.y+fy-s.h*k*.45,s.w*k*.55,s.h*k*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha*=.3;ctx.fillStyle='#ffe27a';ctx.fill();ctx.restore();}
   if(hasAff(e,'shield')&&e.spawn<=0){ctx.save();ctx.strokeStyle='#ffe27a';ctx.lineWidth=2;ctx.globalAlpha=.3+.2*Math.sin(e.bob*.7);for(const o of R.en)if(o.shdBy===e&&o.shd>0&&!o.dead){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(o.x,o.y);ctx.stroke();}ctx.restore();ctx.save();ctx.globalAlpha=.12;ctx.strokeStyle='#ffe27a';ctx.setLineDash([6,6]);ctx.beginPath();ctx.ellipse(e.x,e.y,140,98,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
+  if(e.soulB&&e.spawn<=0){const ty=e.y+fy-s.h*k;ctx.save();ctx.globalAlpha=.5+.2*Math.sin(R.t*6);ctx.strokeStyle='#7ae8ff';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(e.x,e.y+fy-s.h*k*.45,s.w*k*.6,s.h*k*.65,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha*=.2;ctx.fillStyle='#7ae8ff';ctx.fill();ctx.globalAlpha=1;ctx.fillStyle='#bff6ff';for(let i=0;i<4;i++){const q=(R.t*.8+i/4)%1;ctx.globalAlpha=1-q;ctx.fillRect(e.x+Math.sin(i*1.7+R.t*2)*s.w*k*.4,ty+s.h*k*(1-q)*.8,3,3);}ctx.globalAlpha=1;ctx.fillStyle='#7ae8ff';ctx.fillRect(e.x-4,ty-18,8,8);ctx.fillStyle='#fff';ctx.fillRect(e.x-2,ty-16,4,4);ctx.restore();}
   if(e.mark>0){ctx.fillStyle='rgba(220,190,255,.8)';ctx.fillRect(e.x-3,e.y+fy-s.h*k-10,6,6);}
   // hp bar
   if(e.hp<e.max){const w=e.boss?90:Math.max(24,s.w*k*.7);const y=e.y+fy-s.h*k-6;ctx.fillStyle='#000';ctx.fillRect(e.x-w/2-1,y-1,w+2,e.boss?7:5);
