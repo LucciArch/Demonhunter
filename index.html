@@ -828,6 +828,7 @@ for(const k in CMOD)A('o'+k,'Bezwinger: '+CMOD[k].name,`Besiege einen Fürsten u
 const AFF_ACH={shield:['s0','Schildbrecher','Schildträger'],fast:['s1','Windfänger','Flink'],armor:['s2','Panzerknacker','Gepanzert'],expl:['s3','Sprengmeister','Explosiv'],vamp:['s4','Pfähler','Vampirisch'],summ:['s5','Bannbrecher','Beschwörer'],mirror:['s6','Spiegelscherbe','Spiegelnd'],tele:['s7','Geisterfänger','Teleportierend'],frost:['s8','Frostbrecher','Frostig'],burn:['s9','Glutlöscher','Brennend']};
 for(const k in AFF_ACH)A(AFF_ACH[k][0],AFF_ACH[k][1],`Vernichte 100 Elite mit dem Affix „${AFF_ACH[k][2]}“`,()=>((save.st.ka||{})[k]||0)>=100,{b:300});
 A('oall','Allbezwinger','Besiege unter jedem Kreis-Modifikator 10 Fürsten',()=>Object.keys(CMOD).every(k=>((save.st.bm||{})[k]||0)>=10),{a:15});
+A('sb0','Seelenfänger','Banne 100 Seelenträger (Kreis-Modifikator Seelenbann)',()=>(save.st.sb||0)>=100,{g:5});
 A('d0','Gefallen','Stirb zum ersten Mal',()=>stv('deaths')>=1,{s:25});
 const CUR_NAME={s:'Seelen',b:'Schwefel',g:'Siegel',a:'Höllenfragmente'};
 function curAdd(c,v){if(c==='s')save.souls+=v;else if(c==='b')save.brim+=v;else if(c==='g')save.sig+=v;else{save.frag+=v;save.fragTotal=(save.fragTotal||0)+v;}}
@@ -1046,7 +1047,7 @@ function killDemon(e,o){
   const col=e.type==='wraith'?'#9bf0ff':e.type==='bat'?'#c06aff':'#ff6a3a';
   for(let i=0;i<(e.boss?60:10);i++)R.pt.push({x:e.x,y:e.y-e.r,vx:rnd(-160,160),vy:rnd(-220,40),t:0,life:rnd(.4,.9),c:Math.random()<.5?col:'#2a1018',s:ri(2,5)});
   // loot
-  const d=e.d;let souls=(d.souls*R.rewM*ST.soul+ST.soulFlat)*(o.smite?ST.clickSoul:1);if(e.boss)souls*=ST.bossLoot;if(R.mod==='storm')souls*=1.5;if(R.mod==='dark')souls*=1.25;if((save.st.kt[e.type]||0)>=10000)souls*=1.05;if(e.soulB){souls*=5;R.fx.push({k:'ring',x:e.x,y:e.y-e.r,r:60,t:0,dur:.5,col:'#7ae8ff'});}
+  const d=e.d;let souls=(d.souls*R.rewM*ST.soul+ST.soulFlat)*(o.smite?ST.clickSoul:1);if(e.boss)souls*=ST.bossLoot;if(R.mod==='storm')souls*=1.5;if(R.mod==='dark')souls*=1.25;if((save.st.kt[e.type]||0)>=10000)souls*=1.05;if(e.soulB){souls*=5;save.st.sb=(save.st.sb||0)+1;R.fx.push({k:'ring',x:e.x,y:e.y-e.r,r:60,t:0,dur:.5,col:'#7ae8ff'});}
   if(Math.random()<ST.dbl)souls*=2;
   if(R.mod==='frost'&&!e.boss&&R.ice.length<40)R.ice.push({x:e.x,y:e.y,r:28,t:0,dur:5});
   const orbs=e.boss?12:e.aff2?8:e.elite?4:1;
@@ -1686,6 +1687,7 @@ function chronik(tab){
     h+=`<div style="color:#ff9a4a;text-align:center;margin:12px 0 6px">Elite-Affixe</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(AFFIX)}</div><div style="color:#ff6ad8;text-align:center;margin:12px 0 6px">Höllenkreis-Modifikatoren</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(CMOD,'#ff6ad8')}</div>`;}
   else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Elite vernichtet',fmt(st.elites||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Reliquien geschmolzen',fmt(st.forged||0)],['Erfolge',achCount()+' / '+ACH.length]];
     for(const k in CMOD)if(st.bm&&st.bm[k])rows.push(['Fürsten unter '+CMOD[k].name,fmt(st.bm[k])]);
+    if(st.sb)rows.push(['Seelenträger gebannt',fmt(st.sb)]);
     for(const k in AFFIX)if(st.ka&&st.ka[k])rows.push(['Elite: '+AFFIX[k].name,fmt(st.ka[k])]);
     h+=`<div class="sumgrid" style="font-size:20px;max-width:460px;margin:0 auto 12px">${rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join('')}</div>`;
     const sets=SETS.filter(setOn).map(t=>`<b style="color:#ff6ad8">${setMax(t)?'✦✦':'✦'} ${t.name}</b>: ${t.d}${setMax(t)?' (×2)':''}`);
