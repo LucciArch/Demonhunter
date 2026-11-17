@@ -128,9 +128,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.120: Verfluchte Segen in der Chronik (Bestiarium) nachschlagbar, Statistik-Zeile, Erfolge „Teufelspakt“ und „Mit dem Teufel im Bunde“ (3 Flüche in einer Jagd)
 - v0.121: Mimic mit eigenem Sprite (Truhe mit Augen, Zahnreihen, Zunge, Beinen – schnappt beim Laufen zu); Chronik › Bestiarium listet alle Schreine mit Zähler und den Mimic; Schwurbaum-Knoten „Pilgerpfad“ (Gier-Pfad, Schwefel, 5 Stufen, je +15% Schrein-Häufigkeit)
 - v0.122: Knappe Fürsten-Niederlage (Fürst ≤25% Leben bei Jagdende) gibt einen Siegel-Trostpreis (¼ der Fürsten-Siegel); sonst Hinweis mit Rest-Leben des Fürsten und Tipp zum Farmen/Aufsteigen
+- v0.123: Balance-Simulation `node test/sim.js [Jagden]` (Playwright, Bannstrahl 3×/s, Auto-Kauf der Seelen-Knoten, farmt nach Niederlage) – zugleich Rauchtest, bricht bei JS-Fehlern ab. Befund: frischer Spielstand braucht ~25 Jagden bis zum ersten Fürsten (Kreis 1: 17–20 Kills bei Quote 22)
 
 ## Als Nächstes
-L2. Balance-Simulation als Skript ins Repo (test/sim.js, per `node test/sim.js` Kreise pro Jagd ausgeben)
+L3. Einstieg beschleunigen: erster Fürst nach ~5 Jagden statt ~25 (Quote in Kreis 1–3 senken oder Startschaden erhöhen), per test/sim.js prüfen
+L4. test/sim.js kauft auch Schwefel-/Siegel-Knoten und Jägerbaum (ab ~Kreis 15 bleiben sonst Millionen Seelen ungenutzt)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 J. Reliquien: Set „Gebeinthron“ (Knochenkrone + Fürstenschädel + Eisernes Herz); eigene Reliquie für jeden Fürsten-Typ
