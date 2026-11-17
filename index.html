@@ -59,7 +59,7 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 #hudRow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 #hudRow{align-items:flex-start}
 #hudL{display:flex;gap:8px;width:min(400px,40vw);background:linear-gradient(#1c1018ee,#100810dd);border:2px solid #000;box-shadow:0 0 0 2px #5a2a35,0 4px 0 #000a;padding:6px}
-#hudL .grow{flex:1;min-width:0}
+#hudL .grow{flex:1;min-width:0}#hudBoon{font-family:'VT323';font-size:16px;line-height:16px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#hudBoon:empty{display:none}
 #hudPort{width:52px;height:52px;flex:none;background:radial-gradient(#3a1a22,#120a0e);border:2px solid #000;box-shadow:inset 0 0 0 2px #7a3a40;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
 #hudPort img{image-rendering:pixelated;height:46px}
 .bar.hp{height:26px;margin-bottom:5px}.bar.bl{height:6px;margin-bottom:5px}#blFill{background:linear-gradient(90deg,#8a4aff,#ffd76a)}
@@ -154,6 +154,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
       <div class="bar hp"><div id="hpTrail"></div><div id="hpFill" style="background:linear-gradient(#ff6a6a,#d0283a 45%,#7a0e1e);width:100%"></div><span id="hpTxt"></span></div>
       <div class="bar bl" title="Segnung"><div id="blFill"></div></div>
       <div class="bar tm"><div id="tFill" style="background:linear-gradient(#a8d4ff,#4a86d8 45%,#1e4a90);width:100%"></div><span id="tTxt"></span></div>
+      <div id="hudBoon"></div>
     </div></div>
     <div id="hudC"><div id="hudCirc"></div><div class="bar q"><div id="qFill" style="background:linear-gradient(#ffd07a,#e07a2a 45%,#8a3a12);width:0%"></div><span id="qTxt"></span></div></div>
     <div id="hudLoot">
@@ -1141,6 +1142,10 @@ const SYNERGIES=[
 ];
 // Welche noch nicht ausgelöste Synergie würde Segen n vervollständigen?
 function synOf(n){const k=R.bk||{};return SYNERGIES.find(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?s.a===n&&k[n]===1:(s.a===n&&k[s.b])||(s.b===n&&k[s.a])));}
+// HUD: gewählte Segen als Symbole + offene Synergien (eine Hälfte vorhanden)
+function hudBoon(){const k=R.bk||{},b=Object.keys(k).map(n=>BOONS.find(x=>x.n===n)||CURSED.find(x=>x.n===n)).filter(Boolean);
+  const open=SYNERGIES.filter(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?k[s.a]===1:!!k[s.a]!==!!k[s.b])).map(s=>`<span style="color:${s.c}">⚡${s.n}: ${k[s.a]?s.b:s.a}</span>`);
+  $('#hudBoon').innerHTML=b.map(x=>`<span style="color:${x.c}" title="${x.n}">${x.i}${k[x.n]>1?'×'+k[x.n]:''}</span>`).join(' ')+(open.length?' · '+open.join(' '):'');$('#hudBoon').title=$('#hudBoon').textContent;}
 // Synergie-Auslösung: Blitzring um den Jäger, trifft alle Dämonen im Radius mit 5× Schaden
 function synBurst(sy){const h=heroPos(),r=260;R.fx.push({k:'ring',x:h.x,y:h.y,r,t:0,dur:.6,col:sy.c},{k:'ring',x:h.x,y:h.y,r:r*.6,t:-.12,dur:.5,col:'#ffffff'});sfx('syn');
   for(const f of R.en)if(!f.dead&&Math.hypot(f.x-h.x,f.y-h.y)<r+f.r){dealDmg(f,ST.dmg*5,{col:sy.c});for(let i=0;i<4;i++)R.pt.push({x:f.x,y:f.y-f.r,vx:(Math.random()-.5)*160,vy:-60-Math.random()*120,t:0,life:.4,c:sy.c,s:3});}}
@@ -1150,7 +1155,7 @@ function offerBoons(){
   const pool=BOONS.slice(),opts=[];while(opts.length<ST.boonN){const b=pool.splice(ri(0,pool.length-1),1)[0];opts.push({b,m:Math.random()<.15?2:1});}// 15%: geweiht = doppelte Wirkung
   if(Math.random()<.12)opts[ri(0,opts.length-1)]={b:CURSED[ri(0,CURSED.length-1)],m:1};
   const pick=o=>{const sy=synOf(o.b.n);o.b.f(o.m);(R.boons=R.boons||[]).push(o.b.n+(o.m>1?' ✧':''));(R.bk=R.bk||{})[o.b.n]=(R.bk[o.b.n]||0)+1;
-    if(sy){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
+    if(sy){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();hudBoon();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
     for(let i=0;i<24;i++){const a=i/24*Math.PI*2,h=heroPos();R.pt.push({x:h.x,y:h.y-20,vx:Math.cos(a)*180,vy:Math.sin(a)*120,t:0,life:.6,c:o.b.c,s:3});}};
   if(save.auto){const ok=opts.filter(o=>!o.b.x);pick(opts.find(o=>synOf(o.b.n))||ok[ri(0,ok.length-1)]);return;}// Auto-Jagd nimmt keine Flüche// Auto-Jagd wählt selbst
   R.choosing={opts,pick};sfx('buy');
@@ -1316,7 +1321,7 @@ function startRun(){
      spawnT:.3,atkT:.2,smiteT:1,mod:circleMod(c),quota:Math.max(8,Math.round((18+4*c)*ST.quota*(circleMod(c)==='horde'?1.5:1))),bossSpawned:false,bossDead:false,over:false,revived:false,
      hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,bl:0,blN:10,moon:0,wall:0,clouds:[],fires:[],ice:[],fireT:0,later:[],ep:[],hpM:Math.pow(GROW.hp,c-1)*ST.enemyHp,dmgM:Math.pow(GROW.dmg,c-1),rewM:Math.pow(GROW.rew,c-1),endT:0,rr:ST.reroll,bmoon:c>=3&&Math.random()<.07+ST.moonCh};
   if(R.bmoon){save.st.bmn=(save.st.bmn||0)+1;R.quota=Math.round(R.quota*1.5);}
-  mode='run';showUI();$('#hudImg').src=sprURL(HB[save.hero].spr,4);$('#hudCirc').textContent=circleName(c)+(R.mod?' · '+CMOD[R.mod].name:'');sfx('hit');if(R.bmoon){$('#hudCirc').textContent+=' · Blutmond';const bb=$('#bossBanner');bb.innerHTML='BLUTMOND<div style="font-size:22px">Doppelte Dämonen, dreifache Beute, doppelte Siegel</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2600);sfx('boss');}else if(R.mod){const bb=$('#bossBanner');bb.innerHTML=CMOD[R.mod].name.toUpperCase()+'<div style="font-size:22px">'+CMOD[R.mod].d+'</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2200);}for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
+  mode='run';showUI();hudBoon();$('#hudImg').src=sprURL(HB[save.hero].spr,4);$('#hudCirc').textContent=circleName(c)+(R.mod?' · '+CMOD[R.mod].name:'');sfx('hit');if(R.bmoon){$('#hudCirc').textContent+=' · Blutmond';const bb=$('#bossBanner');bb.innerHTML='BLUTMOND<div style="font-size:22px">Doppelte Dämonen, dreifache Beute, doppelte Siegel</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2600);sfx('boss');}else if(R.mod){const bb=$('#bossBanner');bb.innerHTML=CMOD[R.mod].name.toUpperCase()+'<div style="font-size:22px">'+CMOD[R.mod].d+'</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2200);}for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
 }
 function demonPool(c){const p=[['imp',10]];if(c>=2)p.push(['bat',6]);if(c>=3)p.push(['hound',6]);if(c>=5)p.push(['wraith',5]);if(c>=3)p.push(['cult',4]);if(c>=4)p.push(['succ',5]);if(c>=6)p.push(['golem',3]);if(c>=50)p.push(['worm',4]);return p;}
 function pickW(p){let s=0;for(const q of p)s+=q[1];let r=Math.random()*s;for(const q of p){if((r-=q[1])<0)return q[0];}return p[0][0];}

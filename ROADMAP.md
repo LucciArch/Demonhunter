@@ -124,9 +124,9 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.116: Schwurbaum-Knoten Vierte Gabe (4 Segen zur Auswahl); Synergien lösen einen Blitzring (5× Schaden im Umkreis) mit eigenem Klang aus
 - v0.117: Seltener Fluchschrein ab Kreis 3 (Dämonen +50% Leben/Schaden, doppelte Beute), 7 Schrein-Erfolge (Schreine, Mimics, Flüche)
 - v0.118: Verfluchte Segen (Blutpakt, Seelenwucher, Glasklinge, Wahnsinn) – 12% Chance auf eine Fluch-Option mit starkem Bonus und Nachteil; Auto-Jagd meidet sie
+- v0.119: Segen-Leiste im Jagd-HUD: gewählte Segen als Symbole plus offene Synergien mit fehlendem Partner
 
 ## Als Nächstes
-D2. Segnungen: Synergie-Anzeige im HUD während der Jagd
 E2. Schreine: Mimic mit eigenem Truhen-Sprite; Schreine in der Chronik nachschlagbar; Schwurbaum-Knoten „Pilgerpfad“ (Schreine erscheinen öfter)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
