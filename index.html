@@ -596,6 +596,7 @@ const SET_LVL=5,SETS=[
  {name:'Gebeinthron',ids:['bkrone','schaedel','herz'],d:'+5 Rüstung, +40% Siegel, +20% Schaden gegen Fürsten & Elite',f:s=>{s.armor+=5;s.sigil*=1.4;s.bossDmg+=.2;}},
  {name:'Fürstengruft',ids:['schleier','zahn','eis'],d:'+25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden',f:s=>{s.bossDmg+=.25;s.ls+=.03;s.ultDmg*=1.2;}},
  {name:'Höllenschmiede',ids:['kohle','glutkern','ssiegel'],d:'+20% Schaden, +20% Leben, +25% Schwefel',f:s=>{s.dmg*=1.2;s.hp*=1.2;s.brim*=1.25;}},
+ {name:'Pestgruft',ids:['pestmaske','dzweig','leere'],d:'+75% Dornen, +15% Leben, +2s Jagdzeit, +15% Seelen',f:s=>{s.thorns+=.75;s.hp*=1.15;s.time+=2;s.soul*=1.15;}},
  {name:'Eisenwall',ids:['herz','dornen','feder'],d:'+40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration',f:s=>{s.hp*=1.4;s.armor=Math.max(s.armor*1.5,s.armor+10);s.regen+=s.hp*.02;}}];
 const setOn=t=>t.ids.every(i=>(save.arts[i]||0)>=SET_LVL),setMax=t=>t.ids.every(i=>(save.arts[i]||0)>=ART_MAX);
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
