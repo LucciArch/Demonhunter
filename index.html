@@ -1003,6 +1003,7 @@ AN('lf0','Luftfänger','Fange 100 goldene Seelen-Kugeln per Bannstrahl in der Lu
 [[1,'Mondsüchtig'],[25,'Kind des Blutmonds']].forEach(([n,nm],i)=>AN('bmn'+i,nm,`Erlebe ${n} Blutmond${n>1?'-Jagden':'-Jagd'}`,()=>(save.st.bmn||0),n,{g:2+i*4}));
 [[1,'Gleichklang'],[25,'Meister der Synergien']].forEach(([n,nm],i)=>AN('syn'+i,nm,`Löse ${n} Segnungs-Synergie${n>1?'n':''} aus`,()=>(save.st.syn||0),n,{g:2+i*4}));
 AN('cu0','Teufelspakt','Wähle einen verfluchten Segen',()=>(save.st.cur||0),1,{g:2});
+AN('cu2','Fluchbrecher','Löse alle 4 Fluch-Synergien aus',()=>SYNERGIES.filter(x=>x.x&&(save.st.synK||{})[x.n]).length,4,{g:10});
 AN('cu1','Mit dem Teufel im Bunde','Wähle 3 verfluchte Segen in einer Jagd',()=>(save.st.curMax||0),3,{g:8});
 AN('np0','Novabrecher','Lass 100 Fürsten-Nova-Kugeln per Bannstrahl zerplatzen',()=>(save.st.np||0),100,{g:5});
 AN('sb0','Seelenfänger','Banne 100 Seelenträger (Kreis-Modifikator Seelenbann)',()=>(save.st.sb||0),100,{g:5});
@@ -1159,7 +1160,7 @@ const BOONS=[
 const CURSED=[
  {n:'Blutpakt',i:'☠',c:'#b0204a',x:1,d:()=>`+80% Schaden<br><i>Fluch: −40% max. Leben</i>`,f:()=>{ST.dmg*=1.8;R.maxHp*=.6;R.hp=Math.min(R.hp,R.maxHp);}},
  {n:'Seelenwucher',i:'⚖',c:'#6ae8c8',x:1,d:()=>`+80% Seelen<br><i>Fluch: −5s Jagdzeit</i>`,f:()=>{R.time=Math.max(1,R.time-5);R.maxTime=Math.max(R.time,R.maxTime-5);ST.soul*=1.8;}},
- {n:'Glasklinge',i:'⟋',c:'#c8f0ff',x:1,d:()=>`+15% Krit-Chance, +120% Krit-Schaden<br><i>Fluch: kein Lebensraub</i>`,f:()=>{ST.crit=Math.min(95,ST.crit+15);ST.critDmg+=1.2;ST.ls=0;}},
+ {n:'Glasklinge',i:'⟋',c:'#c8f0ff',x:1,d:()=>`+15% Krit-Chance, +120% Krit-Schaden<br><i>Fluch: kein Lebensraub</i>`,f:()=>{ST.crit=Math.min(95,ST.crit+15);ST.critDmg+=1.2;R.glLs=(R.glLs||0)+ST.ls;ST.ls=0;}},
  {n:'Wahnsinn',i:'✺',c:'#ff5ad0',x:1,d:()=>`+50% Angriffstempo<br><i>Fluch: Ultimate lädt 30% langsamer</i>`,f:()=>{ST.aps*=1.5;ST.ultKills*=1.3;}},
 ];
 // Synergien: zwei bestimmte Segnungen (auch derselbe zweimal) lösen einmal pro Jagd einen Zusatzbonus aus
@@ -1172,9 +1173,15 @@ const SYNERGIES=[
  {n:'Feuerkette',a:'Kettenblitz',b:'Leichensprengung',c:'#ffb04a',d:'Explosionen +80% Schaden',f:()=>{ST.explode+=.8;}},
  {n:'Ewigkeit',a:'Sanduhr',b:'Märtyrer',c:'#7ab8ff',d:'+8s Jagdzeit, Ultimate lädt 20% schneller',f:()=>{R.time+=8;R.maxTime+=8;ST.ultKills=Math.max(3,ST.ultKills*.8);}},
  {n:'Unsterblichkeit',a:'Lebensquell',b:'Blutdurst',c:'#ff7a9a',d:'+40% max. Leben, +3% Lebensraub',f:()=>{R.maxHp*=1.4;R.hp=R.maxHp;ST.ls+=.03;}},
+ // Fluch-Synergien: zwei verfluchte Segen zusammen heben einen der Flüche wieder auf
+ {n:'Seelenhandel',a:'Blutpakt',b:'Seelenwucher',x:1,c:'#b0204a',d:'Hebt den Fluch von Blutpakt auf (volles Leben)',f:()=>{R.maxHp/=.6;R.hp=R.maxHp;}},
+ {n:'Kristallgier',a:'Seelenwucher',b:'Glasklinge',x:1,c:'#6ae8c8',d:'Hebt den Fluch von Seelenwucher auf (+5s Jagdzeit)',f:()=>{R.time+=5;R.maxTime+=5;}},
+ {n:'Splitterwahn',a:'Glasklinge',b:'Wahnsinn',x:1,c:'#c8f0ff',d:'Hebt den Fluch von Glasklinge auf (Lebensraub zurück)',f:()=>{ST.ls+=R.glLs||0;R.glLs=0;}},
+ {n:'Blutwahn',a:'Wahnsinn',b:'Blutpakt',x:1,c:'#ff5ad0',d:'Hebt den Fluch von Wahnsinn auf (Ultimate normal)',f:()=>{ST.ultKills/=1.3;}},
 ];
 // Welche noch nicht ausgelöste Synergie würde Segen n vervollständigen?
-function synOf(n){const k=R.bk||{};return SYNERGIES.find(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?s.a===n&&k[n]===1:(s.a===n&&k[s.b])||(s.b===n&&k[s.a])));}
+function synOf(n){return synsOf(n)[0];}
+function synsOf(n){const k=R.bk||{};return SYNERGIES.filter(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?s.a===n&&k[n]===1:(s.a===n&&k[s.b])||(s.b===n&&k[s.a])));}
 // HUD: gewählte Segen als Symbole + offene Synergien (eine Hälfte vorhanden)
 function hudBoon(){const k=R.bk||{},b=Object.keys(k).map(n=>BOONS.find(x=>x.n===n)||CURSED.find(x=>x.n===n)).filter(Boolean);
   const open=SYNERGIES.filter(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?k[s.a]===1:!!k[s.a]!==!!k[s.b])).map(s=>`<span style="color:${s.c}">⚡${s.n}: ${k[s.a]?s.b:s.a}</span>`);
@@ -1187,9 +1194,9 @@ function rerollBoons(){if(!R||!R.choosing||!(R.rr>0))return;R.rr--;R.choosing=nu
 function offerBoons(){
   const pool=BOONS.slice(),opts=[];while(opts.length<ST.boonN){const b=pool.splice(ri(0,pool.length-1),1)[0];opts.push({b,m:Math.random()<.15?2:1});}// 15%: geweiht = doppelte Wirkung
   if(Math.random()<.12+ST.curseCh)opts[ri(0,opts.length-1)]={b:CURSED[ri(0,CURSED.length-1)],m:1};
-  const pick=o=>{const sy=synOf(o.b.n);o.b.f(o.m);(R.boons=R.boons||[]).push(o.b.n+(o.m>1?' ✧':''));(R.bk=R.bk||{})[o.b.n]=(R.bk[o.b.n]||0)+1;
+  const pick=o=>{const sys=synsOf(o.b.n);o.b.f(o.m);(R.boons=R.boons||[]).push(o.b.n+(o.m>1?' ✧':''));(R.bk=R.bk||{})[o.b.n]=(R.bk[o.b.n]||0)+1;
     if(o.b.x){R.cur=(R.cur||0)+1;save.st.cur=(save.st.cur||0)+1;save.st.curMax=Math.max(save.st.curMax||0,R.cur);(save.st.curK=save.st.curK||{})[o.b.n]=(save.st.curK[o.b.n]||0)+1;}
-    if(sy){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();hudBoon();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
+    for(const sy of sys){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();hudBoon();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
     for(let i=0;i<24;i++){const a=i/24*Math.PI*2,h=heroPos();R.pt.push({x:h.x,y:h.y-20,vx:Math.cos(a)*180,vy:Math.sin(a)*120,t:0,life:.6,c:o.b.c,s:3});}};
   if(save.auto){const ok=opts.filter(o=>!o.b.x);pick(opts.find(o=>synOf(o.b.n))||ok[ri(0,ok.length-1)]);return;}// Auto-Jagd wählt selbst, nie Flüche
   R.choosing={opts,pick};sfx('buy');
@@ -2322,7 +2329,7 @@ else{// Offline-Fortschritt: 25% der zuletzt erjagten Seelen/s, max. 8 Stunden
 addEventListener('pagehide',persist);setInterval(persist,30000);
 requestAnimationFrame(frame);
 // debug hook for testing
-window.__DJ={get save(){return save},get R(){return R},startRun,killDemon,toHub,computeStats,updateRun,autoBuy,smite,nodeCost,nodeAvail,NODES,ST:()=>ST,HT,htAvail,ASC,ascCost,fragGain,ascend,al,useShrine,bossAbility,BOSSES};
+window.__DJ={get save(){return save},get R(){return R},startRun,killDemon,toHub,computeStats,updateRun,autoBuy,smite,nodeCost,nodeAvail,NODES,ST:()=>ST,HT,htAvail,ASC,ascCost,fragGain,ascend,al,useShrine,bossAbility,BOSSES,offerBoons,CURSED};
 </script>
 </body>
 </html>
