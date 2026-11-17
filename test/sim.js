@@ -1,12 +1,15 @@
 // Balance-Simulation: spielt Jagden im Schnelldurchlauf (Bannstrahl 3×/s auf einen Dämon, wie ein aktiver Spieler) und gibt Kreise pro Jagd aus.
-// Aufruf: node test/sim.js [Jagden=60] [--asc] [--quiet]   (--asc: Aufstieg nach 6 Jagden ohne neuen Kreis-Rekord; --quiet: nur Tabelle) – braucht Playwright (npm i -D playwright, falls nicht global vorhanden)
+// Aufruf: node test/sim.js [Jagden=60] [--asc] [--quiet] [--seed N]   (--asc: Aufstieg nach 6 Jagden ohne neuen Kreis-Rekord; --quiet: nur Tabelle; --seed: deterministischer Zufall für Balance-Vergleiche) – braucht Playwright (npm i -D playwright, falls nicht global vorhanden)
 // Bricht mit Fehlercode ab, wenn das Spiel dabei einen JS-Fehler wirft – dient damit auch als Rauchtest.
 const { chromium } = require('playwright');
 const path = require('path');
 const runs = +process.argv[2] || 60, ASC = process.argv.includes('--asc'), QUIET = process.argv.includes('--quiet');
+const si = process.argv.indexOf('--seed'), SEED = si > 0 ? +process.argv[si + 1] : null;
 (async () => {
   const b = await chromium.launch(), p = await b.newPage(), errs = [];
   p.on('pageerror', e => errs.push(e.message));
+  // mulberry32 ersetzt Math.random vor dem Spielstart – gleicher Seed, gleicher Verlauf
+  if (SEED !== null) await p.addInitScript(s => { Math.random = () => { s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }, SEED);
   await p.goto('file://' + path.resolve(__dirname, '../index.html'));
   await p.waitForFunction(() => window.__DJ);
   const log = await p.evaluate(n => {

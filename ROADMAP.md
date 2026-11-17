@@ -158,9 +158,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 
 - v0.146: Neuer Schrein „Seelenwaage“ (Waage mit Seelen- und Schwefelschale, ab Kreis 2, nur wenn Seelen gesammelt): tauscht die Hälfte der Seelen der Jagd gegen Schwefel wie von drei Fürsten; Erfolg „Waagemeister“ (10×), im Bestiarium
 
+- v0.147: test/sim.js `--seed N` – ersetzt Math.random im Spiel durch einen festen Zufallsgenerator (mulberry32); gleicher Seed ergibt exakt denselben Verlauf, damit Balance-Vergleiche nicht in der Streuung untergehen
+
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
-L12. test/sim.js mit `--seed` (deterministischer Zufall), damit Balance-Vergleiche nicht in der Streuung untergehen; Laufzeit (~14 min für 200 Jagden) verkürzen
+L12. test/sim.js: Laufzeit (~14 min für 200 Jagden) verkürzen (z. B. Zeichnen im Sim-Modus abschalten, größere Zeitschritte); Balance-Vergleiche L11 mit `--seed 1..5` mitteln
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
