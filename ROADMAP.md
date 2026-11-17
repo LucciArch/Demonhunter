@@ -127,9 +127,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.119: Segen-Leiste im Jagd-HUD: gewählte Segen als Symbole plus offene Synergien mit fehlendem Partner
 - v0.120: Verfluchte Segen in der Chronik (Bestiarium) nachschlagbar, Statistik-Zeile, Erfolge „Teufelspakt“ und „Mit dem Teufel im Bunde“ (3 Flüche in einer Jagd)
 - v0.121: Mimic mit eigenem Sprite (Truhe mit Augen, Zahnreihen, Zunge, Beinen – schnappt beim Laufen zu); Chronik › Bestiarium listet alle Schreine mit Zähler und den Mimic; Schwurbaum-Knoten „Pilgerpfad“ (Gier-Pfad, Schwefel, 5 Stufen, je +15% Schrein-Häufigkeit)
+- v0.122: Knappe Fürsten-Niederlage (Fürst ≤25% Leben bei Jagdende) gibt einen Siegel-Trostpreis (¼ der Fürsten-Siegel); sonst Hinweis mit Rest-Leben des Fürsten und Tipp zum Farmen/Aufsteigen
 
 ## Als Nächstes
-L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
+L2. Balance-Simulation als Skript ins Repo (test/sim.js, per `node test/sim.js` Kreise pro Jagd ausgeben)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 J. Reliquien: Set „Gebeinthron“ (Knochenkrone + Fürstenschädel + Eisernes Herz); eigene Reliquie für jeden Fürsten-Typ

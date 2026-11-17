@@ -1411,7 +1411,7 @@ function killDemon(e,o){
   if(e.d.thief){for(let i=0;i<20;i++)dropLoot(e,'s',d.souls*R.rewM*ST.soul/4,i<4);save.st.thief=(save.st.thief||0)+1;R.tx.push({x:e.x,y:e.y-40,str:'BEUTE!',t:0,col:'#ffd76a'});sfx('relic');}
   if(e.boss&&bossOf(R.c).ab==='bone')dropLoot(e,'a',ARTS.find(a=>a.bk));// Knochenkönig: immer seine Krone
   else if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
-  if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1)*(R.bmoon?2:1);for(let i=0;i<8;i++){dropLoot(e,'g',s*ST.bossLoot/8);R.loot[R.loot.length-1].hud=1;}R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:1.6,sc:2.6});
+  if(e.boss){const s=bossSig();for(let i=0;i<8;i++){dropLoot(e,'g',s*ST.bossLoot/8);R.loot[R.loot.length-1].hud=1;}R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:1.6,sc:2.6});
     R.bossDead=true;save.st.bosses++;if(!save.tipGold){save.tipGold=1;setTimeout(()=>toast('Tipp: Goldene Seelen-Kugeln lassen sich per Klick in der Luft fangen – +50% Wert!',5500),1200);}if(bossOf(R.c).ab==='bone')save.st.bk=(save.st.bk||0)+1;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;R.slow=.5;R.zoom={x:e.x,y:e.y,t:0,dur:.9};// Todesstoß in Zeitlupe
 
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
@@ -1666,10 +1666,13 @@ function updateFx(dt){
   if(R.tx.length>80)R.tx.splice(0,R.tx.length-80);
   for(const p of R.pt){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;}R.pt=R.pt.filter(p=>p.t<p.life);
 }
+const bossSig=()=>((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1)*(R.bmoon?2:1);
 function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered (Reliquien nie verlieren)
   for(const l of R.loot)if(l.cur==='a')gainArt(l.v);else if(l.hud)R.sig+=l.v;
+  const bo=R.en.find(e=>e.boss&&!e.dead);// knapp gescheitert (≤25% Leben): Trostpreis von einem Viertel der Fürsten-Siegel
+  if(bo){R.bossPct=Math.max(1,Math.ceil(bo.hp/bo.max*100));if(R.bossPct<=25){R.cons=Math.max(1,Math.floor(bossSig()*ST.bossLoot*.25));R.sig+=R.cons;}}
   if(R.t>3)save.st.rate=Math.max(R.souls/R.t,(save.st.rate||0)*.9);
   save.souls+=R.souls;save.brim+=R.brim;save.sig+=R.sig;save.st.runs++;save.st.best=Math.max(save.st.best,R.kills);
   save.st.soulsTotal=(save.st.soulsTotal||0)+R.souls;if(why==='dead')save.st.deaths=(save.st.deaths||0)+1;save.st.maxC=Math.max(save.st.maxC||0,save.maxCircle);
@@ -1710,6 +1713,8 @@ function showSummary(){
   if(R.brim>0)h+=`<span class="cur b"><i></i>Schwefel</span><span>+${fmt(R.brim)}</span>`;
   if(R.sig>0)h+=`<span class="cur g"><i></i>Siegel</span><span>+${fmt(R.sig)}</span>`;
   h+=`</div>`;
+  if(R.cons)h+=`<div style="text-align:center;color:#ffd76a;margin-bottom:6px">Knapp! Der Fürst hatte nur noch ${R.bossPct}% Leben – Trostpreis: +${fmt(R.cons)} Siegel</div>`;
+  else if(R.bossPct)h+=`<div style="text-align:center;color:var(--dim);margin-bottom:6px">Der Fürst hielt noch ${R.bossPct}% Leben. Tipp: Seelen in leichteren Kreisen farmen${save.maxCircle>=5?' oder aufsteigen':''}.</div>`;
   if(R.quests)h+=`<div style="text-align:center;color:#ffd76a;margin-bottom:6px">${R.quests} Auftrag/Aufträge erfüllt!</div>`;
   if(R.autoBought)h+=`<div style="text-align:center;color:#bfa8ff;margin-bottom:8px">Ordensschreiber kaufte ${R.autoBought} Knoten.</div>`;
   if(R.arts)h+=`<div style="text-align:center;color:#ffb0f0;font-size:20px;margin-bottom:10px">Reliquien: ${R.arts.map(a=>`<img src="${sprURL('art_'+a.id,3)}" style="vertical-align:middle;image-rendering:pixelated"> ${a.name} (Stufe ${save.arts[a.id]})`).join(' · ')}</div>`;
