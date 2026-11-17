@@ -587,6 +587,7 @@ const SET_LVL=5,SETS=[
  {name:'Gewittermantel',ids:['rune','dornen','uhr'],d:'+1 Kettenblitz, +50% Kettenschaden, +50% Dornen, +2s Jagdzeit',f:s=>{s.chain+=1;s.chainDmg+=.5;s.thorns+=.5;s.time+=2;}},
  {name:'Seelenfürst',ids:['laterne','auge','schaedel'],d:'+25% Seelen, +5% Krit, +40% Fürsten-Beute',f:s=>{s.soul*=1.25;s.crit=Math.min(95,s.crit+5);s.bossLoot+=.4;}},
  {name:'Gebeinthron',ids:['bkrone','schaedel','herz'],d:'+5 Rüstung, +40% Siegel, +20% Schaden gegen Fürsten & Elite',f:s=>{s.armor+=5;s.sigil*=1.4;s.bossDmg+=.2;}},
+ {name:'Fürstengruft',ids:['schleier','zahn','eis'],d:'+25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden',f:s=>{s.bossDmg+=.25;s.ls+=.03;s.ultDmg*=1.2;}},
  {name:'Eisenwall',ids:['herz','dornen','feder'],d:'+40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration',f:s=>{s.hp*=1.4;s.armor=Math.max(s.armor*1.5,s.armor+10);s.regen+=s.hp*.02;}}];
 const setOn=t=>t.ids.every(i=>(save.arts[i]||0)>=SET_LVL),setMax=t=>t.ids.every(i=>(save.arts[i]||0)>=ART_MAX);
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
@@ -962,6 +963,7 @@ AN('g4','Gebeinbrecher','Besiege den Knochenkönig 5×',()=>(save.st.bk||0),5,{g
 A('x0','Sammler','Aktiviere deinen ersten Reliquien-Set-Bonus',()=>SETS.some(setOn),{g:5});
 A('x1','Vollendeter Sammler','Bringe einen Set-Bonus auf Stufe 2',()=>SETS.some(setMax),{a:5});
 A('x2','Unzerstörbar','Aktiviere alle Reliquien-Set-Boni gleichzeitig',()=>SETS.every(setOn),{a:10});
+A('x3','Gruftwächter','Finde die eigene Reliquie jedes Fürsten, der eine hat',()=>ARTS.every(a=>a.bi==null||save.arts[a.id]),{a:5});
 A('f0','Forscher','Entdecke alle Dämonenarten im Bestiarium',()=>Object.keys(DEMONS).every(k=>save.st.kt[k]),{g:5});
 A('f1','Meister des Bestiariums','Erlege von jeder Dämonenart 1000',()=>Object.keys(DEMONS).every(k=>(save.st.kt[k]||0)>=1000),{a:10});
 A('f2','Elite-Kenner','Erlege von jeder Dämonenart 10 Elite',()=>Object.keys(DEMONS).every(k=>k==='boss'||(save.st.ke[k]||0)>=10),{b:500});

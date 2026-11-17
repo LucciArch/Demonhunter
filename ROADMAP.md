@@ -139,14 +139,14 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.128: Schnellabstieg – Aufstiegsknoten „Erinnerung“ startet nach dem Aufstieg bei Stufe/15 des alten Rekords (Stufe 5 ≈ ⅓, z. B. Rekord 31 → Kreis 10, Rekord 60 → Kreis 20), mindestens wie bisher Kreis 1+Stufe
 - v0.129: Achtes Reliquien-Set „Gebeinthron“ (Knochenkrone, Fürstenschädel, Eisernes Herz): +5 Rüstung, +40% Siegel, +20% Schaden gegen Fürsten & Elite
 - v0.130: Fürsten-eigene Reliquien – Bansheeschleier (Klagende Herrin, +10% Bannstrahl-Schaden/Stufe), Grafenzahn (Blutgraf, Lebensraub + Krit-Schaden), Eissplitter (Eiskönig, +10% Ultimate-Schaden/Stufe); 30% Chance beim Fürsten-Sieg, sonst zufällige Reliquie; Chronik zeigt den Fürsten als Quelle
+- v0.131: Neuntes Reliquien-Set „Fürstengruft“ (Bansheeschleier, Grafenzahn, Eissplitter): +25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden; Erfolg „Gruftwächter“ (alle Fürsten-Reliquien gefunden)
 
 ## Als Nächstes
 L10. test/sim.js: mehrere Aufstiege simulieren (z. B. 200 Jagden), um die Wirkung von „Erinnerung“ ab dem 2. Aufstieg zu messen
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
-J2. Weitere Fürsten-Reliquien für Aschefürst, Pestfürst, Schwefelherzog, Leerenwandler, Dornenkönig, Glutkoloss, Abgrundfürst
-J3. Set „Fürstengruft“ (Bansheeschleier, Grafenzahn, Eissplitter) und Erfolg „Gruftwächter“ (alle Fürsten-Reliquien gefunden)
+J2. Weitere Fürsten-Reliquien (zählen automatisch für „Gruftwächter“) für Aschefürst, Pestfürst, Schwefelherzog, Leerenwandler, Dornenkönig, Glutkoloss, Abgrundfürst
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
 O. Blutmond: eigener Blutmond-Fürst „Mondschlächter“ mit roter Gestalt und Erfolg
