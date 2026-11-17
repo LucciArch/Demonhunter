@@ -148,6 +148,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.137: Chronik › Reliquien nach Herkunft gruppiert (Überall / Tiefe Kreise ab 10 / Fürsten-Reliquien) mit Fund-Zähler je Gruppe
 - v0.138: Blutmond-Fürst „Mondschlächter“ – eigener gehörnter Schlächter mit blutiger Schürze und Mondsichel-Klinge (wechselt Ansturm/Fledermaus-Beschwörung/Nova), ersetzt bei Blutmond den Kreis-Fürsten (außer Knochenkönig); Erfolge „Mondfinsternis“ (1×) und „Schlächter des Schlächters“ (10×), Statistik
 - v0.139: Neuer Schrein „Spiegel der Gier“ (goldgerahmter Spiegel, erscheint erst, wenn man Seelen gesammelt hat): 55% Seelen dieser Jagd verdoppeln, 45% die Hälfte verlieren; Erfolg „Gierschlund“ (10 Gewinne)
+- v0.140: Fürsten-Reliquie „Mondsichel“ vom Mondschlächter (nur bei Blutmond, 30%): +5% Schaden und +1% Blutmond-Chance je Stufe; zählt für „Gruftwächter“
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -157,6 +158,7 @@ K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Sch
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
-O2. Mondschlächter: eigene Reliquie „Mondsichel“ (nur bei Blutmond) und eigener Angriff (Sichelwurf, der zurückkehrt)
+O2. Mondschlächter: eigener Angriff (Sichelwurf, der zurückkehrt)
 E3. Mimic beißt mit Zungen-Angriff und lässt beim Tod eine goldene Truhe fallen
+O3. Reliquien-Set „Blutmond“ (Mondsichel, Grafenzahn, Blutkelch): Blutmond-Jagden geben zusätzlich Siegel
 E4. Schreine: „Opferstock“ (Schwefel gegen Siegel tauschen); Spiegel der Gier zeigt zerspringende Scherben-Animation beim Verlust
