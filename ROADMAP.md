@@ -115,6 +115,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.107: Elite-Imp zerplatzt beim Tod in zwei kleine Wichte, Elite-Schemen verschwindet alle 5 s für 1,5 s (unverwundbar), Elite-Nachtmahr stößt im Sturzflug zu – alles im Bestiarium
 - v0.108: Hub – grüner Punkt am Knopf „Jäger & Ultimates“, wenn ein Jägerbaum-Knoten des aktiven Jägers bezahlbar ist (der Schwurbaum hebt bezahlbare Knoten schon selbst hervor)
 - v0.109: Ereignis „Blutmond“ – 7% der Jagden ab Kreis 3: doppelte Dämonen, dreifache Seelen und Schwefel, Fürst braucht 50% mehr Kills; roter Himmel mit Krater-Mond, Banner, Statistik, 2 Erfolge
+- v0.110: Knochenkönig zerfällt beim Tod in einen Knochenregen – 60 Knochen und der Schädel fliegen auseinander, danach regnen sechs Wellen Knochen vom Himmel
 
 ## Als Nächstes
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
@@ -122,6 +123,6 @@ E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschr
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
-J. Knochenkönig: eigene Todesanimation (zerfällt in Knochenregen) und eigenes Reliquien-Drop „Knochenkrone“
+J. Knochenkönig: eigenes Reliquien-Drop „Knochenkrone“
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 N. Blutmond: eigener Blutmond-Fürst-Bonus (Siegel ×2) und Schwurbaum-Knoten „Mondanbeter“ (+Blutmond-Chance)
