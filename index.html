@@ -1044,6 +1044,7 @@ const ASC=[
  {id:'a4',name:'Erinnerung',d:v=>`Starte nach dem Aufstieg in Höllenkreis ${ascStart(v)} (${v}/10 deines Rekords, mind. ${1+v})`,max:5,cost:5,gr:2},
  {id:'a8',name:'Fragmentgier',d:v=>`+${v*20}% Höllenfragmente`,max:10,cost:4,gr:1.7},
  {id:'a9',name:'Ordensschreiber',d:v=>v?'Kauft nach jeder Jagd automatisch Seelen-Knoten':'Kauft nach jeder Jagd automatisch Seelen-Knoten',max:1,cost:6,gr:1},
+ {id:'a17',name:'Ahnenmacht',d:v=>`×${Math.pow(1+v*.03,save.ascCount||0).toFixed(2)} Schaden & Leben (×${(1+v*.03).toFixed(2)} je Aufstieg, bisher ${save.ascCount||0})`,max:5,cost:6,gr:2},
  {id:'a16',name:'Höllenfürst',d:v=>`×${Math.pow(1.5,v).toFixed(2)} Schaden, Leben und Seelen`,max:5,cost:15,gr:2.2},
 ];
 const AB={};ASC.forEach(a=>AB[a.id]=a);
@@ -1095,7 +1096,7 @@ function computeStats(){
   s.revive=g('revive');s.quota=1-g('quotaRed')/100;s.enemyHp=1-g('enemyHpRed')/100;
   s.dmg*=1+g('heroAll')/100;s.hp*=1+g('heroAll')/100;
   const ab=1+.02*achCount();s.dmg*=ab;s.soul*=ab;
-  const hf=Math.pow(1.5,al('a16'));s.dmg*=(1+al('a1')*.25)*hf;s.hp*=(1+al('a2')*.25)*hf;s.soul*=(1+al('a3')*.5)*hf;
+  const hf=Math.pow(1.5,al('a16')),am=Math.pow(1+al('a17')*.03,save.ascCount||0);s.dmg*=am;s.hp*=am;s.dmg*=(1+al('a1')*.25)*hf;s.hp*=(1+al('a2')*.25)*hf;s.soul*=(1+al('a3')*.5)*hf;
   s.time+=al('a5')*2;s.brim*=1+al('a6')*.5;s.sigil*=1+al('a7')*.3;s.collectDelay=Math.max(.2,s.collectDelay-al('a11')*.5);
   s.quota*=1-al('a12')*.08;s.crit=Math.min(95,s.crit+al('a14')*3);s.ls+=al('a15')*.02;
   s.ultDmg=1+g('ultDmg')/100;s.ultKills=Math.max(4,20*(1-g('ultCharge')/100)*(1-al('a10')*.1));s.ultX=g('ultX');
