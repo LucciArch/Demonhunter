@@ -145,6 +145,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.134: Aufstiegsknoten „Erinnerung“ startet bei Stufe/10 des alten Rekords (Stufe 5 = ½, z. B. Rekord 50 → Kreis 25). Simulation (200 Jagden, --asc): Rekord 50 nach 29 statt 38 Jagden überholt, 5 statt 3 Aufstiege
 - v0.135: Aufstiegsknoten „Ahnenmacht“ (max 5): ×(1+3%·Stufe) Schaden & Leben je bisherigem Aufstieg, geometrisch (Stufe 5 = ×1,15 pro Aufstieg). Simulation (200 Jagden, --asc): Kreis 55 statt 54, Überholen weiter ~29–36 Jagden – Effekt liegt in der Streuung, da er erst ab dem 2.–3. Aufstieg greift
 - v0.136: Elftes Reliquien-Set „Pestgruft“ (Pestmaske, Dornenzweig, Leerenkristall): +75% Dornen, +15% Leben, +2s Jagdzeit, +15% Seelen (Erfolg „Unzerstörbar“ für alle Set-Boni gab es schon)
+- v0.137: Chronik › Reliquien nach Herkunft gruppiert (Überall / Tiefe Kreise ab 10 / Fürsten-Reliquien) mit Fund-Zähler je Gruppe
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -156,4 +157,3 @@ M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-
 D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
 O. Blutmond: eigener Blutmond-Fürst „Mondschlächter“ mit roter Gestalt und Erfolg
 E3. Schreine: neuer Schrein „Spiegel der Gier“ (Seelen verdoppeln oder verlieren); Mimic beißt mit Zungen-Angriff und lässt beim Tod eine goldene Truhe fallen
-J3. Reliquien-Ansicht in der Chronik nach Herkunft gruppieren
