@@ -142,9 +142,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.131: Neuntes Reliquien-Set „Fürstengruft“ (Bansheeschleier, Grafenzahn, Eissplitter): +25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden; Erfolg „Gruftwächter“ (alle Fürsten-Reliquien gefunden)
 - v0.132: test/sim.js listet je Aufstieg Rekord, Startkreis („Erinnerung“), Fragmente und Jagden bis zum Überholen des alten Rekords. Befund (200 Jagden, --asc): Aufstieg 1 bei Rekord 37 → Start 1, überholt nach 37 Jagden; Aufstieg 2 bei Rekord 50 → Start 13, überholt nach 38; Aufstieg 3 bei Rekord 55 → Start 18; Kreis 55 nach 200 Jagden
 - v0.133: Sieben weitere Fürsten-Reliquien – Aschekohle (Aschefürst), Pestmaske (Pestfürst), Schwefelsiegel (Schwefelherzog), Leerenkristall (Leerenwandler), Dornenzweig (Dornenkönig), Glutkern (Glutkoloss), Schlundsplitter (Abgrundfürst), jede mit eigenem Sprite; zehntes Set „Höllenschmiede“ (Aschekohle, Glutkern, Schwefelsiegel): +20% Schaden, +20% Leben, +25% Schwefel. Jeder Fürst hat jetzt eine eigene Reliquie
+- v0.134: Aufstiegsknoten „Erinnerung“ startet bei Stufe/10 des alten Rekords (Stufe 5 = ½, z. B. Rekord 50 → Kreis 25). Simulation (200 Jagden, --asc): Rekord 50 nach 29 statt 38 Jagden überholt, 5 statt 3 Aufstiege
 
 ## Als Nächstes
-L11. Balance: Nach dem 2. Aufstieg dauert das Überholen des alten Rekords trotz „Erinnerung“ noch ~38 Jagden – Fragment-Wirkung oder Aufstiegsknoten stärker skalieren, Ziel ≤25 Jagden (mit test/sim.js 200 --asc prüfen)
+L11. Balance: Überholen nach Aufstieg dauert noch ~29 Jagden (Ziel ≤25) – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
