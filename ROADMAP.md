@@ -132,8 +132,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.124: Schnellerer Einstieg – Fürsten-Quote in Kreis 1/2 auf 70%/85% (ab Kreis 3 unverändert). Simulation: erster Fürst nach ~9 statt ~29 Jagden, Kreis 13 nach 30 Jagden
 - v0.125: test/sim.js kauft Knoten in allen drei Währungen (relativ billigster zuerst). Befund: ab Kreis ~13 ein Kreis pro Jagd, Kreis 42 nach 60 Jagden, keine Wand
 
+- v0.126: Spätspiel-Wand – Dämonen-Leben wächst ab Kreis 15 zusätzlich ×1,35 pro Kreis (GROW.late). Simulation: Kreis 15 nach ~26 Jagden, danach ~1,8 Jagden pro Kreis, ab Kreis 27 ~2,5; Kreis 34 nach 60 Jagden
+
 ## Als Nächstes
-L5. Spätspiel-Wand wiederherstellen: ab Kreis 15 sollen es per test/sim.js wieder ~2–3 Jagden pro Kreis sein (Dämonen-Leben-Wachstum ab Kreis 15 erhöhen oder Schwefel-Knoten-Teuerung), Aufstieg ab Kreis ~25 lohnend machen
+L7. Aufstieg ab Kreis ~25 prüfen: lohnt sich ein Aufstieg dort per Simulation (Fragmente vs. verlorene Kreise)?
 L6. test/sim.js: Jägerbaum und Aufstieg mitsimulieren, Ausgabe als kompakte Tabelle (Kreis nach 20/40/60/100 Jagden)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter

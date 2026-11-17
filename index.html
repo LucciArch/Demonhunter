@@ -1321,13 +1321,13 @@ const ptr={x:-999,y:-999,down:false,active:false,type:'mouse'};
 let shake=0;
 
 // Wachstum pro Höllenkreis: Dämonen-Leben, Dämonen-Schaden, Beute
-const GROW={hp:1.65,dmg:1.33,rew:1.45,infl:1.01};
+const GROW={hp:1.65,dmg:1.33,rew:1.45,infl:1.01,late:1.35};// late: zusätzliches Leben-Wachstum ab Kreis 15 (Spätspiel-Wand)
 function startRun(){
   computeStats();
   const c=save.circle;
   R={c,t:0,time:ST.time,maxTime:ST.time,hp:ST.hp,maxHp:ST.hp,kills:0,souls:0,brim:0,sig:0,en:[],pr:[],loot:[],fx:[],tx:[],pt:[],
      spawnT:.3,atkT:.2,smiteT:1,mod:circleMod(c),quota:Math.max(8,Math.round((18+4*c)*Math.min(1,.55+.15*c)*ST.quota*(circleMod(c)==='horde'?1.5:1))),bossSpawned:false,bossDead:false,over:false,revived:false,
-     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,bl:0,blN:10,moon:0,wall:0,clouds:[],fires:[],ice:[],fireT:0,later:[],ep:[],hpM:Math.pow(GROW.hp,c-1)*ST.enemyHp,dmgM:Math.pow(GROW.dmg,c-1),rewM:Math.pow(GROW.rew,c-1),endT:0,rr:ST.reroll,bmoon:c>=3&&Math.random()<.07+ST.moonCh};
+     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,bl:0,blN:10,moon:0,wall:0,clouds:[],fires:[],ice:[],fireT:0,later:[],ep:[],hpM:Math.pow(GROW.hp,c-1)*Math.pow(GROW.late,Math.max(0,c-15))*ST.enemyHp,dmgM:Math.pow(GROW.dmg,c-1),rewM:Math.pow(GROW.rew,c-1),endT:0,rr:ST.reroll,bmoon:c>=3&&Math.random()<.07+ST.moonCh};
   if(R.bmoon){save.st.bmn=(save.st.bmn||0)+1;R.quota=Math.round(R.quota*1.5);}
   mode='run';showUI();hudBoon();$('#hudImg').src=sprURL(HB[save.hero].spr,4);$('#hudCirc').textContent=circleName(c)+(R.mod?' · '+CMOD[R.mod].name:'');sfx('hit');if(R.bmoon){$('#hudCirc').textContent+=' · Blutmond';const bb=$('#bossBanner');bb.innerHTML='BLUTMOND<div style="font-size:22px">Doppelte Dämonen, dreifache Beute, doppelte Siegel</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2600);sfx('boss');}else if(R.mod){const bb=$('#bossBanner');bb.innerHTML=CMOD[R.mod].name.toUpperCase()+'<div style="font-size:22px">'+CMOD[R.mod].d+'</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2200);}for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
 }
