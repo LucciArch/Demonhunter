@@ -1003,7 +1003,7 @@ AN('lf0','Luftfänger','Fange 100 goldene Seelen-Kugeln per Bannstrahl in der Lu
 [[1,'Mondsüchtig'],[25,'Kind des Blutmonds']].forEach(([n,nm],i)=>AN('bmn'+i,nm,`Erlebe ${n} Blutmond${n>1?'-Jagden':'-Jagd'}`,()=>(save.st.bmn||0),n,{g:2+i*4}));
 [[1,'Gleichklang'],[25,'Meister der Synergien']].forEach(([n,nm],i)=>AN('syn'+i,nm,`Löse ${n} Segnungs-Synergie${n>1?'n':''} aus`,()=>(save.st.syn||0),n,{g:2+i*4}));
 AN('cu0','Teufelspakt','Wähle einen verfluchten Segen',()=>(save.st.cur||0),1,{g:2});
-AN('cu2','Fluchbrecher','Löse alle 4 Fluch-Synergien aus',()=>SYNERGIES.filter(x=>x.x&&(save.st.synK||{})[x.n]).length,4,{g:10});
+AN('cu2','Fluchbrecher','Löse alle 6 Fluch-Synergien aus',()=>SYNERGIES.filter(x=>x.x&&(save.st.synK||{})[x.n]).length,6,{g:10});
 AN('cu1','Mit dem Teufel im Bunde','Wähle 3 verfluchte Segen in einer Jagd',()=>(save.st.curMax||0),3,{g:8});
 AN('np0','Novabrecher','Lass 100 Fürsten-Nova-Kugeln per Bannstrahl zerplatzen',()=>(save.st.np||0),100,{g:5});
 AN('sb0','Seelenfänger','Banne 100 Seelenträger (Kreis-Modifikator Seelenbann)',()=>(save.st.sb||0),100,{g:5});
@@ -1162,6 +1162,8 @@ const CURSED=[
  {n:'Seelenwucher',i:'⚖',c:'#6ae8c8',x:1,d:()=>`+80% Seelen<br><i>Fluch: −5s Jagdzeit</i>`,f:()=>{R.time=Math.max(1,R.time-5);R.maxTime=Math.max(R.time,R.maxTime-5);ST.soul*=1.8;}},
  {n:'Glasklinge',i:'⟋',c:'#c8f0ff',x:1,d:()=>`+15% Krit-Chance, +120% Krit-Schaden<br><i>Fluch: kein Lebensraub</i>`,f:()=>{ST.crit=Math.min(95,ST.crit+15);ST.critDmg+=1.2;R.glLs=(R.glLs||0)+ST.ls;ST.ls=0;}},
  {n:'Wahnsinn',i:'✺',c:'#ff5ad0',x:1,d:()=>`+50% Angriffstempo<br><i>Fluch: Ultimate lädt 30% langsamer</i>`,f:()=>{ST.aps*=1.5;ST.ultKills*=1.3;}},
+ {n:'Dornenblut',i:'✠',c:'#8aff8a',x:1,d:()=>`+150% Dornen (reflektierter Schaden)<br><i>Fluch: Dämonen +30% Schaden</i>`,f:()=>{ST.thorns+=1.5;R.dmgM*=1.3;}},
+ {n:'Gier',i:'❖',c:'#ffd76a',x:1,d:()=>`Doppelte Seelen-Beute<br><i>Fluch: neue Dämonen +50% Leben</i>`,f:()=>{R.rewM*=2;R.hpM*=1.5;}},
 ];
 // Synergien: zwei bestimmte Segnungen (auch derselbe zweimal) lösen einmal pro Jagd einen Zusatzbonus aus
 const SYNERGIES=[
@@ -1178,6 +1180,8 @@ const SYNERGIES=[
  {n:'Kristallgier',a:'Seelenwucher',b:'Glasklinge',x:1,c:'#6ae8c8',d:'Hebt den Fluch von Seelenwucher auf (+5s Jagdzeit)',f:()=>{R.time+=5;R.maxTime+=5;}},
  {n:'Splitterwahn',a:'Glasklinge',b:'Wahnsinn',x:1,c:'#c8f0ff',d:'Hebt den Fluch von Glasklinge auf (Lebensraub zurück)',f:()=>{ST.ls+=R.glLs||0;R.glLs=0;}},
  {n:'Blutwahn',a:'Wahnsinn',b:'Blutpakt',x:1,c:'#ff5ad0',d:'Hebt den Fluch von Wahnsinn auf (Ultimate normal)',f:()=>{ST.ultKills/=1.3;}},
+ {n:'Blutdornen',a:'Blutpakt',b:'Dornenblut',x:1,c:'#8aff8a',d:'Hebt den Fluch von Dornenblut auf (Dämonen-Schaden normal)',f:()=>{R.dmgM/=1.3;}},
+ {n:'Dornengier',a:'Dornenblut',b:'Gier',x:1,c:'#ffd76a',d:'Hebt den Fluch von Gier auf (Dämonen-Leben normal)',f:()=>{R.hpM/=1.5;}},
 ];
 // Welche noch nicht ausgelöste Synergie würde Segen n vervollständigen?
 function synOf(n){return synsOf(n)[0];}
