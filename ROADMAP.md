@@ -113,9 +113,9 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.105: Elite-Golem stampft alle 4 s eine Schockwelle (110 px), Elite-Höllenhund heult und ruft ein Rudel aus drei Höllenhunden – beides im Bestiarium
 - v0.106: Hub – grüner Punkt am Chronik-Knopf, wenn ein Auftrag fast geschafft ist (erledigte Aufträge lassen ihn nicht mehr fälschlich leuchten)
 - v0.107: Elite-Imp zerplatzt beim Tod in zwei kleine Wichte, Elite-Schemen verschwindet alle 5 s für 1,5 s (unverwundbar), Elite-Nachtmahr stößt im Sturzflug zu – alles im Bestiarium
+- v0.108: Hub – grüner Punkt am Knopf „Jäger & Ultimates“, wenn ein Jägerbaum-Knoten des aktiven Jägers bezahlbar ist (der Schwurbaum hebt bezahlbare Knoten schon selbst hervor)
 
 ## Als Nächstes
-95. Hub: Hinweis-Punkt auch am Schwurbaum-Knopf, wenn ein Knoten bezahlbar ist
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)

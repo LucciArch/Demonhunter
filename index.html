@@ -114,7 +114,7 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
  #info{left:10px;right:10px;width:auto;bottom:130px}
  button.big{font-size:19px;padding:10px 18px}
 }
-#btnChron.dot::after{content:'●';color:#7bff8a;margin-left:6px}
+#btnChron.dot::after,#btnHeroes.dot::after{content:'●';color:#7bff8a;margin-left:6px}
 </style>
 </head>
 <body>
@@ -2000,7 +2000,8 @@ function refreshCur(){
 }
 function refreshHub(){
   refreshCur();computeStats();const h=HB[save.hero];
-  {const qn=save.quests.some(q=>!q.done&&q.prog/q.target>=.9);$('#btnChron').classList.toggle('glow',ACH.some(achNear)||qn);$('#btnChron').classList.toggle('dot',qn);}// Hinweis: Erfolg oder Auftrag fast geschafft
+  {const qn=save.quests.some(q=>!q.done&&q.prog/q.target>=.9);$('#btnChron').classList.toggle('glow',ACH.some(achNear)||qn);$('#btnChron').classList.toggle('dot',qn);}
+  $('#btnHeroes').classList.toggle('dot',HT[save.hero].some(n=>{const l=htLv(n);return htAvail(n)&&l<n.max&&curAmt(n.cur)>=Math.ceil(n.cost*Math.pow(n.gr,l));}));// Hinweis: Jägerbaum-Knoten bezahlbar// Hinweis: Erfolg oder Auftrag fast geschafft
   $('#sideName').textContent=h.name;$('#sidePass').textContent=h.pass+' Ultimate: '+ULT[h.id].name+'.';
   const rows=[['Schaden',fmt(ST.dmg)],['Angriffe/s',ST.aps.toFixed(2)],['Krit',ST.crit.toFixed(0)+'% ×'+ST.critDmg.toFixed(2)],['Leben',fmt(ST.hp)],['Rüstung',fmt(ST.armor)],['Regeneration',ST.regen.toFixed(1)+'/s'],
     ['Jagdzeit',ST.time+'s'],['Bannstrahl',fmt(ST.click)],['Seelen',`×${ST.soul.toFixed(2)}`],['Beute-Sog',ST.collectDelay.toFixed(1)+'s']];
