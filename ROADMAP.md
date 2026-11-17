@@ -130,9 +130,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.122: Knappe Fürsten-Niederlage (Fürst ≤25% Leben bei Jagdende) gibt einen Siegel-Trostpreis (¼ der Fürsten-Siegel); sonst Hinweis mit Rest-Leben des Fürsten und Tipp zum Farmen/Aufsteigen
 - v0.123: Balance-Simulation `node test/sim.js [Jagden]` (Playwright, Bannstrahl 3×/s, Auto-Kauf der Seelen-Knoten, farmt nach Niederlage) – zugleich Rauchtest, bricht bei JS-Fehlern ab. Befund: frischer Spielstand braucht ~25 Jagden bis zum ersten Fürsten (Kreis 1: 17–20 Kills bei Quote 22)
 - v0.124: Schnellerer Einstieg – Fürsten-Quote in Kreis 1/2 auf 70%/85% (ab Kreis 3 unverändert). Simulation: erster Fürst nach ~9 statt ~29 Jagden, Kreis 13 nach 30 Jagden
+- v0.125: test/sim.js kauft Knoten in allen drei Währungen (relativ billigster zuerst). Befund: ab Kreis ~13 ein Kreis pro Jagd, Kreis 42 nach 60 Jagden, keine Wand
 
 ## Als Nächstes
-L4. test/sim.js kauft auch Schwefel-/Siegel-Knoten und Jägerbaum (ab ~Kreis 15 bleiben sonst Millionen Seelen ungenutzt)
+L5. Spätspiel-Wand wiederherstellen: ab Kreis 15 sollen es per test/sim.js wieder ~2–3 Jagden pro Kreis sein (Dämonen-Leben-Wachstum ab Kreis 15 erhöhen oder Schwefel-Knoten-Teuerung), Aufstieg ab Kreis ~25 lohnend machen
+L6. test/sim.js: Jägerbaum und Aufstieg mitsimulieren, Ausgabe als kompakte Tabelle (Kreis nach 20/40/60/100 Jagden)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 J. Reliquien: Set „Gebeinthron“ (Knochenkrone + Fürstenschädel + Eisernes Herz); eigene Reliquie für jeden Fürsten-Typ
