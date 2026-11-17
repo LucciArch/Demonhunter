@@ -992,6 +992,7 @@ for(const k in AFF_ACH)AN(AFF_ACH[k][0]+'x','Erz'+AFF_ACH[k][1].toLowerCase(),`V
 [[1,'Fallensteller'],[25,'Mimic-Jäger']].forEach(([n,nm],i)=>AN('mi'+i,nm,`Erlege ${n} Mimic${n>1?'s':''}`,()=>stv('mim'),n,{g:2+i*4}));
 AN('gi0','Gierschlund','Gewinne 10× am Spiegel der Gier',()=>stv('mirW'),10,{g:4});
 AN('sw0','Waagemeister','Nutze 10× die Seelenwaage',()=>(save.st.shK||{}).scale||0,10,{g:4});
+AN('pk0','Paktmeister','Nutze 10× den Teufelsaltar',()=>(save.st.shK||{}).altar||0,10,{g:4});
 AN('zs0','Zeitdieb','Nutze 10× die Zeitsanduhr',()=>(save.st.shK||{}).glass||0,10,{g:4});
 AN('of0','Ablasshändler','Nutze 10× den Opferstock',()=>(save.st.shK||{}).offer||0,10,{g:4});
 [[1,'Verflucht'],[50,'Fluchträger']].forEach(([n,nm],i)=>AN('fl'+i,nm,`Nimm ${n} Fluch${n>1?'e':''} eines Fluchschreins an`,()=>stv('curse'),n,{b:10+i*90}));
@@ -1256,6 +1257,7 @@ function drawShrine(){const s=R.shrine;if(!s)return;const S=SHRINES[s.k],sp=SPR[
   ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.ellipse(s.x,s.y,sp.w*sc*.5,sp.w*sc*.15,0,0,Math.PI*2);ctx.fill();
   drawSpr(sp,s.x,s.y,sc,false,s.t<.3?1-s.t/.3:0);
   if(Math.random()<.1)R.pt.push({x:s.x+rnd(-14,14),y:s.y-sp.h*sc,vx:0,vy:rnd(-40,-20),t:0,life:.8,c:S.c,s:2});
+  if(s.k==='altar'&&Math.random()<.5)for(const d of[-12,12])R.pt.push({x:s.x+d+rnd(-3,3),y:s.y-sp.h*sc+6,vx:rnd(-8,8),vy:rnd(-70,-40),t:0,life:rnd(.3,.5),c:Math.random()<.5?'#ff4a4a':'#ffb03a',s:ri(2,3)});// Hornflammen
   ctx.font='16px "Pixelify Sans"';ctx.textAlign='center';ctx.fillStyle='#000';ctx.fillText(S.n,s.x+1,s.y-sp.h*sc-9+b*2);ctx.fillStyle=S.c;ctx.fillText(S.n,s.x,s.y-sp.h*sc-10+b*2);
   if(Math.hypot(ptr.x-s.x,ptr.y-s.y+20)<60){ctx.font='15px VT323';ctx.fillStyle='#000c';const w=ctx.measureText(S.d).width+12;ctx.fillRect(s.x-w/2,s.y+6,w,20);ctx.fillStyle='#fff';ctx.fillText(S.d,s.x,s.y+21);}}
 
