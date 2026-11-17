@@ -152,6 +152,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.141: Zwölftes Reliquien-Set „Blutmond“ (Mondsichel, Grafenzahn, Blutkelch): +5% Blutmond-Chance, +3% Lebensraub, +50% Fürsten-Siegel bei Blutmond (Stufe 2: ×2,25)
 
 - v0.142: Blutmond-Kalender in der Chronik › Statistik: aktuelle Blutmond-Chance aufgeschlüsselt nach Grundchance, Schwurbaum, Reliquie Mondsichel und Set Blutmond
+- v0.143: Mondschlächter wirft als vierten Angriff eine rotierende Mondsichel (Bumerang): fliegt zum Jäger, kehrt zum Schlächter zurück und trifft auf Hin- und Rückweg; ab Kreis 25 zwei Sicheln, per Bannstrahl zerstörbar
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -161,6 +162,5 @@ K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Sch
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
-O2. Mondschlächter: eigener Angriff (Sichelwurf, der zurückkehrt)
 E3. Mimic beißt mit Zungen-Angriff und lässt beim Tod eine goldene Truhe fallen
 E4. Schreine: „Opferstock“ (Schwefel gegen Siegel tauschen); Spiegel der Gier zeigt zerspringende Scherben-Animation beim Verlust
