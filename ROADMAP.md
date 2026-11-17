@@ -122,10 +122,11 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.114: Schwurbaum-Knoten „Gebetskette“ (Bann-Pfad, Schwefel, 3 Stufen): Segnungs-Angebote pro Jagd neu würfeln (Knopf oder Taste R)
 - v0.115: Chronik › Bestiarium listet alle Segnungs-Synergien mit Zutaten und Wirkung; schon ausgelöste leuchten in ihrer Farbe mit Zähler
 - v0.116: Schwurbaum-Knoten Vierte Gabe (4 Segen zur Auswahl); Synergien lösen einen Blitzring (5× Schaden im Umkreis) mit eigenem Klang aus
+- v0.117: Seltener Fluchschrein ab Kreis 3 (Dämonen +50% Leben/Schaden, doppelte Beute), 7 Schrein-Erfolge (Schreine, Mimics, Flüche)
 
 ## Als Nächstes
 D2. Segnungen: seltene „verfluchte“ Segen (starker Bonus mit Nachteil); Synergie-Anzeige im HUD während der Jagd
-E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
+E2. Schreine: Mimic mit eigenem Truhen-Sprite; Schreine in der Chronik nachschlagbar; Schwurbaum-Knoten „Pilgerpfad“ (Schreine erscheinen öfter)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter

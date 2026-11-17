@@ -963,6 +963,9 @@ for(const k in CMOD)A('o'+k,'Bezwinger: '+CMOD[k].name,`Besiege einen Fürsten u
 const AFF_ACH={shield:['s0','Schildbrecher','Schildträger'],fast:['s1','Windfänger','Flink'],armor:['s2','Panzerknacker','Gepanzert'],expl:['s3','Sprengmeister','Explosiv'],vamp:['s4','Pfähler','Vampirisch'],summ:['s5','Bannbrecher','Beschwörer'],mirror:['s6','Spiegelscherbe','Spiegelnd'],tele:['s7','Geisterfänger','Teleportierend'],frost:['s8','Frostbrecher','Frostig'],burn:['s9','Glutlöscher','Brennend']};
 for(const k in AFF_ACH)AN(AFF_ACH[k][0],AFF_ACH[k][1],`Vernichte 100 Elite mit dem Affix „${AFF_ACH[k][2]}“`,()=>((save.st.ka||{})[k]||0),100,{b:300});
 for(const k in AFF_ACH)AN(AFF_ACH[k][0]+'x','Erz'+AFF_ACH[k][1].toLowerCase(),`Vernichte 1000 Elite mit dem Affix „${AFF_ACH[k][2]}“`,()=>((save.st.ka||{})[k]||0),1000,{g:5});
+[[10,'Pilger'],[100,'Wallfahrer'],[1000,'Schreinhüter']].forEach(([n,nm],i)=>AN('sh'+i,nm,`Nutze ${fmt(n)} Schreine`,()=>stv('shr'),n,{s:100*Math.pow(10,i)}));
+[[1,'Fallensteller'],[25,'Mimic-Jäger']].forEach(([n,nm],i)=>AN('mi'+i,nm,`Erlege ${n} Mimic${n>1?'s':''}`,()=>stv('mim'),n,{g:2+i*4}));
+[[1,'Verflucht'],[50,'Fluchträger']].forEach(([n,nm],i)=>AN('fl'+i,nm,`Nimm ${n} Fluch${n>1?'e':''} eines Fluchschreins an`,()=>stv('curse'),n,{b:10+i*90}));
 A('oall','Allbezwinger','Besiege unter jedem Kreis-Modifikator 10 Fürsten',()=>Object.keys(CMOD).every(k=>((save.st.bm||{})[k]||0)>=10),{a:15});
 AN('shb0','Schildspalter','Zerbrich 100-mal den Schutz eines Schildträgers per Bannstrahl',()=>(save.st.shb||0),100,{g:5});
 AN('lf0','Luftfänger','Fange 100 goldene Seelen-Kugeln per Bannstrahl in der Luft',()=>(save.st.lf||0),100,{g:5});
@@ -1153,6 +1156,7 @@ const SHRINES={
  blood:{n:'Blutaltar',d:'Opfere 30% Leben: +40% Schaden für diese Jagd',c:'#ff4a4a',rows:["...rRRr...","..rRRRRr..","SSSSSSSSSS","ShhhhhhhhS",".SSxSSxSS.","..SSrSSS..","..SSSSrS..","..SSSSSS..",".SSSSSSSS.","sssssssss."]},
  well:{n:'Seelenbrunnen',d:'Heilt 50% Leben und +3s Jagdzeit',c:'#8ad8ff',rows:["..........","S........S","SSBBBBBBSS","SbBBBbBBbS","ShbbbbbbhS",".SSSSSSSS.",".ShSShSSS.",".SSSSSSSS.","ssssssssss"]},
  chest:{n:'Truhe',d:'Viele Seelen … oder ein Mimic',c:'#ffd76a',rows:["..wwwwwww..",".wWWWWWWWw.","wWWWWWWWWWw","YYYYYyYYYYY","wWWWWYWWWWw","wWWWWWWWWWw","wWWWWWWWWWw","YYYYYYYYYYY"]},
+ curse:{n:'Fluchschrein',d:'Dämonen +50% Leben und Schaden, dafür doppelte Beute',c:'#ff3ad0',rows:["...xRRx...","..xRxxRx..","...xRRx...","SSSSSSSSSS","SxpSSSSpxS",".SpPSSPpS.","..SSxxSS..","..SpPPpS..",".SSSSSSSS.","sssssssss."]},
  bless:{n:'Segensstein',d:'Sofort eine Segnung wählen',c:'#e0b0ff',rows:["....SS....","...ShSS...","...SPSS...","..SSpPSS..","..ShPpSS..","..SSPSSS..","..SSpPSS..",".SSSSSSSS.","ssssssssss"]},
 };
 for(const k in SHRINES)SPR['sh_'+k]=mkSprite({pal:SHRINE_PAL,rows:SHRINES[k].rows});
@@ -1160,7 +1164,7 @@ function updShrines(dt){
   if(R.thiefT===undefined)R.thiefT=R.c>=2&&Math.random()<.4?rnd(3,8):1e9;// 40% der Jagden ab Kreis 2: ein Seelendieb
   if((R.thiefT-=dt)<=0){R.thiefT=1e9;const t=spawnDemon('thief');R.tx.push({x:t.x,y:t.y-40,str:'SEELENDIEB!',t:0,col:'#ffd76a'});}
   R.shT=(R.shT===undefined?rnd(2,4):R.shT)-dt;
-  if(R.shT<=0&&!R.shrine){R.shT=rnd(10,16);const ks=Object.keys(SHRINES),k=ks[ri(0,ks.length-1)],hp=heroPos(),a=Math.random()*Math.PI*2,rr=rnd(140,Math.min(W,H)*.42);
+  if(R.shT<=0&&!R.shrine){R.shT=rnd(10,16);const ks=Object.keys(SHRINES).filter(k=>k!=='curse'),k=R.c>=3&&Math.random()<.12?'curse':ks[ri(0,ks.length-1)],hp=heroPos(),a=Math.random()*Math.PI*2,rr=rnd(140,Math.min(W,H)*.42);
     R.shrine={k,x:clamp(hp.x+Math.cos(a)*rr,60,W-60),y:clamp(hp.y+Math.sin(a)*rr*.7,150,H-40),t:0};R.fx.push({k:'portal',x:R.shrine.x,y:R.shrine.y,r:30,t:0,dur:.6});}
   if(R.shrine)R.shrine.t+=dt;}
 function useShrine(x,y){const s=R.shrine;if(!s||Math.hypot(x-s.x,(y-(s.y-20))*1.2)>34)return false;
@@ -1169,8 +1173,9 @@ function useShrine(x,y){const s=R.shrine;if(!s||Math.hypot(x-s.x,(y-(s.y-20))*1.
   save.st.shr=(save.st.shr||0)+1;
   if(s.k==='blood'){R.hp=Math.max(1,R.hp*.7);ST.dmg*=1.4;R.tx.push({x:s.x,y:s.y-50,str:'+40% SCHADEN',t:0,col:S.c});}
   else if(s.k==='well'){R.hp=Math.min(R.maxHp,R.hp+R.maxHp*.5);R.time+=3;R.maxTime+=3;R.tx.push({x:s.x,y:s.y-50,str:'+3s',t:0,col:S.c});}
-  else if(s.k==='chest'){if(R.c>=2&&Math.random()<.3){const m=spawnDemon(R.c>=5?'brute':'imp');m.x=s.x;m.y=s.y;makeElite(m);m.max=m.hp=m.hp*2;R.tx.push({x:s.x,y:s.y-50,str:'MIMIC!',t:0,col:'#ff6a3a'});shake=Math.max(shake,8);}
+  else if(s.k==='chest'){if(R.c>=2&&Math.random()<.3){const m=spawnDemon(R.c>=5?'brute':'imp');m.x=s.x;m.y=s.y;makeElite(m);m.max=m.hp=m.hp*2;m.mimic=1;R.tx.push({x:s.x,y:s.y-50,str:'MIMIC!',t:0,col:'#ff6a3a'});shake=Math.max(shake,8);}
     else{const v=3*R.rewM*ST.soul;for(let i=0;i<14;i++)dropLoot({x:s.x,y:s.y,r:10},'s',v,i<2);R.tx.push({x:s.x,y:s.y-50,str:'SCHATZ!',t:0,col:S.c});}}
+  else if(s.k==='curse'){R.hpM*=1.5;R.dmgM*=1.5;R.rewM*=2;save.st.curse=(save.st.curse||0)+1;R.tx.push({x:s.x,y:s.y-50,str:'VERFLUCHT! DOPPELTE BEUTE',t:0,col:S.c});shake=Math.max(shake,6);}
   else offerBoons();
   return true;}
 function drawShrine(){const s=R.shrine;if(!s)return;const S=SHRINES[s.k],sp=SPR['sh_'+s.k],sc=4,b=Math.sin(s.t*3);
@@ -1366,7 +1371,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;boonGain(e);comboKill();save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime&&(R.kt||0)<ST.time){const g=Math.min(ST.killTime,ST.time-(R.kt||0));R.kt=(R.kt||0)+g;R.time+=g;if(R.time>R.maxTime)R.maxTime=R.time;}// Kill-Verlängerung höchstens +100% der Grund-Jagdzeit
+  if(e.dead)return;e.dead=true;R.kills++;if(e.mimic)save.st.mim=(save.st.mim||0)+1;boonGain(e);comboKill();save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime&&(R.kt||0)<ST.time){const g=Math.min(ST.killTime,ST.time-(R.kt||0));R.kt=(R.kt||0)+g;R.time+=g;if(R.time>R.maxTime)R.maxTime=R.time;}// Kill-Verlängerung höchstens +100% der Grund-Jagdzeit
   // particles
   if(e.aff2){R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:.8});shake=Math.max(shake,3);}
   if(e.boss&&bossOf(R.c).ab==='bone')boneRain(e);else R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
