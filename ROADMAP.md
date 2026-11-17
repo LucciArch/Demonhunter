@@ -141,14 +141,15 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.130: Fürsten-eigene Reliquien – Bansheeschleier (Klagende Herrin, +10% Bannstrahl-Schaden/Stufe), Grafenzahn (Blutgraf, Lebensraub + Krit-Schaden), Eissplitter (Eiskönig, +10% Ultimate-Schaden/Stufe); 30% Chance beim Fürsten-Sieg, sonst zufällige Reliquie; Chronik zeigt den Fürsten als Quelle
 - v0.131: Neuntes Reliquien-Set „Fürstengruft“ (Bansheeschleier, Grafenzahn, Eissplitter): +25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden; Erfolg „Gruftwächter“ (alle Fürsten-Reliquien gefunden)
 - v0.132: test/sim.js listet je Aufstieg Rekord, Startkreis („Erinnerung“), Fragmente und Jagden bis zum Überholen des alten Rekords. Befund (200 Jagden, --asc): Aufstieg 1 bei Rekord 37 → Start 1, überholt nach 37 Jagden; Aufstieg 2 bei Rekord 50 → Start 13, überholt nach 38; Aufstieg 3 bei Rekord 55 → Start 18; Kreis 55 nach 200 Jagden
+- v0.133: Sieben weitere Fürsten-Reliquien – Aschekohle (Aschefürst), Pestmaske (Pestfürst), Schwefelsiegel (Schwefelherzog), Leerenkristall (Leerenwandler), Dornenzweig (Dornenkönig), Glutkern (Glutkoloss), Schlundsplitter (Abgrundfürst), jede mit eigenem Sprite; zehntes Set „Höllenschmiede“ (Aschekohle, Glutkern, Schwefelsiegel): +20% Schaden, +20% Leben, +25% Schwefel. Jeder Fürst hat jetzt eine eigene Reliquie
 
 ## Als Nächstes
 L11. Balance: Nach dem 2. Aufstieg dauert das Überholen des alten Rekords trotz „Erinnerung“ noch ~38 Jagden – Fragment-Wirkung oder Aufstiegsknoten stärker skalieren, Ziel ≤25 Jagden (mit test/sim.js 200 --asc prüfen)
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
-J2. Weitere Fürsten-Reliquien (zählen automatisch für „Gruftwächter“) für Aschefürst, Pestfürst, Schwefelherzog, Leerenwandler, Dornenkönig, Glutkoloss, Abgrundfürst
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
 O. Blutmond: eigener Blutmond-Fürst „Mondschlächter“ mit roter Gestalt und Erfolg
 E3. Schreine: neuer Schrein „Spiegel der Gier“ (Seelen verdoppeln oder verlieren); Mimic beißt mit Zungen-Angriff und lässt beim Tod eine goldene Truhe fallen
+J3. Set „Pestgruft“ (Pestmaske, Dornenzweig, Leerenkristall) und Erfolg für alle zehn Set-Boni; Reliquien-Ansicht in der Chronik nach Herkunft gruppieren

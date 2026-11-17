@@ -560,7 +560,7 @@ SPR_DEF.templ={pal:{p:'#c0303a',P:'#ff5a5a',A:'#c8d0dc',L:'#eef2f8',a:'#8a96a8',
 "....AAAA...AAAAA....",
 "...AAAAA...AAAAA...."]};
 // ---- Reliquien (Artefakte) ----
-const ARTPAL={Y:'#e8b84a',y:'#a87828',r:'#c0202a',R:'#ff4a4a',g:'#6ad8ff',W:'#f0f0ff',w:'#a8b0d0',c:'#8a7a6a',P:'#7a2aa0',E:'#ffe04a',K:'#100810',I:'#8a8a98',S:'#6ad8ff',s:'#2a8ab0',k:'#3a3038',O:'#ff8a2a',o:'#a8481e',b:'#e8dcc0',T:'#e8c878',G:'#3a4a5a',V:'#6a9a2a',v:'#2e4a14'};
+const ARTPAL={Y:'#e8b84a',y:'#a87828',r:'#c0202a',R:'#ff4a4a',g:'#6ad8ff',W:'#f0f0ff',w:'#a8b0d0',c:'#8a7a6a',P:'#7a2aa0',E:'#ffe04a',K:'#100810',I:'#8a8a98',S:'#6ad8ff',s:'#2a8ab0',k:'#3a3038',O:'#ff8a2a',o:'#a8481e',b:'#e8dcc0',T:'#e8c878',G:'#3a4a5a',V:'#6a9a2a',v:'#2e4a14',M:'#ff3a8a'};
 const ARTS=[
  {id:'kelch',name:'Blutkelch',d:v=>`+${v}% Lebensraub`,f:(s,l)=>s.ls+=.01*l,rows:["..........",".YYYYYYYY.",".YRRRRRRY.",".yrRrrrry.","..yrrrry..","...yyyy...","....YY....","....yY....","...yYYY...","..yyyyyy.."]},
  {id:'krone',name:'Fürstenkrone',d:v=>`+${v*8}% Schaden`,f:(s,l)=>s.dmg*=1+.08*l,rows:["Y...YY...Y","YY..YY..YY","YYY.YY.YYY","YYYYYYYYYY","YrYYgYYrYY","yyyyyyyyyy"]},
@@ -576,6 +576,13 @@ const ARTS=[
  {id:'schleier',bi:1,name:'Bansheeschleier',d:v=>`+${v*10}% Bannstrahl-Schaden`,f:(s,l)=>s.click*=1+.1*l,rows:["...WWWW...","..WwwwwW..",".WwKwwKwW.",".WwwwwwwW.",".WwwKKwwW.","WwwwwwwwwW","WwPwwwwPwW","WPw.WW.wPW","P.W.Ww.W.P","..P..P..P."]},
  {id:'zahn',bi:2,name:'Grafenzahn',d:v=>`+${v}% Lebensraub, +${v*4}% Krit-Schaden`,f:(s,l)=>{s.ls+=.01*l;s.critDmg+=.04*l;},rows:["..WWWWWW..",".WWWWWWWW.",".WwWWWWwW.","..WWWWWW..","..WWWWWw..","...WWWw...","...WWWw...","....WRr...","....RR....",".....R...."]},
  {id:'eis',bi:4,name:'Eissplitter',d:v=>`+${v*10}% Ultimate-Schaden`,f:(s,l)=>s.ultDmg*=1+.1*l,rows:["....W.....","....SW....","...SgS....","...SggS...","..SgWgS...","..sSggSs..","...sSgS...","...sSSs...","....sS....",".....s...."]},
+ {id:'kohle',bi:0,name:'Aschekohle',d:v=>`+${v*6}% Schaden, +${v*3}% Angriffstempo`,f:(s,l)=>{s.dmg*=1+.06*l;s.aps*=1+.03*l;},rows:["....kk....","..kkOkkk..",".kOoEokkk.",".kOEEOokk.","kkoEEEOokk","kkOEOOEokk",".koOEEOok.",".kkooOokk.","..kkkkkk..","...kkkk..."]},
+ {id:'pestmaske',bi:3,name:'Pestmaske',d:v=>`Reflektiert +${v*12}% Schaden, +${v*5}% Leben`,f:(s,l)=>{s.thorns+=.12*l;s.hp*=1+.05*l;},rows:["..cccccc..",".cccccccc.","cckVccVkcc","ccVVccVVcc","cccccccccc","..cccccc..","...cccc...","....ccc...",".....cc...","......c..."]},
+ {id:'ssiegel',bi:5,name:'Schwefelsiegel',d:v=>`+${v*15}% Schwefel, +${v*5}% Siegel`,f:(s,l)=>{s.brim*=1+.15*l;s.sigil*=1+.05*l;},rows:["...EEEE...","..EOOOOE..","..EOEEOE..","...EEEE...","..YYyyYY..",".Yy....yY.","Yy......yY","Yy......yY",".Yy....yY.","..YYYYYY.."]},
+ {id:'leere',bi:6,name:'Leerenkristall',d:v=>`+${(v*.3).toFixed(1)}s Jagdzeit, +${v*5}% Seelen`,f:(s,l)=>{s.time+=.3*l;s.soul*=1+.05*l;},rows:["....P.....","...PWP....","...PwP....","..PPwPP...","..PwWwP...",".PPwPwPP..",".PwPPPwP..","..PPwPP...","...PPP....","....P....."]},
+ {id:'dzweig',bi:7,name:'Dornenzweig',d:v=>`Reflektiert +${v*15}% Schaden, +${v} Rüstung`,f:(s,l)=>{s.thorns+=.15*l;s.armor+=l;},rows:["........V.",".......Vv.","..v...Vv..",".vV..Vv.v.","..vVVv.vV.","...Vv.Vv..","..vVVVv...",".Vv.Vv.r..","Vv..v..R..","v.....r..."]},
+ {id:'glutkern',bi:8,name:'Glutkern',d:v=>`+${v*8}% Leben, +${v*4}% Schaden`,f:(s,l)=>{s.hp*=1+.08*l;s.dmg*=1+.04*l;},rows:["...kkkk...",".kkkOkkk..",".kkOkkOkk.","kkOEOkkOkk","kOkkEOOkkk","kkkOEEOkOk","kOkkOOkOkk",".kkOkkOkk.",".kkkOkkk..","...kkkk..."]},
+ {id:'schlund',bi:9,name:'Schlundsplitter',d:v=>`+${v*5}% Schaden gegen Fürsten & Elite, +${v*5}% Fürsten-Beute`,f:(s,l)=>{s.bossDmg+=.05*l;s.bossLoot+=.05*l;},rows:["....bb....","...bbbb...","...bbbb...","..bbbbbb..","..bbbbbb..","..MbbbbM..","...bbbb...","...bbbM...","....bM....","....M....."]},
  {id:'uhr',name:'Sanduhr des Richters',d:v=>`+${v/2}s Jagdzeit`,f:(s,l)=>s.time+=.5*l,rows:["YYYYYYYY",".GTTTTG.","..GTTG..","...GG...","..GTTG..",".GTTTTG.","YYYYYYYY"]}];
 const ART_MAX=10;
 // Set-Bonus: alle drei Reliquien auf Stufe SET_LVL
@@ -588,6 +595,7 @@ const SET_LVL=5,SETS=[
  {name:'Seelenfürst',ids:['laterne','auge','schaedel'],d:'+25% Seelen, +5% Krit, +40% Fürsten-Beute',f:s=>{s.soul*=1.25;s.crit=Math.min(95,s.crit+5);s.bossLoot+=.4;}},
  {name:'Gebeinthron',ids:['bkrone','schaedel','herz'],d:'+5 Rüstung, +40% Siegel, +20% Schaden gegen Fürsten & Elite',f:s=>{s.armor+=5;s.sigil*=1.4;s.bossDmg+=.2;}},
  {name:'Fürstengruft',ids:['schleier','zahn','eis'],d:'+25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden',f:s=>{s.bossDmg+=.25;s.ls+=.03;s.ultDmg*=1.2;}},
+ {name:'Höllenschmiede',ids:['kohle','glutkern','ssiegel'],d:'+20% Schaden, +20% Leben, +25% Schwefel',f:s=>{s.dmg*=1.2;s.hp*=1.2;s.brim*=1.25;}},
  {name:'Eisenwall',ids:['herz','dornen','feder'],d:'+40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration',f:s=>{s.hp*=1.4;s.armor=Math.max(s.armor*1.5,s.armor+10);s.regen+=s.hp*.02;}}];
 const setOn=t=>t.ids.every(i=>(save.arts[i]||0)>=SET_LVL),setMax=t=>t.ids.every(i=>(save.arts[i]||0)>=ART_MAX);
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
