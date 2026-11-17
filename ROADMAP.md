@@ -121,9 +121,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.113: Segnungs-Synergien – 8 Paare (Gewitter, Hinrichtung, Blutrausch, Klingensturm, Seelenfeuer, Feuerkette, Ewigkeit, Unsterblichkeit) geben einmal pro Jagd einen Zusatzbonus; Angebot zeigt „⚡ Synergie“ an, Auto-Jagd bevorzugt sie; 2 Erfolge, Statistik
 - v0.114: Schwurbaum-Knoten „Gebetskette“ (Bann-Pfad, Schwefel, 3 Stufen): Segnungs-Angebote pro Jagd neu würfeln (Knopf oder Taste R)
 - v0.115: Chronik › Bestiarium listet alle Segnungs-Synergien mit Zutaten und Wirkung; schon ausgelöste leuchten in ihrer Farbe mit Zähler
+- v0.116: Schwurbaum-Knoten Vierte Gabe (4 Segen zur Auswahl); Synergien lösen einen Blitzring (5× Schaden im Umkreis) mit eigenem Klang aus
 
 ## Als Nächstes
-D. Segnungen: Schwurbaum-Knoten für eine 4. Auswahl; Synergie-Auslösung mit eigenem Effekt (Blitzring, Klang)
+D2. Segnungen: seltene „verfluchte“ Segen (starker Bonus mit Nachteil); Synergie-Anzeige im HUD während der Jagd
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
