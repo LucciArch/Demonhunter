@@ -117,6 +117,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.109: Ereignis „Blutmond“ – 7% der Jagden ab Kreis 3: doppelte Dämonen, dreifache Seelen und Schwefel, Fürst braucht 50% mehr Kills; roter Himmel mit Krater-Mond, Banner, Statistik, 2 Erfolge
 - v0.110: Knochenkönig zerfällt beim Tod in einen Knochenregen – 60 Knochen und der Schädel fliegen auseinander, danach regnen sechs Wellen Knochen vom Himmel
 - v0.111: Blutmond – Fürsten lassen doppelte Siegel fallen; neuer Schwurbaum-Knoten „Mondanbeter“ (Gier-Pfad, Schwefel, 5 Stufen, je +2% Blutmond-Chance)
+- v0.112: Reliquie „Knochenkrone“ – fällt nur vom Knochenkönig (ab Kreis 50, jeder Sieg garantiert), +2 Rüstung und +10% Siegel pro Stufe, eigenes Sprite, Hinweis in der Chronik
 
 ## Als Nächstes
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
@@ -124,6 +125,6 @@ E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschr
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
-J. Knochenkönig: eigenes Reliquien-Drop „Knochenkrone“
+J. Reliquien: Set „Gebeinthron“ (Knochenkrone + Fürstenschädel + Eisernes Herz); eigene Reliquie für jeden Fürsten-Typ
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 O. Blutmond: eigener Blutmond-Fürst „Mondschlächter“ mit roter Gestalt und Erfolg
