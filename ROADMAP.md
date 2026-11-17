@@ -119,9 +119,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.111: Blutmond – Fürsten lassen doppelte Siegel fallen; neuer Schwurbaum-Knoten „Mondanbeter“ (Gier-Pfad, Schwefel, 5 Stufen, je +2% Blutmond-Chance)
 - v0.112: Reliquie „Knochenkrone“ – fällt nur vom Knochenkönig (ab Kreis 50, jeder Sieg garantiert), +2 Rüstung und +10% Siegel pro Stufe, eigenes Sprite, Hinweis in der Chronik
 - v0.113: Segnungs-Synergien – 8 Paare (Gewitter, Hinrichtung, Blutrausch, Klingensturm, Seelenfeuer, Feuerkette, Ewigkeit, Unsterblichkeit) geben einmal pro Jagd einen Zusatzbonus; Angebot zeigt „⚡ Synergie“ an, Auto-Jagd bevorzugt sie; 2 Erfolge, Statistik
+- v0.114: Schwurbaum-Knoten „Gebetskette“ (Bann-Pfad, Schwefel, 3 Stufen): Segnungs-Angebote pro Jagd neu würfeln (Knopf oder Taste R)
 
 ## Als Nächstes
-D. Segnungen: Schwurbaum-Knoten für eine 4. Auswahl und Neuwürfeln; Synergien im Bestiarium/Chronik nachschlagbar
+D. Segnungen: Schwurbaum-Knoten für eine 4. Auswahl; Synergien in der Chronik nachschlagbar
 E. Schreine: eigene Erfolge, Mimic mit eigenem Truhen-Sprite, seltener Fluchschrein (Kreis-Modifikator für Bonus-Beute)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
