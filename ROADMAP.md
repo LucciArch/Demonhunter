@@ -123,13 +123,15 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.115: Chronik › Bestiarium listet alle Segnungs-Synergien mit Zutaten und Wirkung; schon ausgelöste leuchten in ihrer Farbe mit Zähler
 - v0.116: Schwurbaum-Knoten Vierte Gabe (4 Segen zur Auswahl); Synergien lösen einen Blitzring (5× Schaden im Umkreis) mit eigenem Klang aus
 - v0.117: Seltener Fluchschrein ab Kreis 3 (Dämonen +50% Leben/Schaden, doppelte Beute), 7 Schrein-Erfolge (Schreine, Mimics, Flüche)
+- v0.118: Verfluchte Segen (Blutpakt, Seelenwucher, Glasklinge, Wahnsinn) – 12% Chance auf eine Fluch-Option mit starkem Bonus und Nachteil; Auto-Jagd meidet sie
 
 ## Als Nächstes
-D2. Segnungen: seltene „verfluchte“ Segen (starker Bonus mit Nachteil); Synergie-Anzeige im HUD während der Jagd
+D2. Segnungen: Synergie-Anzeige im HUD während der Jagd
 E2. Schreine: Mimic mit eigenem Truhen-Sprite; Schreine in der Chronik nachschlagbar; Schwurbaum-Knoten „Pilgerpfad“ (Schreine erscheinen öfter)
 L. Balance: Wer an einem Fürsten scheitert, bekommt keine Siegel mehr – Hinweis auf Aufstieg/Farmen oder Siegel-Trostpreis bei knappen Niederlagen; Balance-Simulation als Skript ins Repo (test/)
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 J. Reliquien: Set „Gebeinthron“ (Knochenkrone + Fürstenschädel + Eisernes Herz); eigene Reliquie für jeden Fürsten-Typ
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
+D3. Verfluchte Segen in der Chronik nachschlagbar; Erfolg „Mit dem Teufel im Bunde“ (5 Flüche in einer Jagd)
 O. Blutmond: eigener Blutmond-Fürst „Mondschlächter“ mit roter Gestalt und Erfolg

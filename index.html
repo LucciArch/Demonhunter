@@ -65,7 +65,7 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 .bar.hp{height:26px;margin-bottom:5px}.bar.bl{height:6px;margin-bottom:5px}#blFill{background:linear-gradient(90deg,#8a4aff,#ffd76a)}
 .boon{width:190px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;border-color:var(--bc);font-size:16px;transition:transform .1s}.boon:hover{transform:translateY(-4px);box-shadow:0 0 16px var(--bc),0 3px 0 #000}
 .boon .bi{font-size:40px;color:var(--bc);text-shadow:0 0 12px var(--bc);line-height:1}.boon b{font-size:20px;color:var(--bc)}.boon span{font-family:'VT323';font-size:19px;color:var(--txt)}.boon em{font-size:13px;color:#ffd76a;font-style:normal}
-.boon.holy{background:linear-gradient(#3a2a10,#1e1408);box-shadow:0 0 18px #ffd76a88,0 3px 0 #000}.bar.tm{height:14px;margin:0}.bar.tm>span{font-size:13px;line-height:11px}
+.boon.cursed{background:linear-gradient(#2a0a1a,#120410);box-shadow:0 0 18px #b0204a99,0 3px 0 #000}.boon.cursed i{color:#ff6a8a;font-style:normal}.boon.holy{background:linear-gradient(#3a2a10,#1e1408);box-shadow:0 0 18px #ffd76a88,0 3px 0 #000}.bar.tm{height:14px;margin:0}.bar.tm>span{font-size:13px;line-height:11px}
 .bar>div{box-shadow:inset 0 3px 0 #ffffff40,inset 0 -3px 0 #0000004d}
 #hpTrail{background:#ffe0c0;transition:width .5s ease-in .25s;box-shadow:none!important}
 .bar.hp>span{font-family:'Pixelify Sans';font-weight:700;font-size:17px;line-height:23px}
@@ -1121,6 +1121,13 @@ const BOONS=[
  {n:'Märtyrer',i:'☼',c:'#ffe08a',d:m=>`Ultimate lädt ${25*m}% schneller`,f:m=>ST.ultKills=Math.max(3,ST.ultKills*(1-.25*m))},
  {n:'Leichensprengung',i:'✸',c:'#ffb04a',d:m=>`Getötete Dämonen explodieren (+${40*m}% Schaden)`,f:m=>ST.explode+=.4*m},
 ];
+// Verfluchte Segen: starker Bonus mit Nachteil, erscheinen selten (12%) als eine der Optionen, nie geweiht
+const CURSED=[
+ {n:'Blutpakt',i:'☠',c:'#b0204a',x:1,d:()=>`+80% Schaden<br><i>Fluch: −40% max. Leben</i>`,f:()=>{ST.dmg*=1.8;R.maxHp*=.6;R.hp=Math.min(R.hp,R.maxHp);}},
+ {n:'Seelenwucher',i:'⚖',c:'#6ae8c8',x:1,d:()=>`+80% Seelen<br><i>Fluch: −5s Jagdzeit</i>`,f:()=>{R.time=Math.max(1,R.time-5);R.maxTime=Math.max(R.time,R.maxTime-5);ST.soul*=1.8;}},
+ {n:'Glasklinge',i:'⟋',c:'#c8f0ff',x:1,d:()=>`+15% Krit-Chance, +120% Krit-Schaden<br><i>Fluch: kein Lebensraub</i>`,f:()=>{ST.crit=Math.min(95,ST.crit+15);ST.critDmg+=1.2;ST.ls=0;}},
+ {n:'Wahnsinn',i:'✺',c:'#ff5ad0',x:1,d:()=>`+50% Angriffstempo<br><i>Fluch: Ultimate lädt 30% langsamer</i>`,f:()=>{ST.aps*=1.5;ST.ultKills*=1.3;}},
+];
 // Synergien: zwei bestimmte Segnungen (auch derselbe zweimal) lösen einmal pro Jagd einen Zusatzbonus aus
 const SYNERGIES=[
  {n:'Gewitter',a:'Kettenblitz',b:'Kettenblitz',c:'#9ad8ff',d:'+2 Sprünge, +30% Schaden',f:()=>{ST.chain+=2;ST.dmg*=1.3;}},
@@ -1141,12 +1148,13 @@ function boonGain(e){if(!R||R.over)return;R.bl=(R.bl||0)+(e.boss?10:e.elite?3:1)
 function rerollBoons(){if(!R||!R.choosing||!(R.rr>0))return;R.rr--;R.choosing=null;closeModal();offerBoons();}
 function offerBoons(){
   const pool=BOONS.slice(),opts=[];while(opts.length<ST.boonN){const b=pool.splice(ri(0,pool.length-1),1)[0];opts.push({b,m:Math.random()<.15?2:1});}// 15%: geweiht = doppelte Wirkung
+  if(Math.random()<.12)opts[ri(0,opts.length-1)]={b:CURSED[ri(0,CURSED.length-1)],m:1};
   const pick=o=>{const sy=synOf(o.b.n);o.b.f(o.m);(R.boons=R.boons||[]).push(o.b.n+(o.m>1?' ✧':''));(R.bk=R.bk||{})[o.b.n]=(R.bk[o.b.n]||0)+1;
     if(sy){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
     for(let i=0;i<24;i++){const a=i/24*Math.PI*2,h=heroPos();R.pt.push({x:h.x,y:h.y-20,vx:Math.cos(a)*180,vy:Math.sin(a)*120,t:0,life:.6,c:o.b.c,s:3});}};
-  if(save.auto){pick(opts.find(o=>synOf(o.b.n))||opts[ri(0,opts.length-1)]);return;}// Auto-Jagd wählt selbst
+  if(save.auto){const ok=opts.filter(o=>!o.b.x);pick(opts.find(o=>synOf(o.b.n))||ok[ri(0,ok.length-1)]);return;}// Auto-Jagd nimmt keine Flüche// Auto-Jagd wählt selbst
   R.choosing={opts,pick};sfx('buy');
-  openModal(`<h2 style="text-align:center;color:#ffd76a">SEGNUNG</h2><div style="text-align:center;color:var(--dim);margin:4px 0 12px">Wähle einen Segen für diese Jagd (Taste 1–${opts.length})</div><div class="row">${opts.map((o,i)=>`<button class="boon${o.m>1?' holy':''}" data-i="${i}" style="--bc:${o.b.c}"><span class="bi">${o.b.i}</span><b>${o.b.n}${o.m>1?' ✧':''}</b><span>${o.b.d(o.m)}</span>${o.m>1?'<em>Geweiht – doppelte Wirkung</em>':''}${(sy=>sy?`<em style="color:${sy.c}">⚡ Synergie: ${sy.n} – ${sy.d}</em>`:'')(synOf(o.b.n))}</button>`).join('')}</div>${R.rr>0?`<div style="text-align:center;margin-top:12px"><button id="reroll">⟳ Neu würfeln (${R.rr}× übrig, Taste R)</button></div>`:''}`);
+  openModal(`<h2 style="text-align:center;color:#ffd76a">SEGNUNG</h2><div style="text-align:center;color:var(--dim);margin:4px 0 12px">Wähle einen Segen für diese Jagd (Taste 1–${opts.length})</div><div class="row">${opts.map((o,i)=>`<button class="boon${o.m>1?' holy':''}${o.b.x?' cursed':''}" data-i="${i}" style="--bc:${o.b.c}"><span class="bi">${o.b.i}</span><b>${o.b.n}${o.m>1?' ✧':''}</b><span>${o.b.d(o.m)}</span>${o.m>1?'<em>Geweiht – doppelte Wirkung</em>':''}${o.b.x?'<em style="color:#ff6a8a">Verfluchter Segen</em>':''}${(sy=>sy?`<em style="color:${sy.c}">⚡ Synergie: ${sy.n} – ${sy.d}</em>`:'')(synOf(o.b.n))}</button>`).join('')}</div>${R.rr>0?`<div style="text-align:center;margin-top:12px"><button id="reroll">⟳ Neu würfeln (${R.rr}× übrig, Taste R)</button></div>`:''}`);
   $('#mbox').querySelectorAll('.boon').forEach(el=>el.onclick=()=>pick(opts[+el.dataset.i]));if($('#reroll'))$('#reroll').onclick=rerollBoons;
 }
 
