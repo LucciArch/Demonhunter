@@ -1261,6 +1261,7 @@ function drawShrine(){const s=R.shrine;if(!s)return;const S=SHRINES[s.k],sp=SPR[
   ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(s.x,s.y-15,4,s.x,s.y-15,60);g.addColorStop(0,S.c+'55');g.addColorStop(1,S.c+'00');ctx.fillStyle=g;ctx.fillRect(s.x-60,s.y-75,120,120);ctx.restore();
   ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.ellipse(s.x,s.y,sp.w*sc*.5,sp.w*sc*.15,0,0,Math.PI*2);ctx.fill();
   drawSpr(sp,s.x,s.y,sc,false,s.t<.3?1-s.t/.3:0);
+  if(s.k==='glass'){ctx.fillStyle='#ffe89a';for(let i=0;i<3;i++)ctx.fillRect(s.x-1,s.y-24+(s.t*28+i*3.4)%10,2,2);}// rieselnder Sand im Hals der Sanduhr
   if(Math.random()<.1)R.pt.push({x:s.x+rnd(-14,14),y:s.y-sp.h*sc,vx:0,vy:rnd(-40,-20),t:0,life:.8,c:S.c,s:2});
   if(s.k==='altar'&&Math.random()<.5)for(const d of[-12,12])R.pt.push({x:s.x+d+rnd(-3,3),y:s.y-sp.h*sc+6,vx:rnd(-8,8),vy:rnd(-70,-40),t:0,life:rnd(.3,.5),c:Math.random()<.5?'#ff4a4a':'#ffb03a',s:ri(2,3)});// Hornflammen
   ctx.font='16px "Pixelify Sans"';ctx.textAlign='center';ctx.fillStyle='#000';ctx.fillText(S.n,s.x+1,s.y-sp.h*sc-9+b*2);ctx.fillStyle=S.c;ctx.fillText(S.n,s.x,s.y-sp.h*sc-10+b*2);
