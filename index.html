@@ -993,6 +993,7 @@ for(const k in AFF_ACH)AN(AFF_ACH[k][0]+'x','Erz'+AFF_ACH[k][1].toLowerCase(),`V
 AN('gi0','Gierschlund','Gewinne 10× am Spiegel der Gier',()=>stv('mirW'),10,{g:4});
 AN('sw0','Waagemeister','Nutze 10× die Seelenwaage',()=>(save.st.shK||{}).scale||0,10,{g:4});
 AN('pk0','Paktmeister','Nutze 10× den Teufelsaltar',()=>(save.st.shK||{}).altar||0,10,{g:4});
+AN('pg0','Paktbrecher','Erlege 5 Paktwächter rechtzeitig',()=>save.st.pactG||0,5,{g:5});
 AN('zs0','Zeitdieb','Nutze 10× die Zeitsanduhr',()=>(save.st.shK||{}).glass||0,10,{g:4});
 AN('of0','Ablasshändler','Nutze 10× den Opferstock',()=>(save.st.shK||{}).offer||0,10,{g:4});
 [[1,'Verflucht'],[50,'Fluchträger']].forEach(([n,nm],i)=>AN('fl'+i,nm,`Nimm ${n} Fluch${n>1?'e':''} eines Fluchschreins an`,()=>stv('curse'),n,{b:10+i*90}));
@@ -1159,12 +1160,12 @@ const BOONS=[
 ];
 // Verfluchte Segen: starker Bonus mit Nachteil, erscheinen selten (12%) als eine der Optionen, nie geweiht
 const CURSED=[
- {n:'Blutpakt',i:'☠',c:'#b0204a',x:1,d:()=>`+80% Schaden<br><i>Fluch: −40% max. Leben</i>`,f:()=>{ST.dmg*=1.8;R.maxHp*=.6;R.hp=Math.min(R.hp,R.maxHp);}},
- {n:'Seelenwucher',i:'⚖',c:'#6ae8c8',x:1,d:()=>`+80% Seelen<br><i>Fluch: −5s Jagdzeit</i>`,f:()=>{R.time=Math.max(1,R.time-5);R.maxTime=Math.max(R.time,R.maxTime-5);ST.soul*=1.8;}},
- {n:'Glasklinge',i:'⟋',c:'#c8f0ff',x:1,d:()=>`+15% Krit-Chance, +120% Krit-Schaden<br><i>Fluch: kein Lebensraub</i>`,f:()=>{ST.crit=Math.min(95,ST.crit+15);ST.critDmg+=1.2;R.glLs=(R.glLs||0)+ST.ls;ST.ls=0;}},
- {n:'Wahnsinn',i:'✺',c:'#ff5ad0',x:1,d:()=>`+50% Angriffstempo<br><i>Fluch: Ultimate lädt 30% langsamer</i>`,f:()=>{ST.aps*=1.5;ST.ultKills*=1.3;}},
- {n:'Dornenblut',i:'✠',c:'#8aff8a',x:1,d:()=>`+150% Dornen (reflektierter Schaden)<br><i>Fluch: Dämonen +30% Schaden</i>`,f:()=>{ST.thorns+=1.5;R.dmgM*=1.3;}},
- {n:'Gier',i:'❖',c:'#ffd76a',x:1,d:()=>`Doppelte Seelen-Beute<br><i>Fluch: neue Dämonen +50% Leben</i>`,f:()=>{R.rewM*=2;R.hpM*=1.5;}},
+ {n:'Blutpakt',i:'☠',c:'#b0204a',x:1,d:()=>`+80% Schaden<br><i>Fluch: −40% max. Leben</i>`,f:()=>{ST.dmg*=1.8;R.maxHp*=.6;R.hp=Math.min(R.hp,R.maxHp);},u:()=>{R.maxHp/=.6;R.hp=R.maxHp;}},
+ {n:'Seelenwucher',i:'⚖',c:'#6ae8c8',x:1,d:()=>`+80% Seelen<br><i>Fluch: −5s Jagdzeit</i>`,f:()=>{R.time=Math.max(1,R.time-5);R.maxTime=Math.max(R.time,R.maxTime-5);ST.soul*=1.8;},u:()=>{R.time+=5;R.maxTime+=5;}},
+ {n:'Glasklinge',i:'⟋',c:'#c8f0ff',x:1,d:()=>`+15% Krit-Chance, +120% Krit-Schaden<br><i>Fluch: kein Lebensraub</i>`,f:()=>{ST.crit=Math.min(95,ST.crit+15);ST.critDmg+=1.2;R.glLs=(R.glLs||0)+ST.ls;ST.ls=0;},u:()=>{ST.ls+=R.glLs||0;R.glLs=0;}},
+ {n:'Wahnsinn',i:'✺',c:'#ff5ad0',x:1,d:()=>`+50% Angriffstempo<br><i>Fluch: Ultimate lädt 30% langsamer</i>`,f:()=>{ST.aps*=1.5;ST.ultKills*=1.3;},u:()=>{ST.ultKills/=1.3;}},
+ {n:'Dornenblut',i:'✠',c:'#8aff8a',x:1,d:()=>`+150% Dornen (reflektierter Schaden)<br><i>Fluch: Dämonen +30% Schaden</i>`,f:()=>{ST.thorns+=1.5;R.dmgM*=1.3;},u:()=>{R.dmgM/=1.3;}},
+ {n:'Gier',i:'❖',c:'#ffd76a',x:1,d:()=>`Doppelte Seelen-Beute<br><i>Fluch: neue Dämonen +50% Leben</i>`,f:()=>{R.rewM*=2;R.hpM*=1.5;},u:()=>{R.hpM/=1.5;}},
 ];
 // Synergien: zwei bestimmte Segnungen (auch derselbe zweimal) lösen einmal pro Jagd einen Zusatzbonus aus
 const SYNERGIES=[
@@ -1177,13 +1178,17 @@ const SYNERGIES=[
  {n:'Ewigkeit',a:'Sanduhr',b:'Märtyrer',c:'#7ab8ff',d:'+8s Jagdzeit, Ultimate lädt 20% schneller',f:()=>{R.time+=8;R.maxTime+=8;ST.ultKills=Math.max(3,ST.ultKills*.8);}},
  {n:'Unsterblichkeit',a:'Lebensquell',b:'Blutdurst',c:'#ff7a9a',d:'+40% max. Leben, +3% Lebensraub',f:()=>{R.maxHp*=1.4;R.hp=R.maxHp;ST.ls+=.03;}},
  // Fluch-Synergien: zwei verfluchte Segen zusammen heben einen der Flüche wieder auf
- {n:'Seelenhandel',a:'Blutpakt',b:'Seelenwucher',x:1,c:'#b0204a',d:'Hebt den Fluch von Blutpakt auf (volles Leben)',f:()=>{R.maxHp/=.6;R.hp=R.maxHp;}},
- {n:'Kristallgier',a:'Seelenwucher',b:'Glasklinge',x:1,c:'#6ae8c8',d:'Hebt den Fluch von Seelenwucher auf (+5s Jagdzeit)',f:()=>{R.time+=5;R.maxTime+=5;}},
- {n:'Splitterwahn',a:'Glasklinge',b:'Wahnsinn',x:1,c:'#c8f0ff',d:'Hebt den Fluch von Glasklinge auf (Lebensraub zurück)',f:()=>{ST.ls+=R.glLs||0;R.glLs=0;}},
- {n:'Blutwahn',a:'Wahnsinn',b:'Blutpakt',x:1,c:'#ff5ad0',d:'Hebt den Fluch von Wahnsinn auf (Ultimate normal)',f:()=>{ST.ultKills/=1.3;}},
- {n:'Blutdornen',a:'Blutpakt',b:'Dornenblut',x:1,c:'#8aff8a',d:'Hebt den Fluch von Dornenblut auf (Dämonen-Schaden normal)',f:()=>{R.dmgM/=1.3;}},
- {n:'Dornengier',a:'Dornenblut',b:'Gier',x:1,c:'#ffd76a',d:'Hebt den Fluch von Gier auf (Dämonen-Leben normal)',f:()=>{R.hpM/=1.5;}},
+ {n:'Seelenhandel',a:'Blutpakt',b:'Seelenwucher',x:1,c:'#b0204a',d:'Hebt den Fluch von Blutpakt auf (volles Leben)',f:()=>liftCurse('Blutpakt')},
+ {n:'Kristallgier',a:'Seelenwucher',b:'Glasklinge',x:1,c:'#6ae8c8',d:'Hebt den Fluch von Seelenwucher auf (+5s Jagdzeit)',f:()=>liftCurse('Seelenwucher')},
+ {n:'Splitterwahn',a:'Glasklinge',b:'Wahnsinn',x:1,c:'#c8f0ff',d:'Hebt den Fluch von Glasklinge auf (Lebensraub zurück)',f:()=>liftCurse('Glasklinge')},
+ {n:'Blutwahn',a:'Wahnsinn',b:'Blutpakt',x:1,c:'#ff5ad0',d:'Hebt den Fluch von Wahnsinn auf (Ultimate normal)',f:()=>liftCurse('Wahnsinn')},
+ {n:'Blutdornen',a:'Blutpakt',b:'Dornenblut',x:1,c:'#8aff8a',d:'Hebt den Fluch von Dornenblut auf (Dämonen-Schaden normal)',f:()=>liftCurse('Dornenblut')},
+ {n:'Dornengier',a:'Dornenblut',b:'Gier',x:1,c:'#ffd76a',d:'Hebt den Fluch von Gier auf (Dämonen-Leben normal)',f:()=>liftCurse('Gier')},
 ];
+// Hebt einen Fluch auf – höchstens so oft, wie der verfluchte Segen gewählt wurde (Synergie und Paktwächter zählen gemeinsam)
+function liftCurse(n){const l=R.lift=R.lift||{};if((l[n]||0)>=((R.bk||{})[n]||0))return false;l[n]=(l[n]||0)+1;CURSED.find(c=>c.n===n).u();return true;}
+// Teufelsaltar: Paktwächter bewacht den Pakt – binnen 20s erlegt, fällt der Fluch weg
+function pactGuard(n){const e=spawnDemon('brute');makeElite(e);e.pact=n;e.pactT=20;R.tx.push({x:e.x,y:e.y-50,str:'PAKTWÄCHTER!',t:0,col:'#ff3a6a'});}
 // Welche noch nicht ausgelöste Synergie würde Segen n vervollständigen?
 function synOf(n){return synsOf(n)[0];}
 function synsOf(n){const k=R.bk||{};return SYNERGIES.filter(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?s.a===n&&k[n]===1:(s.a===n&&k[s.b])||(s.b===n&&k[s.a])));}
@@ -1201,7 +1206,7 @@ function offerBoons(cur){// cur: Teufelsaltar – nur verfluchte Segen
   if(!cur&&Math.random()<.12+ST.curseCh)opts[ri(0,opts.length-1)]={b:CURSED[ri(0,CURSED.length-1)],m:1};
   const pick=o=>{const sys=synsOf(o.b.n);o.b.f(o.m);(R.boons=R.boons||[]).push(o.b.n+(o.m>1?' ✧':''));(R.bk=R.bk||{})[o.b.n]=(R.bk[o.b.n]||0)+1;
     if(o.b.x){R.cur=(R.cur||0)+1;save.st.cur=(save.st.cur||0)+1;save.st.curMax=Math.max(save.st.curMax||0,R.cur);(save.st.curK=save.st.curK||{})[o.b.n]=(save.st.curK[o.b.n]||0)+1;}
-    for(const sy of sys){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();hudBoon();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
+    for(const sy of sys){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();hudBoon();sfx('relic');if(cur&&o.b.x)pactGuard(o.b.n);R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
     for(let i=0;i<24;i++){const a=i/24*Math.PI*2,h=heroPos();R.pt.push({x:h.x,y:h.y-20,vx:Math.cos(a)*180,vy:Math.sin(a)*120,t:0,life:.6,c:o.b.c,s:3});}};
   if(save.auto){const ok=opts.filter(o=>!o.b.x),o=opts.find(o=>synOf(o.b.n))||ok[ri(0,ok.length-1)];if(o)pick(o);return;}// Auto-Jagd wählt selbst, Flüche nur wenn sie sofort eine Synergie auslösen
   R.choosing={opts,pick,cur};sfx('buy');
@@ -1220,7 +1225,7 @@ const SHRINES={
  offer:{n:'Opferstock',d:'Opfere allen Schwefel dieser Jagd: erhalte die halben Siegel eines Fürsten',c:'#ff9a3a',rows:["...rRRr...","....rr....","..........","YYYYYYYYYY","wWWxxxxWWw","wWWWWWWWWw","wWWWYYWWWw","wWWWYYWWWw","wWWWWWWWWw","YYYYYYYYYY",".ww....ww."]},
  scale:{n:'Seelenwaage',d:'Tausche die Hälfte der Seelen dieser Jagd gegen Schwefel (wie von drei Fürsten)',c:'#8ad8ff',rows:["....yy....","YYYYYYYYYY","Y...hS...Y","Y...hS...Y","Y...hS...Y","BbB.hS.yYy","bBb.hS.YyY","....hS....","..SShhSS..","ssssssssss"]},
  glass:{n:'Zeitsanduhr',d:'Opfere 40% Leben: +8s Jagdzeit',c:'#ffd76a',rows:["wWWWWWWWWw",".YhyyyyhY.",".Y.hyyh.Y.",".Y..hh..Y.",".Y..hy..Y.",".Y.h.yh.Y.",".Yh.yyyhY.",".YhyyyyhY.","wWWWWWWWWw","ssssssssss"]},
- altar:{n:'Teufelsaltar',d:'Sofort einen verfluchten Segen wählen',c:'#ff3a6a',rows:["..R....R..","..rR..Rr..","...rRRr...","SSSSSSSSSS","SxxxrrxxxS",".SSxRRxSS.","..SSrrSS..","..SSSSSS..",".SSSSSSSS.","sssssssss."]},
+ altar:{n:'Teufelsaltar',d:'Sofort einen verfluchten Segen wählen – ein Paktwächter erscheint: binnen 20s erlegt, fällt der Fluch weg',c:'#ff3a6a',rows:["..R....R..","..rR..Rr..","...rRRr...","SSSSSSSSSS","SxxxrrxxxS",".SSxRRxSS.","..SSrrSS..","..SSSSSS..",".SSSSSSSS.","sssssssss."]},
  bless:{n:'Segensstein',d:'Sofort eine Segnung wählen',c:'#e0b0ff',rows:["....SS....","...ShSS...","...SPSS...","..SSpPSS..","..ShPpSS..","..SSPSSS..","..SSpPSS..",".SSSSSSSS.","ssssssssss"]},
 };
 for(const k in SHRINES)SPR['sh_'+k]=mkSprite({pal:SHRINE_PAL,rows:SHRINES[k].rows});
@@ -1446,7 +1451,7 @@ function dealDmg(e,amt,o){
   if(e.hp<=0)killDemon(e,o);
 }
 function killDemon(e,o){
-  if(e.dead)return;e.dead=true;R.kills++;if(e.mimic)save.st.mim=(save.st.mim||0)+1;boonGain(e);comboKill();save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime&&(R.kt||0)<ST.time){const g=Math.min(ST.killTime,ST.time-(R.kt||0));R.kt=(R.kt||0)+g;R.time+=g;if(R.time>R.maxTime)R.maxTime=R.time;}// Kill-Verlängerung höchstens +100% der Grund-Jagdzeit
+  if(e.dead)return;e.dead=true;R.kills++;if(e.pact&&e.pactT>0&&liftCurse(e.pact)){save.st.pactG=(save.st.pactG||0)+1;R.tx.push({x:e.x,y:e.y-60,str:'FLUCH GEBROCHEN: '+e.pact.toUpperCase(),t:0,col:'#ffd76a'});hudBoon();}if(e.mimic)save.st.mim=(save.st.mim||0)+1;boonGain(e);comboKill();save.st.kills++;save.st.kt[e.type]=(save.st.kt[e.type]||0)+1;if(save.st.kt[e.type]===100||save.st.kt[e.type]===1000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – ${save.st.kt[e.type]} erlegt, +5% Schaden gegen diese Art`);if(save.st.kt[e.type]===10000)toast(`Bestiarium: ${e.type==='boss'?'Höllenfürsten':DEMONS[e.type].name} – 10000 erlegt, +5% Seelen von dieser Art`);if(e.elite){save.st.elites=(save.st.elites||0)+1;save.st.ke[e.type]=(save.st.ke[e.type]||0)+1;const ka=save.st.ka=save.st.ka||{};for(const f of [e.aff,e.aff2])if(f)ka[f]=(ka[f]||0)+1;}questProg('kill');questProg('type',e.type);sfxL('kill');R.ult=Math.min(1,R.ult+1/ST.ultKills);if(ST.killTime&&(R.kt||0)<ST.time){const g=Math.min(ST.killTime,ST.time-(R.kt||0));R.kt=(R.kt||0)+g;R.time+=g;if(R.time>R.maxTime)R.maxTime=R.time;}// Kill-Verlängerung höchstens +100% der Grund-Jagdzeit
   // particles
   if(e.aff2){R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:.8});shake=Math.max(shake,3);}
   if(e.boss&&curBoss().ab==='bone')boneRain(e);else R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
@@ -1678,6 +1683,7 @@ function updateRun(dt){
       e.abT-=dt;if(e.abT<=0){bossAbility(e);if(e.rage){e.abT*=.6;const n=8,o=Math.random()*6;for(let i=0;i<n;i++)fireball(e.x,e.y-e.r*1.5,o+i/n*Math.PI*2,e.dmg*.4,150);}}}
     if(e.refT>0)e.refT-=dt;
     if(R.mod==='blood')e.hp=Math.min(e.max,e.hp+e.max*.02*dt);
+    if(e.pact&&(e.pactT-=dt)<=0){e.dead=true;R.fx.push({k:'portal',x:e.x,y:e.y,r:e.r*1.6,t:0,dur:.5});R.tx.push({x:e.x,y:e.y-50,str:'DER PAKT BLEIBT',t:0,col:'#b0204a'});}
     if(e.elite&&e.type==='golem'&&d<160&&(e.stT=(e.stT===undefined?rnd(1,2):e.stT)-dt)<=0){e.stT=4;R.fx.push({k:'ring',x:e.x,y:e.y,r:110,col:'#ffb04a',t:0,dur:.45});dirtBurst(e.x,e.y,18);shake=Math.max(shake,6);sfx('hurt');if(Math.hypot(hp.x-e.x,(hp.y-e.y)/.6)<110)hurtHero(e.dmg*1.2,null);}// Elite-Golem: Stampf-Schockwelle
     if(e.elite&&e.type==='hound'&&!e.howl&&d<320&&R.en.length<60){e.howl=1;R.tx.push({x:e.x,y:e.y-40,str:'AUUUUH!',t:0,col:'#ff6a1e'});R.fx.push({k:'ring',x:e.x,y:e.y,r:70,col:'#ff6a1e',t:0,dur:.4});for(let i=0;i<3;i++){const m=spawnDemon('hound');m.x=clamp(e.x+rnd(-60,60),20,W-20);m.y=clamp(e.y+rnd(-40,40),100,H-20);}}// Elite-Höllenhund ruft sein Rudel
     if(e.elite&&e.type==='wraith'){e.inv=Math.max(0,(e.inv||0)-dt);if((e.ivT=(e.ivT??rnd(1,3))-dt)<=0){e.ivT=5;e.inv=1.5;for(let i=0;i<12;i++)R.pt.push({x:e.x+rnd(-10,10),y:e.y-e.r-rnd(0,20),vx:rnd(-50,50),vy:rnd(-70,-10),t:0,life:.5,c:'#9bf0ff',s:2});}}// Elite-Schemen verschwindet kurz
@@ -1902,6 +1908,7 @@ function drawDemon(e,sc){
   const s=SPR[e.spr||e.d.spr];const k=sc*(e.d.sc||1)*(e.esc||1);
   const fy=e.d.fly?Math.sin(e.bob)*4-10:0;
   drawShadow(e.x,e.y,s.w*k*.32);
+  if(e.pact&&e.spawn<=0){ctx.save();ctx.font='16px "Pixelify Sans"';ctx.textAlign='center';const t='☠ '+Math.ceil(e.pactT)+'s';ctx.fillStyle='#000';ctx.fillText(t,e.x+1,e.y-s.h*k-31);ctx.fillStyle=e.pactT<5?'#ff3a3a':'#ff6a8a';ctx.fillText(t,e.x,e.y-s.h*k-32);ctx.restore();}// Paktwächter-Countdown
   if(e.boss||e.elite||e.d.thief){ctx.save();ctx.globalAlpha=.25+.1*Math.sin(e.bob);if(e.rage)ctx.globalAlpha=.45+.25*Math.sin(e.bob*2);ctx.fillStyle=e.d.thief?'#ffd76a':e.boss?'#ff3a3a':e.aff?AFFIX[e.aff].col:'#ffb04a';ctx.beginPath();ctx.ellipse(e.x,e.y,s.w*k*.5,s.w*k*.18,0,0,Math.PI*2);ctx.fill();ctx.restore();}
   const sq=e.d.fly?0:Math.abs(Math.sin(e.bob))*1.5;e.drawSc=k;
   const fr=(!e.d.fly&&e.moving&&s.f2&&Math.floor(e.bob/2.4)%2)?s.f2:s;

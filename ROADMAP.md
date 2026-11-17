@@ -165,6 +165,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.151: Zwei neue verfluchte Segen – Dornenblut (+150% Dornen, Fluch: Dämonen +30% Schaden) und Gier (doppelte Seelen-Beute, Fluch: neue Dämonen +50% Leben); Fluch-Synergien Blutdornen und Dornengier, „Fluchbrecher“ jetzt für alle 6
 - v0.152: Neuer Schrein „Teufelsaltar“ (ab Kreis 3, gehörnter Altar): bietet sofort eine Auswahl nur aus verfluchten Segen an (Neu-Würfeln bleibt verflucht); Auto-Jagd nimmt Flüche nur, wenn sie dadurch sofort eine Fluch-Synergie auslöst
 - v0.153: Teufelsaltar mit flackernden Hornflammen; Erfolg „Paktmeister“ (10× Teufelsaltar)
+- v0.154: Teufelsaltar-Pakt-Preis – nach der Wahl erscheint ein Elite-Paktwächter (Hornbestie) mit 20s-Countdown; rechtzeitig erlegt, fällt der Fluch weg (gemeinsamer Fluch-Aufheber `liftCurse` auch für Fluch-Synergien, nie doppelt); Erfolg „Paktbrecher“ (5×)
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -175,4 +176,4 @@ I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträt
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter); Sanduhr-Sand rieselt animiert
-D8. Teufelsaltar: Pakt-Preis – nach der Wahl erscheint ein Elite-Teufel, der den Segen „bewacht“ (töten = Fluch fällt nach 20s weg)
+D9. Paktwächter-Sprite: eigener gehörnter Teufel mit Dreizack statt Hornbestie; Auto-Jagd nimmt Altar-Flüche auch, wenn Wächter schaffbar
