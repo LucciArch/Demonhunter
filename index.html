@@ -672,6 +672,11 @@ SPR_DEF.pactg={pal:{r:'#9a1420',R:'#d02a34',L:'#ff5a5a',d:'#4a0810',k:'#1a0608',
 "....t..kkk.....kkk..",
 "....T.kkkk.....kkkk."]};
 SPR.pactg=mkSprite(SPR_DEF.pactg);SPR.pactg.f2=mkSprite({pal:SPR_DEF.pactg.pal,rows:walkRows(SPR_DEF.pactg.rows)});
+// Erzwächter (ab Kreis 30): dunklere Haut, goldene Hörner und Krone; archg0 = leere Hand beim Dreizackwurf
+{const pal={...SPR_DEF.pactg.pal,r:'#5a0a2a',R:'#8a1438',L:'#c83a5a',d:'#2a0414',w:'#3a0620',e:'#ff8a1e',h:'#ffd76a',H:'#b8862a',c:'#ffe89a'},
+  rows=SPR_DEF.pactg.rows.map((r,i)=>i>=4&&i<=6?r.replace(/k/g,'h').replace(/K/g,'H'):r);rows[3]=rows[3].slice(0,9)+'c.cHc.c'+rows[3].slice(16);
+  const bare=rows.map((r,i)=>i<4?r.slice(0,9).replace(/[tT]/g,'.')+r.slice(9):r.slice(0,5).replace(/[tT]/g,'.')+r.slice(5));
+  for(const [k,rs] of [['archg',rows],['archg0',bare]]){SPR[k]=mkSprite({pal,rows:rs});SPR[k].f2=mkSprite({pal,rows:walkRows(rs)});}}
 const BELT_PAL={b:'#5a3a22',B:'#c8a040',k:'#8a6a3a',w:'#d8ffd0',g:'#7aff6a',G:'#2a8a2a'};
 SPR.belt=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk.kk","wg.wg.wg","GG.GG.GG"]});
 SPR.belt2=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk...","wg.wg...","GG.GG..."]});
@@ -1213,7 +1218,7 @@ const SYNERGIES=[
 // Hebt einen Fluch auf – höchstens so oft, wie der verfluchte Segen gewählt wurde (Synergie und Paktwächter zählen gemeinsam)
 function liftCurse(n){const l=R.lift=R.lift||{};if((l[n]||0)>=((R.bk||{})[n]||0))return false;l[n]=(l[n]||0)+1;CURSED.find(c=>c.n===n).u();return true;}
 // Teufelsaltar: Paktwächter bewacht den Pakt – binnen 20s erlegt, fällt der Fluch weg
-function pactGuard(n){const e=spawnDemon('brute');makeElite(e);e.pact=n;e.pactT=20;e.spr='pactg';if(R.c>=30){e.arch=1;e.max=e.hp=e.max*1.5;e.esc*=1.15;e.r*=1.15;}R.tx.push({x:e.x,y:e.y-50,str:e.arch?'ERZWÄCHTER!':'PAKTWÄCHTER!',t:0,col:'#ff3a6a'});}// ab Kreis 30 Erzwächter: +50% Leben, sticht doppelt, wirft den Dreizack
+function pactGuard(n){const e=spawnDemon('brute');makeElite(e);e.pact=n;e.pactT=20;e.spr='pactg';if(R.c>=30){e.arch=1;e.spr='archg';e.max=e.hp=e.max*1.5;e.esc*=1.15;e.r*=1.15;}R.tx.push({x:e.x,y:e.y-50,str:e.arch?'ERZWÄCHTER!':'PAKTWÄCHTER!',t:0,col:'#ff3a6a'});}// ab Kreis 30 Erzwächter: +50% Leben, sticht doppelt, wirft den Dreizack
 // Welche noch nicht ausgelöste Synergie würde Segen n vervollständigen?
 function synOf(n){return synsOf(n)[0];}
 function synsOf(n){const k=R.bk||{};return SYNERGIES.filter(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?s.a===n&&k[n]===1:(s.a===n&&k[s.b])||(s.b===n&&k[s.a])));}
@@ -1460,7 +1465,7 @@ function heroPos(){return {x:W/2,y:H/2+30};}
 const bestMul=k=>{const n=save.st.kt[k]||0;return 1+(n>=100?.05:0)+(n>=1000?.05:0);};
 // Angriffs-Effekt je Dämonenart: Krallen, Biss oder Faustschlag
 const ATKFX={wraith:'grip',imp:'claw',succ:'claw',bat:'claw',hound:'bite',golem:'pound',brute:'pound'};
-function atkFx(e,hp){const k=e.spr==='pactg'?'stab':ATKFX[e.type];if(!k)return;R.fx.push({k,x:hp.x+(e.x<hp.x?-6:6),y:k==='pound'?hp.y:hp.y-22,fl:e.x>hp.x,t:0,dur:k==='pound'?.35:.2});if(k==='pound')shake=Math.max(shake,4);}
+function atkFx(e,hp){const k=e.spr==='pactg'||e.spr==='archg'?'stab':ATKFX[e.type];if(!k)return;R.fx.push({k,x:hp.x+(e.x<hp.x?-6:6),y:k==='pound'?hp.y:hp.y-22,fl:e.x>hp.x,t:0,dur:k==='pound'?.35:.2});if(k==='pound')shake=Math.max(shake,4);}
 function dealDmg(e,amt,o){
   if(e.dead||e.inv>0)return;o=o||{};amt*=bestMul(e.type);// e.inv: Elite-Schemen ist gerade unsichtbar
   if(e.boss||e.elite)amt*=ST.bossDmg;
@@ -1721,7 +1726,7 @@ function updateRun(dt){
     if(hasAff(e,'tele')&&(e.tpT-=dt)<=0&&d>reach+40){e.tpT=3;R.fx.push({k:'ring',x:e.x,y:e.y,r:50,col:'#ff4af0',t:0,dur:.35});const a=Math.random()*Math.PI*2;e.x=hp.x+Math.cos(a)*(reach+20);e.y=hp.y+Math.sin(a)*(reach+20)*.7;R.fx.push({k:'ring',x:e.x,y:e.y,r:50,col:'#ff4af0',t:0,dur:.35});sfx('tele');continue;}
     if(e.mimic&&d>reach&&d<260&&(e.tgT=(e.tgT??1.5)-dt)<=0){e.tgT=3;R.fx.push({k:'tongue',x:e.x,y:e.y-e.r,x2:hp.x,y2:hp.y-20,t:0,dur:.45});// Mimic: Zunge peitscht zum Jäger und zieht ihn heran
       R.later.push({t:.22,fn:()=>{if(e.dead||R.over)return;hurtHero(e.dmg*.8,null);sfxL('hurt');const h=heroPos();e.x+=(h.x-e.x)*.5;e.y+=(h.y-e.y)*.5;}});}
-    if(e.arch&&e.spawn<=0&&d>reach+40&&d<340&&(e.thT=(e.thT??2)-dt)<=0){e.thT=4;R.fx.push({k:'trident',x:e.x,y:e.y-e.r,x2:hp.x,y2:hp.y-20,t:0,dur:.35});R.tx.push({x:e.x,y:e.y-50,str:'DREIZACKWURF!',t:0,col:'#ffd76a'});// Erzwächter wirft den Dreizack
+    if(e.arch&&e.spawn<=0&&d>reach+40&&d<340&&(e.thT=(e.thT??2)-dt)<=0){e.thT=4;R.fx.push({k:'trident',x:e.x,y:e.y-e.r,x2:hp.x,y2:hp.y-20,t:0,dur:.35});R.tx.push({x:e.x,y:e.y-50,str:'DREIZACKWURF!',t:0,col:'#ffd76a'});e.spr='archg0';R.later.push({t:.8,fn:()=>{e.spr='archg';}});// Erzwächter wirft den Dreizack
       R.later.push({t:.3,fn:()=>{if(e.dead||R.over)return;hurtHero(e.dmg*1.1,null);sfxL('hurt');shake=Math.max(shake,4);}});}
     let sp=e.spd*(e.charge>0?4:1);if(e.charge>0)e.charge-=dt;
     if(e.soulB&&d<220){e.moving=1;e.flip=!e.flip;e.x=clamp(e.x-dx/d*sp*.75*dt,20,W-20);e.y=clamp(e.y-dy/d*sp*.75*dt,100,H-20);continue;}// Seelenträger hält Abstand
