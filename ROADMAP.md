@@ -136,8 +136,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 
 - v0.127: test/sim.js simuliert Jägerbaum (aktiver Jäger) und mit `--asc` den Aufstieg (nach 6 Jagden ohne neuen Rekord, kauft Aufstiegsknoten); `--quiet` gibt nur die Tabelle „bester Kreis nach 20/40/60/100 Jagden“ aus. Befund: ohne Aufstieg Kreis 41 nach 100 Jagden; mit Aufstieg bei Kreis ~31 (+230 Fragmente) danach ~1 Kreis pro Jagd, alter Rekord nach ~36 Jagden überholt, Kreis 43 nach 100
 
+- v0.128: Schnellabstieg – Aufstiegsknoten „Erinnerung“ startet nach dem Aufstieg bei Stufe/15 des alten Rekords (Stufe 5 ≈ ⅓, z. B. Rekord 31 → Kreis 10, Rekord 60 → Kreis 20), mindestens wie bisher Kreis 1+Stufe
+
 ## Als Nächstes
-L8. Nach Aufstieg geht es fast ohne Widerstand bis zum alten Rekord (1 Kreis/Jagd) – Erholung ist gut, aber Kreise 1–20 sind dann reine Klickarbeit: „Schnellabstieg“ (Aufstiegsknoten a4 stärker oder automatischer Sprung auf ⅓ des alten Rekords) prüfen
+L10. test/sim.js: mehrere Aufstiege simulieren (z. B. 200 Jagden), um die Wirkung von „Erinnerung“ ab dem 2. Aufstieg zu messen
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter

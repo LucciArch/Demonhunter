@@ -1027,13 +1027,15 @@ const ASC=[
  {id:'a13',name:'Ablassbrief',d:v=>`Schwurbaum-Knoten kosten ${100-Math.round(Math.pow(.94,v)*100)}% weniger`,max:10,cost:2,gr:1.6},
  {id:'a14',name:'Krit-Weihe',d:v=>`+${v*3}% Krit-Chance`,max:5,cost:2,gr:1.7},
  {id:'a15',name:'Blutpakt',d:v=>`+${v*2}% Lebensraub`,max:5,cost:2,gr:1.7},
- {id:'a4',name:'Erinnerung',d:v=>`Starte nach dem Aufstieg in Höllenkreis ${1+v}`,max:5,cost:5,gr:2},
+ {id:'a4',name:'Erinnerung',d:v=>`Starte nach dem Aufstieg in Höllenkreis ${ascStart(v)} (${v}/15 deines Rekords, mind. ${1+v})`,max:5,cost:5,gr:2},
  {id:'a8',name:'Fragmentgier',d:v=>`+${v*20}% Höllenfragmente`,max:10,cost:4,gr:1.7},
  {id:'a9',name:'Ordensschreiber',d:v=>v?'Kauft nach jeder Jagd automatisch Seelen-Knoten':'Kauft nach jeder Jagd automatisch Seelen-Knoten',max:1,cost:6,gr:1},
  {id:'a16',name:'Höllenfürst',d:v=>`×${Math.pow(1.5,v).toFixed(2)} Schaden, Leben und Seelen`,max:5,cost:15,gr:2.2},
 ];
 const AB={};ASC.forEach(a=>AB[a.id]=a);
 const al=id=>(save.asc||{})[id]||0;
+// Start-Kreis nach dem Aufstieg: Stufe 5 ≈ ⅓ des alten Rekords, damit die ersten Kreise keine reine Klickarbeit sind
+const ascStart=(v=al('a4'))=>Math.max(1+v,Math.floor(save.maxCircle*v/15));
 const ascCost=a=>Math.ceil(a.cost*Math.pow(a.gr,al(a.id)));
 const fragGain=()=>save.maxCircle<5?0:Math.floor(Math.pow(save.maxCircle-3,1.6)*(1+al('a8')*.2));
 // Jede gekaufte Baum-Stufe verteuert weitere Seelen-/Schwefel-Knoten (Siegel ausgenommen, die kommen nur von Fürsten)
@@ -1688,7 +1690,7 @@ function ascend(){
   const f=fragGain();if(f<=0)return;
   save.frag+=f;save.fragTotal+=f;save.ascCount++;save.st.maxC=Math.max(save.st.maxC||0,save.maxCircle);
   const keep={root:1};for(const k in save.tree){if(k.startsWith('H_')||(NB[k]&&NB[k].key==='unlock'))keep[k]=save.tree[k];}
-  save.tree=keep;save.souls=0;save.brim=0;save.sig=0;save.maxCircle=1+al('a4');save.circle=save.maxCircle;
+  save.tree=keep;save.souls=0;save.brim=0;save.sig=0;save.maxCircle=ascStart();save.circle=save.maxCircle;
   persist();computeStats();refreshHub();cam.x=cam.y=0;sfx('boss');toast('AUFSTIEG! +'+f+' Höllenfragmente',3000);
 }
 function ascModal(){
