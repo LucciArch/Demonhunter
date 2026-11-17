@@ -978,7 +978,7 @@ function achBar([v,n]){v=Math.min(v,n);return `<div class="bar" style="margin:4p
 function achCount(){return ACH.filter(a=>save.ach[a.id]).length;}
 function checkAch(){let n=0;for(const a of ACH){if(save.ach[a.id])continue;if(a.fn()){save.ach[a.id]=1;for(const c in a.rew)curAdd(c,a.rew[c]);n++;setTimeout(()=>toast('🏆 Erfolg: '+a.name+'!',2600),n*900);}}
   if(n){persist();computeStats();}return n;}
-const BEST_EL={worm:'Bricht mit einem Knochensplitter-Ring hervor, der den Jäger in der Nähe trifft.',cult:'Schleudert drei Feuerbälle im Fächer.',succ:'Hinterlässt rosa Lustnebel, der den Jäger betört und verlangsamt.',golem:'Stampft alle paar Sekunden eine Schockwelle, die den Jäger in der Nähe trifft.',hound:'Heult beim Anblick des Jägers und ruft ein Rudel aus drei Höllenhunden.'};// Sonderfähigkeiten, die nur Elite-Varianten haben
+const BEST_EL={worm:'Bricht mit einem Knochensplitter-Ring hervor, der den Jäger in der Nähe trifft.',cult:'Schleudert drei Feuerbälle im Fächer.',succ:'Hinterlässt rosa Lustnebel, der den Jäger betört und verlangsamt.',golem:'Stampft alle paar Sekunden eine Schockwelle, die den Jäger in der Nähe trifft.',hound:'Heult beim Anblick des Jägers und ruft ein Rudel aus drei Höllenhunden.',imp:'Zerplatzt beim Tod in zwei kleine Wichte.',wraith:'Verschwindet alle paar Sekunden kurz und ist dann unverwundbar.',bat:'Stößt im Sturzflug blitzschnell auf den Jäger herab.'};// Sonderfähigkeiten, die nur Elite-Varianten haben
 const BEST={thief:'Selten. Flieht mit einem Sack voller Seelen und verschwindet nach 8 s durch ein Portal – erwische ihn mit dem Bannstrahl!',imp:'Flinker Kleinteufel, kommt in Scharen.',bat:'Fliegt schnell und flatterhaft.',hound:'Hetzt mit hohem Tempo und beißt kräftig zu.',wraith:'Schwebender Geist, zäh, hinterlässt Schwefel.',brute:'Gehörnter Koloss mit viel Leben und Wucht.',succ:'Tänzelt im Zickzack und saugt Leben.',golem:'Steinern und langsam, schluckt 40% Schaden.',cult:'Wirft aus der Ferne Feuerbälle – Bannstrahl zerstört sie.',worm:'Gräbt sich ein, ist unter der Erde unverwundbar und bricht direkt neben dem Jäger hervor.',boss:'Herrscher eines Höllenkreises, mit Ansturm, Beschwörung und Feuernova. Ab Kreis 50 herrscht in jedem 5. Kreis der Knochenkönig: er ruft Knochenwürmer und lässt Knochenspeere aus dem Boden schießen.'};
 const PL={imp:'Imps',bat:'Nachtmahre',hound:'Höllenhunde',wraith:'Schemen',brute:'Hornbestien',succ:'Sukkuben',golem:'Golems',cult:'Kultisten',worm:'Knochenwürmer'};
 const QT={
@@ -1321,7 +1321,7 @@ const bestMul=k=>{const n=save.st.kt[k]||0;return 1+(n>=100?.05:0)+(n>=1000?.05:
 const ATKFX={wraith:'grip',imp:'claw',succ:'claw',bat:'claw',hound:'bite',golem:'pound',brute:'pound'};
 function atkFx(e,hp){const k=ATKFX[e.type];if(!k)return;R.fx.push({k,x:hp.x+(e.x<hp.x?-6:6),y:k==='pound'?hp.y:hp.y-22,fl:e.x>hp.x,t:0,dur:k==='pound'?.35:.2});if(k==='pound')shake=Math.max(shake,4);}
 function dealDmg(e,amt,o){
-  if(e.dead)return;o=o||{};amt*=bestMul(e.type);
+  if(e.dead||e.inv>0)return;o=o||{};amt*=bestMul(e.type);// e.inv: Elite-Schemen ist gerade unsichtbar
   if(e.boss||e.elite)amt*=ST.bossDmg;
   if(e.d.tough&&!o.crit)amt*=1-e.d.tough;
   if(hasAff(e,'armor')&&!o.crit)amt*=.6;
@@ -1341,6 +1341,7 @@ function killDemon(e,o){
   if(e.aff2){R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:.8});shake=Math.max(shake,3);}
   R.fx.push({k:'die',s:SPR[e.spr||e.d.spr],x:e.x,y:e.y+(e.d.fly?-10:0),sc:e.drawSc||3,flip:e.flip,t:0,dur:e.boss?1.4:.42});
   if(e.boss)for(let i=0;i<8;i++)R.later.push({t:i*.15,fn:()=>{const bx=e.x+rnd(-50,50),by=e.y-rnd(10,110);R.fx.push({k:'boom',x:bx,y:by,r:rnd(30,60),t:0,dur:.35});shake=Math.max(shake,8);sfxL('kill');}});
+  if(e.elite&&e.type==='imp')for(let i=0;i<2&&R.en.length<60;i++){const m=spawnDemon('imp');m.x=clamp(e.x+(i?18:-18),20,W-20);m.y=e.y;m.spawn=m.sp0=.15;m.max=m.hp=e.max*.25;m.esc=.7;m.r*=.7;m.kb=.2;m.kx=i?160:-160;m.ky=rnd(-60,60);}// Elite-Imp zerplatzt in zwei Wichte
   const col=e.type==='wraith'?'#9bf0ff':e.type==='bat'?'#c06aff':'#ff6a3a';
   for(let i=0;i<(e.boss?60:10);i++)R.pt.push({x:e.x,y:e.y-e.r,vx:rnd(-160,160),vy:rnd(-220,40),t:0,life:rnd(.4,.9),c:Math.random()<.5?col:'#2a1018',s:ri(2,5)});
   // loot
@@ -1563,6 +1564,8 @@ function updateRun(dt){
     if(R.mod==='blood')e.hp=Math.min(e.max,e.hp+e.max*.02*dt);
     if(e.elite&&e.type==='golem'&&d<160&&(e.stT=(e.stT===undefined?rnd(1,2):e.stT)-dt)<=0){e.stT=4;R.fx.push({k:'ring',x:e.x,y:e.y,r:110,col:'#ffb04a',t:0,dur:.45});dirtBurst(e.x,e.y,18);shake=Math.max(shake,6);sfx('hurt');if(Math.hypot(hp.x-e.x,(hp.y-e.y)/.6)<110)hurtHero(e.dmg*1.2,null);}// Elite-Golem: Stampf-Schockwelle
     if(e.elite&&e.type==='hound'&&!e.howl&&d<320&&R.en.length<60){e.howl=1;R.tx.push({x:e.x,y:e.y-40,str:'AUUUUH!',t:0,col:'#ff6a1e'});R.fx.push({k:'ring',x:e.x,y:e.y,r:70,col:'#ff6a1e',t:0,dur:.4});for(let i=0;i<3;i++){const m=spawnDemon('hound');m.x=clamp(e.x+rnd(-60,60),20,W-20);m.y=clamp(e.y+rnd(-40,40),100,H-20);}}// Elite-Höllenhund ruft sein Rudel
+    if(e.elite&&e.type==='wraith'){e.inv=Math.max(0,(e.inv||0)-dt);if((e.ivT=(e.ivT??rnd(1,3))-dt)<=0){e.ivT=5;e.inv=1.5;for(let i=0;i<12;i++)R.pt.push({x:e.x+rnd(-10,10),y:e.y-e.r-rnd(0,20),vx:rnd(-50,50),vy:rnd(-70,-10),t:0,life:.5,c:'#9bf0ff',s:2});}}// Elite-Schemen verschwindet kurz
+    if(e.elite&&e.type==='bat'){if(e.charge>0&&Math.random()<dt*40)R.pt.push({x:e.x,y:e.y-12,vx:0,vy:0,t:0,life:.3,c:'#c06aff',s:3});if(d>reach+30&&d<260&&(e.dvT=(e.dvT??rnd(1,2))-dt)<=0){e.dvT=3;e.charge=.35;R.tx.push({x:e.x,y:e.y-36,str:'KREEE!',t:0,col:'#c06aff'});sfx('tele');}}// Elite-Nachtmahr: Sturzflug (charge = 4× Tempo)
     if(e.elite&&e.type==='succ'&&e.spawn<=0&&(e.mT=(e.mT||0)-dt)<=0&&R.ice.length<40){e.mT=.5;R.ice.push({x:e.x,y:e.y,r:24,t:0,dur:3,pink:1});}
     if(hasAff(e,'burn')&&(e.fT=(e.fT||0)-dt)<=0&&R.fires.length<60){e.fT=.35;R.fires.push({x:e.x,y:e.y,r:22,t:0,dur:3,dmg:e.dmg*.25});}
     if(hasAff(e,'vamp'))e.hp=Math.min(e.max,e.hp+e.max*.03*dt);
@@ -1780,7 +1783,7 @@ function drawDemon(e,sc){
   else if(e.rec>0&&!e.boss){const q=Math.sin(e.rec/.16*Math.PI),hp=heroPos(),d=Math.hypot(hp.x-e.x,hp.y-e.y)||1;lx=-(hp.x-e.x)/d*q*5;ly=-(hp.y-e.y)/d*q*2; // Treffer-Rückstoß
     o={rot:(e.flip?-1:1)*.15*q,sx:o?o.sx:1,sy:o?o.sy:1};}
   if(e.spawn>0){const q=1-e.spawn/(e.sp0||.35);drawSpr(s,e.x,e.y+fy+(1-q)*10,k,e.flip,false,q,true,{sy:q,sx:2-q});}
-  else drawSpr(fr,e.x+lx,e.y+fy-sq+ly,k,e.flip,e.flash>0,undefined,false,o);
+  else drawSpr(fr,e.x+lx,e.y+fy-sq+ly,k,e.flip,e.flash>0,e.inv>0?.15:undefined,false,o);
   if(e.plag>0&&e.spawn<=0){const a=Math.min(1,e.plag*2);drawSpr({w:fr.w,h:fr.h,c:plagC(fr)},e.x+lx,e.y+fy-sq+ly,k,e.flip,false,.55*a,false,o); // Schwarzer Tod: grünlich verfärbt, wirft Blasen
     const ty=e.y+fy-s.h*k*.6;ctx.save();for(let i=0;i<4;i++){const q=(R.t*1.3+i/4+e.bob*.05)%1;ctx.globalAlpha=a*(1-q);ctx.fillStyle=i%2?'#b8ff8a':'#5ad04a';const bs=i%2?4:3;ctx.fillRect(Math.round(e.x+Math.sin(i*2.3+e.bob*.3)*s.w*k*.3),Math.round(ty-q*s.h*k*.7),bs,bs);}ctx.restore();}
   if(e.shd>0&&e.spawn<=0){ctx.save();ctx.globalAlpha=.35+.15*Math.sin(e.bob*.5);ctx.strokeStyle='#ffe27a';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(e.x,e.y+fy-s.h*k*.45,s.w*k*.55,s.h*k*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha*=.3;ctx.fillStyle='#ffe27a';ctx.fill();ctx.restore();}
