@@ -156,6 +156,8 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.144: Neuer Schrein „Opferstock“ (Holzkasten mit Glut, nur wenn Schwefel gesammelt): tauscht allen Schwefel der Jagd gegen die halben Siegel eines Fürsten; Erfolg „Ablasshändler“ (10×); Spiegel der Gier zerspringt beim Verlust in Scherben
 - v0.145: Mimic peitscht ab 260 px mit der Zunge (Schaden und zieht sich zum Jäger heran) und lässt beim Tod eine hüpfende goldene Truhe fallen (16 Seelen-Kugeln + ein Viertel Fürsten-Siegel)
 
+- v0.146: Neuer Schrein „Seelenwaage“ (Waage mit Seelen- und Schwefelschale, ab Kreis 2, nur wenn Seelen gesammelt): tauscht die Hälfte der Seelen der Jagd gegen Schwefel wie von drei Fürsten; Erfolg „Waagemeister“ (10×), im Bestiarium
+
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
 L12. test/sim.js mit `--seed` (deterministischer Zufall), damit Balance-Vergleiche nicht in der Streuung untergehen; Laufzeit (~14 min für 200 Jagden) verkürzen
@@ -165,4 +167,4 @@ I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträt
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
-E5. Schrein „Seelenwaage“: tauscht Seelen gegen Schwefel; Schrein-Leiste im Hub zeigt, welche Schreine schon gefunden wurden
+E7. Schrein „Zeitsanduhr“: tauscht Leben gegen Jagdzeit; Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
