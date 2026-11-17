@@ -2191,6 +2191,8 @@ function chronik(tab){
     if(st.shr)rows.push(['Schreine benutzt',fmt(st.shr)]);
     if(st.thief)rows.push(['Seelendiebe gefasst',fmt(st.thief)]);
     if(st.bmn)rows.push(['Blutmond-Jagden',fmt(st.bmn)]);
+    {const bs=SETS.find(t=>t.name==='Blutmond'),rel=(save.arts.sichel||0)*.01,set=setOn(bs)?(setMax(bs)?.1:.05):0,pc=v=>Math.round(v*100)+'%';// Quellen wie in computeStats; Schwurbaum = Rest
+     rows.push(['Blutmond-Chance (ab Kreis 3)',pc(.07+ST.moonCh)],['· Grundchance','7%'],['· Schwurbaum',pc(ST.moonCh-rel-set)],['· Reliquie Mondsichel',pc(rel)],['· Set Blutmond',pc(set)]);}
     if(st.syn)rows.push(['Segnungs-Synergien',fmt(st.syn)]);if(st.cur)rows.push(['Verfluchte Segen',fmt(st.cur)]);
     if(st.lf)rows.push(['Goldkugeln in der Luft gefangen',fmt(st.lf)]);
     for(const k in AFFIX)if(st.ka&&st.ka[k])rows.push(['Elite: '+AFFIX[k].name,fmt(st.ka[k])]);
