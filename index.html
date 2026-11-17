@@ -572,7 +572,10 @@ const ARTS=[
  {id:'rune',c:10,name:'Kettenblitz-Rune',d:v=>`+${Math.ceil(v/4)} Kettenblitz, +${v*10}% Kettenschaden`,f:(s,l)=>{s.chain+=Math.ceil(l/4);s.chainDmg+=.1*l;},rows:["..GGGGGG..",".GIIIIIIG.","GIIIIggIIG","GIIIggIIIG","GIIggggIIG","GIIIIggIIG","GIIIggIIIG","GIIIgIIIIG",".GIIIIIIG.","..GGGGGG.."]},
  {id:'dornen',c:10,name:'Dornenmantel',d:v=>`Reflektiert +${v*15}% Schaden`,f:(s,l)=>s.thorns+=.15*l,rows:["...vvvv...","..vVVVVv..","V.vVKKVv.V",".vVVVVVVv.","vVVvVVvVVv",".vVVVVVVv.","vVvVVVVvVv",".vVVVVVVv.","vVVvVVvVVv","V.vvvvvv.V"]},
  {id:'schaedel',c:10,name:'Fürstenschädel',d:v=>`+${v*6}% Schaden gegen Fürsten & Elite`,f:(s,l)=>s.bossDmg+=.06*l,rows:["..bbbbbb..",".bbbbbbbb.","bbbbbbbbbb","bKKbbbbKKb","bKRbbbbRKb","bbbbKKbbbb",".bbbbbbbb.","..bKbKbK..","..bbbbbb..","...b.b.b.."]},
- {id:'bkrone',c:50,bk:1,name:'Knochenkrone',d:v=>`+${v*2} Rüstung, +${v*10}% Siegel`,f:(s,l)=>{s.armor+=2*l;s.sigil*=1+.1*l;},rows:["b...bb...b","bb..bb..bb","bbb.bb.bbb","bbbbbbbbbb","bKbbRRbbKb","cbcbcbcbcb","cccccccccc"]},
+ {id:'bkrone',c:50,bi:10,name:'Knochenkrone',d:v=>`+${v*2} Rüstung, +${v*10}% Siegel`,f:(s,l)=>{s.armor+=2*l;s.sigil*=1+.1*l;},rows:["b...bb...b","bb..bb..bb","bbb.bb.bbb","bbbbbbbbbb","bKbbRRbbKb","cbcbcbcbcb","cccccccccc"]},
+ {id:'schleier',bi:1,name:'Bansheeschleier',d:v=>`+${v*10}% Bannstrahl-Schaden`,f:(s,l)=>s.click*=1+.1*l,rows:["...WWWW...","..WwwwwW..",".WwKwwKwW.",".WwwwwwwW.",".WwwKKwwW.","WwwwwwwwwW","WwPwwwwPwW","WPw.WW.wPW","P.W.Ww.W.P","..P..P..P."]},
+ {id:'zahn',bi:2,name:'Grafenzahn',d:v=>`+${v}% Lebensraub, +${v*4}% Krit-Schaden`,f:(s,l)=>{s.ls+=.01*l;s.critDmg+=.04*l;},rows:["..WWWWWW..",".WWWWWWWW.",".WwWWWWwW.","..WWWWWW..","..WWWWWw..","...WWWw...","...WWWw...","....WRr...","....RR....",".....R...."]},
+ {id:'eis',bi:4,name:'Eissplitter',d:v=>`+${v*10}% Ultimate-Schaden`,f:(s,l)=>s.ultDmg*=1+.1*l,rows:["....W.....","....SW....","...SgS....","...SggS...","..SgWgS...","..sSggSs..","...sSgS...","...sSSs...","....sS....",".....s...."]},
  {id:'uhr',name:'Sanduhr des Richters',d:v=>`+${v/2}s Jagdzeit`,f:(s,l)=>s.time+=.5*l,rows:["YYYYYYYY",".GTTTTG.","..GTTG..","...GG...","..GTTG..",".GTTTTG.","YYYYYYYY"]}];
 const ART_MAX=10;
 // Set-Bonus: alle drei Reliquien auf Stufe SET_LVL
@@ -1412,7 +1415,8 @@ function killDemon(e,o){
     dropLoot(e,'s',v,gold);if(e.boss){const l=R.loot[R.loot.length-1];l.vz=rnd(320,620);l.vx*=1.4;l.vy=l.vy*.6+40;}}
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2)*(e.aff2?2:1):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;if(R.mod==='rage')b*=1.5;if(R.mod==='curse')b*=1.25;if(R.mod==='ember')b*=1.4;if(R.bmoon)b*=3;dropLoot(e,'b',b);}
   if(e.d.thief){for(let i=0;i<20;i++)dropLoot(e,'s',d.souls*R.rewM*ST.soul/4,i<4);save.st.thief=(save.st.thief||0)+1;R.tx.push({x:e.x,y:e.y-40,str:'BEUTE!',t:0,col:'#ffd76a'});sfx('relic');}
-  if(e.boss&&bossOf(R.c).ab==='bone')dropLoot(e,'a',ARTS.find(a=>a.bk));// Knochenkönig: immer seine Krone
+  const own=e.boss&&ARTS.find(a=>a.bi===BOSSES.indexOf(bossOf(R.c)));
+  if(own&&(own.bi===10||Math.random()<.3))dropLoot(e,'a',own);// eigene Reliquie: Knochenkönig immer, andere Fürsten 30%
   else if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
   if(e.boss){const s=bossSig();for(let i=0;i<8;i++){dropLoot(e,'g',s*ST.bossLoot/8);R.loot[R.loot.length-1].hud=1;}R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:1.6,sc:2.6});
     R.bossDead=true;save.st.bosses++;if(!save.tipGold){save.tipGold=1;setTimeout(()=>toast('Tipp: Goldene Seelen-Kugeln lassen sich per Klick in der Luft fangen – +50% Wert!',5500),1200);}if(bossOf(R.c).ab==='bone')save.st.bk=(save.st.bk||0)+1;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;R.slow=.5;R.zoom={x:e.x,y:e.y,t:0,dur:.9};// Todesstoß in Zeitlupe
@@ -1427,7 +1431,7 @@ function killDemon(e,o){
   }
   if(!R.bossSpawned&&R.kills>=R.quota)spawnBoss();
 }
-function dropArt(e){const ok=ARTS.filter(a=>!a.bk&&R.c>=(a.c||0)),open=ok.filter(a=>(save.arts[a.id]||0)<ART_MAX),pool=open.length?open:ok;
+function dropArt(e){const ok=ARTS.filter(a=>a.bi==null&&R.c>=(a.c||0)),open=ok.filter(a=>(save.arts[a.id]||0)<ART_MAX),pool=open.length?open:ok;
   dropLoot(e,'a',pool[ri(0,pool.length-1)]);}
 const forgeGain=()=>1+Math.floor(R.c/10);
 function gainArt(a){if((save.arts[a.id]||0)>=ART_MAX){const f=forgeGain();curAdd('a',f);save.st.forged=(save.st.forged||0)+1;toast('Seelen-Schmiede: '+a.name+' → +'+f+' Höllenfragmente');return;}
@@ -2140,11 +2144,11 @@ function chronik(tab){
       h+=`<details data-cat="${cat}" ${achOpen.has(cat)?'open':''} style="margin-bottom:6px"><summary style="cursor:pointer;color:${n===as.length?'#ffd76a':'#c8b8a8'};font-size:20px">${cat} <span style="color:var(--dim)">${n}/${as.length}</span>${near?' <span style="color:#7bff8a" title="Ein Erfolg ist fast geschafft">● fast geschafft</span>':''}</summary><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-top:6px">`;
       for(const a of as){const d=save.ach[a.id];h+=`<div class="htn ${d?'max':'lock'}" style="cursor:default;opacity:${d?1:.55}"><b style="color:${d?'#ffd76a':'#c8b8a8'}">${d?'🏆 ':''}${a.name}</b>${a.desc}${!d&&a.pg?achBar(a.pg()):'<br>'}${rewTxt(a.rew)}</div>`;}
       h+='</div></details>';}}
-  else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten). Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten. Sind alle erreichbaren auf Stufe ${ART_MAX}, schmilzt die <b style="color:#ff6ad8">Seelen-Schmiede</b> neue zu Höllenfragmenten (1 + 1 je 10 Kreise).</div>`;
+  else if(tab==='r'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Jeder Fürst hinterlässt eine Reliquie (Elite-Dämonen selten), manche Fürsten mit 30% ihre ganz eigene. Doppelte steigern ihre Stufe (max. ${ART_MAX}). Reliquien bleiben beim Aufstieg erhalten. Sind alle erreichbaren auf Stufe ${ART_MAX}, schmilzt die <b style="color:#ff6ad8">Seelen-Schmiede</b> neue zu Höllenfragmenten (1 + 1 je 10 Kreise).</div>`;
     h+=`<div style="color:#ff6ad8;text-align:center;margin-bottom:6px">Sets – alle drei Reliquien auf Stufe ${SET_LVL}:</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-bottom:12px">`;
     for(const t of SETS){const on=setOn(t);h+=`<div class="htn ${on?'max':''}" style="cursor:default;opacity:${on?1:.7}"><b style="color:${on?'#ff6ad8':'#c8b8a8'}">${on?(setMax(t)?'✦✦ ':'✦ '):''}${t.name}${setMax(t)?' (Stufe 2)':''}</b> ${t.ids.map(i=>`<img src="${sprURL('art_'+i,2)}" title="${save.arts[i]?ARTS.find(a=>a.id===i).name:'???'}" style="vertical-align:middle;image-rendering:pixelated;${save.arts[i]?'':'filter:brightness(0)'}"><span style="color:${(save.arts[i]||0)>=SET_LVL?'#7bff8a':'var(--dim)'}">${save.arts[i]||0}</span>`).join(' ')}<br>${t.d}${setMax(t)?' – <b style="color:#ff6ad8">×2</b>':' <span style="color:var(--dim)">(alle auf Stufe '+ART_MAX+': ×2)</span>'}</div>`;}
     h+='</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">';
-    for(const a of ARTS){const l=save.arts[a.id]||0;h+=`<div class="htn ${l>=ART_MAX?'max':l?'':'lock'}" style="cursor:default;opacity:${l?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('art_'+a.id,4)}" style="image-rendering:pixelated;${l?'':'filter:brightness(0)'}"><div><b style="color:${l?'#ffd76a':'#c8b8a8'}">${l?a.name:'???'}</b> ${l?'Stufe '+l+'/'+ART_MAX:''}<br>${a.d(Math.max(1,l))}${l?'':' (Stufe 1)'}${!l&&a.c?`<br><span style="color:#ff8a6a">${a.bk?'Nur vom Knochenkönig (ab Kreis 50)':'Erst ab Kreis '+a.c}</span>`:''}</div></div>`;}
+    for(const a of ARTS){const l=save.arts[a.id]||0;h+=`<div class="htn ${l>=ART_MAX?'max':l?'':'lock'}" style="cursor:default;opacity:${l?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('art_'+a.id,4)}" style="image-rendering:pixelated;${l?'':'filter:brightness(0)'}"><div><b style="color:${l?'#ffd76a':'#c8b8a8'}">${l?a.name:'???'}</b> ${l?'Stufe '+l+'/'+ART_MAX:''}<br>${a.d(Math.max(1,l))}${l?'':' (Stufe 1)'}${!l&&(a.c||a.bi!=null)?`<br><span style="color:#ff8a6a">${a.bi!=null?'Nur vom Fürsten „'+BOSSES[a.bi].name+'“'+(a.c?' (ab Kreis '+a.c+')':''):'Erst ab Kreis '+a.c}</span>`:''}</div></div>`;}
     h+='</div>';}
   else if(tab==='b'){h+=`<div style="color:var(--dim);text-align:center;margin-bottom:8px">Erlege eine Dämonenart, um ihren Eintrag aufzudecken. Werte relativ zum Imp des jeweiligen Kreises. Ab 100 und 1000 Kills einer Art je +5% Schaden gegen sie, ab 10000 zusätzlich +5% Seelen.</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">`;
     for(const k in DEMONS){const D=DEMONS[k],n=save.st.kt[k]||0;h+=`<div class="htn ${n?'':'lock'}" style="cursor:default;opacity:${n?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL(D.spr,3)}" style="image-rendering:pixelated;${n?'':'filter:brightness(0)'}"><div><b style="color:${n?'#ffd76a':'#c8b8a8'}">${n?(k==='boss'?'Höllenfürsten':D.name):'???'}</b><br>${n?`${BEST[k]}${BEST_EL[k]&&save.st.ke[k]?`<br><span style="color:#ff9a4a">Elite: ${BEST_EL[k]}</span>`:''}<br><span style="color:var(--dim)">Leben ×${D.hp} · Tempo ${D.spd} · Schaden ×${D.dmg} · Seelen ${D.souls}</span><br>Getötet: ${fmt(n)}${save.st.ke[k]?` <span style="color:#ff9a4a">(${fmt(save.st.ke[k])} Elite)</span>`:''}${n>=100?` <span style="color:#7bff8a">+${Math.round((bestMul(k)-1)*100)}% Schaden${n>=10000?', +5% Seelen':''}</span>`:''}`:'Noch nie erlegt.'}</div></div>`;}
@@ -2267,7 +2271,7 @@ else{// Offline-Fortschritt: 25% der zuletzt erjagten Seelen/s, max. 8 Stunden
 addEventListener('pagehide',persist);setInterval(persist,30000);
 requestAnimationFrame(frame);
 // debug hook for testing
-window.__DJ={get save(){return save},get R(){return R},startRun,toHub,computeStats,updateRun,autoBuy,smite,nodeCost,nodeAvail,NODES,ST:()=>ST,HT,htAvail,ASC,ascCost,fragGain,ascend,al};
+window.__DJ={get save(){return save},get R(){return R},startRun,killDemon,toHub,computeStats,updateRun,autoBuy,smite,nodeCost,nodeAvail,NODES,ST:()=>ST,HT,htAvail,ASC,ascCost,fragGain,ascend,al};
 </script>
 </body>
 </html>
