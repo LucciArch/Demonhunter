@@ -168,6 +168,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.154: Teufelsaltar-Pakt-Preis – nach der Wahl erscheint ein Elite-Paktwächter (Hornbestie) mit 20s-Countdown; rechtzeitig erlegt, fällt der Fluch weg (gemeinsamer Fluch-Aufheber `liftCurse` auch für Fluch-Synergien, nie doppelt); Erfolg „Paktbrecher“ (5×)
 - v0.155: Zeitsanduhr-Schrein mit rieselndem Sand (animierte Körner im Hals)
 - v0.156: Paktwächter als eigener gehörnter Teufel mit goldenem Dreizack (handgepixelt, Laufanimation); Auto-Jagd wählt am Teufelsaltar Flüche, wenn der Wächter in ~10 s fällt
+- v0.157: Paktwächter sticht mit dem Dreizack zu (goldener Stoß mit Funken) und hat einen Eintrag im Bestiarium (Schreine) mit Zähler
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -178,4 +179,4 @@ I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträt
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
-D10. Paktwächter: Dreizack-Stoß als eigene Angriffsanimation (Stich nach vorn, Funken) und Eintrag im Bestiarium
+D11. Paktwächter-Varianten ab Kreis 30: Erzwächter (zwei Dreizack-Stöße, wirft den Dreizack aus der Ferne)
