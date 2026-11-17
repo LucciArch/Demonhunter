@@ -647,6 +647,31 @@ const BOSSES=[
 function walkRows(rows){const n=rows.length,w=Math.max(...rows.map(r=>r.length)),ls=n-Math.max(3,Math.round(n*.22)),mid=Math.floor(w/2);
   return rows.map((r,j)=>{if(j<ls)return r;const nx=(rows[j+1]||'').padEnd(w,'.');const cur=r.padEnd(w,'.');return nx.slice(0,mid)+cur.slice(mid);});}
 // Pestarzt: Phiolen-Gürtel (voll / ein Platz leer) und Phiole in der Hand
+// Paktwächter: gehörnter Teufel mit Dreizack (Teufelsaltar)
+SPR_DEF.pactg={pal:{r:'#9a1420',R:'#d02a34',L:'#ff5a5a',d:'#4a0810',k:'#1a0608',K:'#3a2a2e',e:'#ffe04a',m:'#120406',t:'#ffd76a',T:'#b8862a',w:'#5a0a14'},rows:[
+"T...T...T...........",
+"T...T...T...........",
+"TT.TTT.TT...........",
+".TTTTTTT............",
+"....t..kK......Kk...",
+"....t..kKk....kKk...",
+"....t...kddRRddk....",
+"....t...dRLRRRRd....",
+"....t..dRReRReRRd...",
+"....t..dRRmRRmRRd...",
+"....t..drRRmmRRrd...",
+"....t...drRRRRrd....",
+"..wwtRRrdrRRRRrdrw..",
+".wwrtRLRrrRRRRrrRww.",
+"wwrrtRRRrrRRRRrrRrww",
+"ww.rtrr.drRRRRrd.rww",
+"w...tR..ddrrrrdd..Rw",
+"....t...dddd.ddd....",
+"....t...ddd...ddd...",
+"....t...dd.....dd...",
+"....t..kkk.....kkk..",
+"....T.kkkk.....kkkk."]};
+SPR.pactg=mkSprite(SPR_DEF.pactg);SPR.pactg.f2=mkSprite({pal:SPR_DEF.pactg.pal,rows:walkRows(SPR_DEF.pactg.rows)});
 const BELT_PAL={b:'#5a3a22',B:'#c8a040',k:'#8a6a3a',w:'#d8ffd0',g:'#7aff6a',G:'#2a8a2a'};
 SPR.belt=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk.kk","wg.wg.wg","GG.GG.GG"]});
 SPR.belt2=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk...","wg.wg...","GG.GG..."]});
@@ -1188,7 +1213,7 @@ const SYNERGIES=[
 // Hebt einen Fluch auf – höchstens so oft, wie der verfluchte Segen gewählt wurde (Synergie und Paktwächter zählen gemeinsam)
 function liftCurse(n){const l=R.lift=R.lift||{};if((l[n]||0)>=((R.bk||{})[n]||0))return false;l[n]=(l[n]||0)+1;CURSED.find(c=>c.n===n).u();return true;}
 // Teufelsaltar: Paktwächter bewacht den Pakt – binnen 20s erlegt, fällt der Fluch weg
-function pactGuard(n){const e=spawnDemon('brute');makeElite(e);e.pact=n;e.pactT=20;R.tx.push({x:e.x,y:e.y-50,str:'PAKTWÄCHTER!',t:0,col:'#ff3a6a'});}
+function pactGuard(n){const e=spawnDemon('brute');makeElite(e);e.pact=n;e.pactT=20;e.spr='pactg';R.tx.push({x:e.x,y:e.y-50,str:'PAKTWÄCHTER!',t:0,col:'#ff3a6a'});}
 // Welche noch nicht ausgelöste Synergie würde Segen n vervollständigen?
 function synOf(n){return synsOf(n)[0];}
 function synsOf(n){const k=R.bk||{};return SYNERGIES.filter(s=>!(R.syn||[]).includes(s.n)&&(s.a===s.b?s.a===n&&k[n]===1:(s.a===n&&k[s.b])||(s.b===n&&k[s.a])));}
@@ -1208,7 +1233,7 @@ function offerBoons(cur){// cur: Teufelsaltar – nur verfluchte Segen
     if(o.b.x){R.cur=(R.cur||0)+1;save.st.cur=(save.st.cur||0)+1;save.st.curMax=Math.max(save.st.curMax||0,R.cur);(save.st.curK=save.st.curK||{})[o.b.n]=(save.st.curK[o.b.n]||0)+1;}
     for(const sy of sys){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();hudBoon();sfx('relic');if(cur&&o.b.x)pactGuard(o.b.n);R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
     for(let i=0;i<24;i++){const a=i/24*Math.PI*2,h=heroPos();R.pt.push({x:h.x,y:h.y-20,vx:Math.cos(a)*180,vy:Math.sin(a)*120,t:0,life:.6,c:o.b.c,s:3});}};
-  if(save.auto){const ok=opts.filter(o=>!o.b.x),o=opts.find(o=>synOf(o.b.n))||ok[ri(0,ok.length-1)];if(o)pick(o);return;}// Auto-Jagd wählt selbst, Flüche nur wenn sie sofort eine Synergie auslösen
+  if(save.auto){const ok=opts.filter(o=>!o.b.x||cur&&ST.dmg*ST.aps*10>270*R.hpM),o=opts.find(o=>synOf(o.b.n))||ok[ri(0,ok.length-1)];if(o)pick(o);return;}// Auto-Jagd wählt selbst, Flüche nur bei Synergie – am Altar auch, wenn der Paktwächter (bis 270×hpM Leben) in ~10s Dauerfeuer fällt
   R.choosing={opts,pick,cur};sfx('buy');
   openModal(`<h2 style="text-align:center;color:#ffd76a">SEGNUNG</h2><div style="text-align:center;color:var(--dim);margin:4px 0 12px">${cur?'Der Teufel bietet einen Pakt an – ':''}Wähle einen Segen für diese Jagd (Taste 1–${opts.length})</div><div class="row">${opts.map((o,i)=>`<button class="boon${o.m>1?' holy':''}${o.b.x?' cursed':''}" data-i="${i}" style="--bc:${o.b.c}"><span class="bi">${o.b.i}</span><b>${o.b.n}${o.m>1?' ✧':''}</b><span>${o.b.d(o.m)}</span>${o.m>1?'<em>Geweiht – doppelte Wirkung</em>':''}${o.b.x?'<em style="color:#ff6a8a">Verfluchter Segen</em>':''}${(sy=>sy?`<em style="color:${sy.c}">⚡ Synergie: ${sy.n} – ${sy.d}</em>`:'')(synOf(o.b.n))}</button>`).join('')}</div>${R.rr>0?`<div style="text-align:center;margin-top:12px"><button id="reroll">⟳ Neu würfeln (${R.rr}× übrig, Taste R)</button></div>`:''}`);
   $('#mbox').querySelectorAll('.boon').forEach(el=>el.onclick=()=>pick(opts[+el.dataset.i]));if($('#reroll'))$('#reroll').onclick=rerollBoons;
