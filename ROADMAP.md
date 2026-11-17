@@ -160,6 +160,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 
 - v0.147: test/sim.js `--seed N` – ersetzt Math.random im Spiel durch einen festen Zufallsgenerator (mulberry32); gleicher Seed ergibt exakt denselben Verlauf, damit Balance-Vergleiche nicht in der Streuung untergehen
 - v0.148: Neuer Schrein „Zeitsanduhr“ (goldene Sanduhr, nur bei über 60% Leben): opfert 40% Leben für +8s Jagdzeit; Erfolg „Zeitdieb“ (10×), im Bestiarium
+- v0.149: Schwurbaum-Knoten „Teufelsbund“ (Bann-Pfad hinter Vierte Gabe, Schwefel, 5 Stufen): je +4% Chance auf einen verfluchten Segen in der Auswahl
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -168,6 +169,6 @@ L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Verglei
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
-D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
+D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter); Sanduhr-Sand rieselt animiert

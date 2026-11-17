@@ -854,6 +854,7 @@ N('Be','B6',-60,'Strahlenkranz','clickAoe',20,10,5,'g');
 N('Bf','B5',60,'Engelschor','autoSmiteCount',1,3,8,'g',{gr:2.5});
 N('Bh','Bd',25,'Gebetskette','boonReroll',1,3,10,'b',{gr:2.5});
 N('Bi','Bh',0,'Vierte Gabe','boonExtra',1,1,40,'b');
+N('Bj','Bi',0,'Teufelsbund','curseCh',4,5,15,'b');
 N('Bg','Ba',-25,'Stigma','markPct',15,10,80,'s');
 // --- OKKULT
 N('O1','root',0,'Schwachstelle','crit',2,10,4,'s');
@@ -925,7 +926,7 @@ const FX={
  hpFlat:v=>`+${v} Leben`,hpPct:v=>`+${v}% Leben`,armor:v=>`+${v} Rüstung`,regen:v=>`+${v} Leben/s`,revive:v=>`+${v} Wiederbelebung pro Jagd (50% Leben)`,
  thorns:v=>`Reflektiert ${v}% des erlittenen Schadens`,lifesteal:v=>`+${v}% Lebensraub`,
  runTime:v=>`+${v}s Jagdzeit`,magnet:v=>`+${v} Sammelradius des Zeigers`,spawnPct:v=>`+${v}% mehr Dämonen`,autoCollect:v=>`Beute fliegt fast sofort zu dir`,
- collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,moonCh:v=>`+${v}% Blutmond-Chance (ab Kreis 3)`,shrineFreq:v=>`Schreine erscheinen ${v}% öfter`,boonReroll:v=>`Segnungen ${v}× pro Jagd neu würfeln`,boonExtra:v=>`+${v} Segen zur Auswahl`,
+ collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,moonCh:v=>`+${v}% Blutmond-Chance (ab Kreis 3)`,curseCh:v=>`+${v}% Chance auf einen verfluchten Segen`,shrineFreq:v=>`Schreine erscheinen ${v}% öfter`,boonReroll:v=>`Segnungen ${v}× pro Jagd neu würfeln`,boonExtra:v=>`+${v} Segen zur Auswahl`,
  soulPct:v=>`+${v}% Seelen`,doubleLoot:v=>`+${v}% Chance auf doppelte Beute`,brimPct:v=>`+${v}% Schwefel`,golden:v=>`${v}% Chance auf goldene Seelen (×10)`,
  sigilPct:v=>`+${v}% Siegel`,soulFlat:v=>`+${v} Seelen pro Kill`,eliteCh:v=>`+${v}% Chance auf Elite-Dämonen`,brimFlat:v=>`+${v} Schwefel pro Elite`,bossLoot:v=>`+${v}% Fürsten-Beute`,sigilFlat:v=>`+${v} Siegel pro Fürst`,
  clickPct:v=>`Bannstrahl (Klick) +${v}% deines Schadens`,clickAoe:v=>`+${v}% Bannstrahl-Radius`,clickCrit:v=>`+${v}% Krit-Chance des Bannstrahls`,clickCritDmg:v=>`+${v}% Bannstrahl-Krit-Schaden`,
@@ -1095,7 +1096,7 @@ function computeStats(){
   s.collectDelay=Math.max(.25,(g('autoCollect')?.6:3)-g('collectDelay')*(g('autoCollect')?.1:1));
   s.soul=1+g('soulPct')/100;s.soulFlat=g('soulFlat');
   s.brim=1+g('brimPct')/100;s.brimFlat=g('brimFlat');
-  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.moonSig=1;s.shrineF=1+g('shrineFreq')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');
+  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.moonSig=1;s.shrineF=1+g('shrineFreq')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');s.curseCh=g('curseCh')/100;
   s.dbl=g('doubleLoot')/100;s.golden=g('golden')/100;
   s.elite=g('eliteCh')/100;s.bossDmg=1+g('bossDmg')/100;s.bossLoot=1+g('bossLoot')/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.clickR=30*(1+g('clickAoe')/100);
@@ -1185,7 +1186,7 @@ function boonGain(e){if(!R||R.over)return;R.bl=(R.bl||0)+(e.boss?10:e.elite?3:1)
 function rerollBoons(){if(!R||!R.choosing||!(R.rr>0))return;R.rr--;R.choosing=null;closeModal();offerBoons();}
 function offerBoons(){
   const pool=BOONS.slice(),opts=[];while(opts.length<ST.boonN){const b=pool.splice(ri(0,pool.length-1),1)[0];opts.push({b,m:Math.random()<.15?2:1});}// 15%: geweiht = doppelte Wirkung
-  if(Math.random()<.12)opts[ri(0,opts.length-1)]={b:CURSED[ri(0,CURSED.length-1)],m:1};
+  if(Math.random()<.12+ST.curseCh)opts[ri(0,opts.length-1)]={b:CURSED[ri(0,CURSED.length-1)],m:1};
   const pick=o=>{const sy=synOf(o.b.n);o.b.f(o.m);(R.boons=R.boons||[]).push(o.b.n+(o.m>1?' ✧':''));(R.bk=R.bk||{})[o.b.n]=(R.bk[o.b.n]||0)+1;
     if(o.b.x){R.cur=(R.cur||0)+1;save.st.cur=(save.st.cur||0)+1;save.st.curMax=Math.max(save.st.curMax||0,R.cur);(save.st.curK=save.st.curK||{})[o.b.n]=(save.st.curK[o.b.n]||0)+1;}
     if(sy){sy.f();(R.syn=R.syn||[]).push(sy.n);R.boons.push('⚡'+sy.n);save.st.syn=(save.st.syn||0)+1;(save.st.synK=save.st.synK||{})[sy.n]=(save.st.synK[sy.n]||0)+1;synBurst(sy);R.tx.push({x:heroPos().x,y:heroPos().y-100,str:'SYNERGIE: '+sy.n.toUpperCase()+'!',t:0,col:sy.c});shake=Math.max(shake,6);}R.choosing=null;closeModal();hudBoon();sfx('relic');R.tx.push({x:heroPos().x,y:heroPos().y-70,str:o.b.n.toUpperCase()+'!',t:0,col:o.b.c});
@@ -2076,7 +2077,7 @@ const ICON={
  skull:[".###.","#.#.#","#####",".###.",".#.#."],chain:["#....",".#...","..#.#","...#.","....#"],thorn:["#.#.#",".###.","#####",".###.","#.#.#"],star:["..#..","#####",".###.",".#.#.","#...#"]
 };
 const KEYICON={dmgFlat:'dmg',dmgPct:'dmg',atkSpd:'spd',aoe:'aoe',bossDmg:'skull',chain:'chain',chainDmg:'chain',execute:'skull',multi:'star',hpFlat:'hp',hpPct:'hp',armor:'arm',regen:'regen',revive:'regen',thorns:'thorn',lifesteal:'hp',
- runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',moonCh:'star',shrineFreq:'star',boonReroll:'star',boonExtra:'star',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
+ runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',moonCh:'star',curseCh:'skull',shrineFreq:'star',boonReroll:'star',boonExtra:'star',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
  clickPct:'click',clickAoe:'aoe',clickCrit:'crit',clickCritDmg:'crit',autoSmite:'click',autoSmiteSpd:'spd',autoSmiteCount:'click',smiteTwice:'star',markPct:'click',clickSoul:'loot',crit:'crit',critDmg:'crit',explode:'boom',explodeR:'boom',pierce:'dmg',chainReact:'boom',enemyHpRed:'skull',dmgPerCircle:'dmg',hpPerCircle:'hp',soulPerCircle:'loot',frenzy:'spd',killTime:'time'};
 function drawIcon(key,col,size,on){const g=ICON[KEYICON[key]]||ICON.star;const px=Math.max(1,size*2/5);ctx.fillStyle=on?'#fff8e8':col;ctx.globalAlpha=on?1:.75;
   for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(g[j][i]==='#')ctx.fillRect(Math.round((i-2.5)*px),Math.round((j-2.5)*px),Math.ceil(px),Math.ceil(px));ctx.globalAlpha=1;}
