@@ -154,6 +154,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.142: Blutmond-Kalender in der Chronik › Statistik: aktuelle Blutmond-Chance aufgeschlüsselt nach Grundchance, Schwurbaum, Reliquie Mondsichel und Set Blutmond
 - v0.143: Mondschlächter wirft als vierten Angriff eine rotierende Mondsichel (Bumerang): fliegt zum Jäger, kehrt zum Schlächter zurück und trifft auf Hin- und Rückweg; ab Kreis 25 zwei Sicheln, per Bannstrahl zerstörbar
 - v0.144: Neuer Schrein „Opferstock“ (Holzkasten mit Glut, nur wenn Schwefel gesammelt): tauscht allen Schwefel der Jagd gegen die halben Siegel eines Fürsten; Erfolg „Ablasshändler“ (10×); Spiegel der Gier zerspringt beim Verlust in Scherben
+- v0.145: Mimic peitscht ab 260 px mit der Zunge (Schaden und zieht sich zum Jäger heran) und lässt beim Tod eine hüpfende goldene Truhe fallen (16 Seelen-Kugeln + ein Viertel Fürsten-Siegel)
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -163,5 +164,5 @@ K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Sch
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 D4. Fluch-Synergien: zwei verfluchte Segen zusammen heben einen Nachteil auf; Schwurbaum-Knoten „Teufelsbund“ (Flüche erscheinen öfter)
-E3. Mimic beißt mit Zungen-Angriff und lässt beim Tod eine goldene Truhe fallen
+E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E5. Schrein „Seelenwaage“: tauscht Seelen gegen Schwefel; Schrein-Leiste im Hub zeigt, welche Schreine schon gefunden wurden
