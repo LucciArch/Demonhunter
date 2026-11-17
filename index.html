@@ -816,6 +816,7 @@ N('Ge','G5',-60,'Ernte','soulPct',40,10,25,'b');
 N('Gf','G6',60,'Siegelbruch','sigilFlat',1,5,10,'g');
 N('Gg','Ga',25,'Seelenwucher','soulFlat',3,10,90,'s');
 N('Gh','Gd',25,'Mondanbeter','moonCh',2,5,8,'b');
+N('Gi','Gh',0,'Pilgerpfad','shrineFreq',15,5,12,'b');
 // --- BANN
 N('B1','root',0,'Bannstrahl','clickPct',10,10,3,'s');
 N('B2','B1',0,'Weite Bannung','clickAoe',10,10,15,'s');
@@ -904,7 +905,7 @@ const FX={
  hpFlat:v=>`+${v} Leben`,hpPct:v=>`+${v}% Leben`,armor:v=>`+${v} Rüstung`,regen:v=>`+${v} Leben/s`,revive:v=>`+${v} Wiederbelebung pro Jagd (50% Leben)`,
  thorns:v=>`Reflektiert ${v}% des erlittenen Schadens`,lifesteal:v=>`+${v}% Lebensraub`,
  runTime:v=>`+${v}s Jagdzeit`,magnet:v=>`+${v} Sammelradius des Zeigers`,spawnPct:v=>`+${v}% mehr Dämonen`,autoCollect:v=>`Beute fliegt fast sofort zu dir`,
- collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,moonCh:v=>`+${v}% Blutmond-Chance (ab Kreis 3)`,boonReroll:v=>`Segnungen ${v}× pro Jagd neu würfeln`,boonExtra:v=>`+${v} Segen zur Auswahl`,
+ collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,moonCh:v=>`+${v}% Blutmond-Chance (ab Kreis 3)`,shrineFreq:v=>`Schreine erscheinen ${v}% öfter`,boonReroll:v=>`Segnungen ${v}× pro Jagd neu würfeln`,boonExtra:v=>`+${v} Segen zur Auswahl`,
  soulPct:v=>`+${v}% Seelen`,doubleLoot:v=>`+${v}% Chance auf doppelte Beute`,brimPct:v=>`+${v}% Schwefel`,golden:v=>`${v}% Chance auf goldene Seelen (×10)`,
  sigilPct:v=>`+${v}% Siegel`,soulFlat:v=>`+${v} Seelen pro Kill`,eliteCh:v=>`+${v}% Chance auf Elite-Dämonen`,brimFlat:v=>`+${v} Schwefel pro Elite`,bossLoot:v=>`+${v}% Fürsten-Beute`,sigilFlat:v=>`+${v} Siegel pro Fürst`,
  clickPct:v=>`Bannstrahl (Klick) +${v}% deines Schadens`,clickAoe:v=>`+${v}% Bannstrahl-Radius`,clickCrit:v=>`+${v}% Krit-Chance des Bannstrahls`,clickCritDmg:v=>`+${v}% Bannstrahl-Krit-Schaden`,
@@ -1065,7 +1066,7 @@ function computeStats(){
   s.collectDelay=Math.max(.25,(g('autoCollect')?.6:3)-g('collectDelay')*(g('autoCollect')?.1:1));
   s.soul=1+g('soulPct')/100;s.soulFlat=g('soulFlat');
   s.brim=1+g('brimPct')/100;s.brimFlat=g('brimFlat');
-  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');
+  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.shrineF=1+g('shrineFreq')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');
   s.dbl=g('doubleLoot')/100;s.golden=g('golden')/100;
   s.elite=g('eliteCh')/100;s.bossDmg=1+g('bossDmg')/100;s.bossLoot=1+g('bossLoot')/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.clickR=30*(1+g('clickAoe')/100);
@@ -1176,20 +1177,24 @@ const SHRINES={
  bless:{n:'Segensstein',d:'Sofort eine Segnung wählen',c:'#e0b0ff',rows:["....SS....","...ShSS...","...SPSS...","..SSpPSS..","..ShPpSS..","..SSPSSS..","..SSpPSS..",".SSSSSSSS.","ssssssssss"]},
 };
 for(const k in SHRINES)SPR['sh_'+k]=mkSprite({pal:SHRINE_PAL,rows:SHRINES[k].rows});
+// Mimic: Truhe mit Augen, Zahnreihen und Beinen; zweites Bild (beim Laufen) klappt das Maul zu
+{const pal={...SHRINE_PAL,t:'#f0e6c8',T:'#d0406a',e:'#ffe14a',m:'#2a0a10'};
+SPR.mimic=mkSprite({pal,rows:["..wwwwwww..",".wWWWWWWWw.","wWWeWWWeWWw","YYYYYYYYYYY",".t.t.t.t.t.","mmmmmmmmmmm","mmmTTTTTmmm","mmTTmmmTTmm",".t.t.t.t.t.","YYYYYYYYYYY","wWWWWYWWWWw","YYYYYYYYYYY",".ww.....ww."]});
+SPR.mimic.f2=mkSprite({pal,rows:["..wwwwwww..",".wWWWWWWWw.","wWWeWWWeWWw","YYYYYYYYYYY",".ttttttttt.","YYYYYYYYYYY","wWWWWYWWWWw","wWWWWWWWWWw","wWWWWWWWWWw","YYYYYYYYYYY","..w.....w..",".w.......w.",".ww.....ww."]});}
 function updShrines(dt){
   if(R.thiefT===undefined)R.thiefT=R.c>=2&&Math.random()<.4?rnd(3,8):1e9;// 40% der Jagden ab Kreis 2: ein Seelendieb
   if((R.thiefT-=dt)<=0){R.thiefT=1e9;const t=spawnDemon('thief');R.tx.push({x:t.x,y:t.y-40,str:'SEELENDIEB!',t:0,col:'#ffd76a'});}
-  R.shT=(R.shT===undefined?rnd(2,4):R.shT)-dt;
+  R.shT=(R.shT===undefined?rnd(2,4):R.shT)-dt*ST.shrineF;
   if(R.shT<=0&&!R.shrine){R.shT=rnd(10,16);const ks=Object.keys(SHRINES).filter(k=>k!=='curse'),k=R.c>=3&&Math.random()<.12?'curse':ks[ri(0,ks.length-1)],hp=heroPos(),a=Math.random()*Math.PI*2,rr=rnd(140,Math.min(W,H)*.42);
     R.shrine={k,x:clamp(hp.x+Math.cos(a)*rr,60,W-60),y:clamp(hp.y+Math.sin(a)*rr*.7,150,H-40),t:0};R.fx.push({k:'portal',x:R.shrine.x,y:R.shrine.y,r:30,t:0,dur:.6});}
   if(R.shrine)R.shrine.t+=dt;}
 function useShrine(x,y){const s=R.shrine;if(!s||Math.hypot(x-s.x,(y-(s.y-20))*1.2)>34)return false;
   R.shrine=null;const S=SHRINES[s.k];R.fx.push({k:'ring',x:s.x,y:s.y,r:90,t:0,dur:.5,col:S.c});sfx('relic');
   for(let i=0;i<20;i++)R.pt.push({x:s.x,y:s.y-20,vx:rnd(-160,160),vy:rnd(-240,-40),t:0,life:rnd(.4,.8),c:S.c,s:ri(2,4)});
-  save.st.shr=(save.st.shr||0)+1;
+  save.st.shr=(save.st.shr||0)+1;const K=save.st.shK=save.st.shK||{};K[s.k]=(K[s.k]||0)+1;
   if(s.k==='blood'){R.hp=Math.max(1,R.hp*.7);ST.dmg*=1.4;R.tx.push({x:s.x,y:s.y-50,str:'+40% SCHADEN',t:0,col:S.c});}
   else if(s.k==='well'){R.hp=Math.min(R.maxHp,R.hp+R.maxHp*.5);R.time+=3;R.maxTime+=3;R.tx.push({x:s.x,y:s.y-50,str:'+3s',t:0,col:S.c});}
-  else if(s.k==='chest'){if(R.c>=2&&Math.random()<.3){const m=spawnDemon(R.c>=5?'brute':'imp');m.x=s.x;m.y=s.y;makeElite(m);m.max=m.hp=m.hp*2;m.mimic=1;R.tx.push({x:s.x,y:s.y-50,str:'MIMIC!',t:0,col:'#ff6a3a'});shake=Math.max(shake,8);}
+  else if(s.k==='chest'){if(R.c>=2&&Math.random()<.3){const m=spawnDemon(R.c>=5?'brute':'imp');m.x=s.x;m.y=s.y;makeElite(m);m.max=m.hp=m.hp*2;m.mimic=1;m.spr='mimic';R.tx.push({x:s.x,y:s.y-50,str:'MIMIC!',t:0,col:'#ff6a3a'});shake=Math.max(shake,8);}
     else{const v=3*R.rewM*ST.soul;for(let i=0;i<14;i++)dropLoot({x:s.x,y:s.y,r:10},'s',v,i<2);R.tx.push({x:s.x,y:s.y-50,str:'SCHATZ!',t:0,col:S.c});}}
   else if(s.k==='curse'){R.hpM*=1.5;R.dmgM*=1.5;R.rewM*=2;save.st.curse=(save.st.curse||0)+1;R.tx.push({x:s.x,y:s.y-50,str:'VERFLUCHT! DOPPELTE BEUTE',t:0,col:S.c});shake=Math.max(shake,6);}
   else offerBoons();
@@ -2014,7 +2019,7 @@ const ICON={
  skull:[".###.","#.#.#","#####",".###.",".#.#."],chain:["#....",".#...","..#.#","...#.","....#"],thorn:["#.#.#",".###.","#####",".###.","#.#.#"],star:["..#..","#####",".###.",".#.#.","#...#"]
 };
 const KEYICON={dmgFlat:'dmg',dmgPct:'dmg',atkSpd:'spd',aoe:'aoe',bossDmg:'skull',chain:'chain',chainDmg:'chain',execute:'skull',multi:'star',hpFlat:'hp',hpPct:'hp',armor:'arm',regen:'regen',revive:'regen',thorns:'thorn',lifesteal:'hp',
- runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',moonCh:'star',boonReroll:'star',boonExtra:'star',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
+ runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',moonCh:'star',shrineFreq:'star',boonReroll:'star',boonExtra:'star',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
  clickPct:'click',clickAoe:'aoe',clickCrit:'crit',clickCritDmg:'crit',autoSmite:'click',autoSmiteSpd:'spd',autoSmiteCount:'click',smiteTwice:'star',markPct:'click',clickSoul:'loot',crit:'crit',critDmg:'crit',explode:'boom',explodeR:'boom',pierce:'dmg',chainReact:'boom',enemyHpRed:'skull',dmgPerCircle:'dmg',hpPerCircle:'hp',soulPerCircle:'loot',frenzy:'spd',killTime:'time'};
 function drawIcon(key,col,size,on){const g=ICON[KEYICON[key]]||ICON.star;const px=Math.max(1,size*2/5);ctx.fillStyle=on?'#fff8e8':col;ctx.globalAlpha=on?1:.75;
   for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(g[j][i]==='#')ctx.fillRect(Math.round((i-2.5)*px),Math.round((j-2.5)*px),Math.ceil(px),Math.ceil(px));ctx.globalAlpha=1;}
@@ -2137,7 +2142,8 @@ function chronik(tab){
     for(const k in DEMONS){const D=DEMONS[k],n=save.st.kt[k]||0;h+=`<div class="htn ${n?'':'lock'}" style="cursor:default;opacity:${n?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL(D.spr,3)}" style="image-rendering:pixelated;${n?'':'filter:brightness(0)'}"><div><b style="color:${n?'#ffd76a':'#c8b8a8'}">${n?(k==='boss'?'Höllenfürsten':D.name):'???'}</b><br>${n?`${BEST[k]}${BEST_EL[k]&&save.st.ke[k]?`<br><span style="color:#ff9a4a">Elite: ${BEST_EL[k]}</span>`:''}<br><span style="color:var(--dim)">Leben ×${D.hp} · Tempo ${D.spd} · Schaden ×${D.dmg} · Seelen ${D.souls}</span><br>Getötet: ${fmt(n)}${save.st.ke[k]?` <span style="color:#ff9a4a">(${fmt(save.st.ke[k])} Elite)</span>`:''}${n>=100?` <span style="color:#7bff8a">+${Math.round((bestMul(k)-1)*100)}% Schaden${n>=10000?', +5% Seelen':''}</span>`:''}`:'Noch nie erlegt.'}</div></div>`;}
     h+='</div>';
     const mc=Math.max(save.maxCircle,stv('maxC')),lst=(o,col)=>Object.values(o).map(x=>`<div class="htn ${mc>=x.c?'':'lock'}" style="cursor:default;opacity:${mc>=x.c?1:.55}"><b style="color:${col||x.col}">${x.name}</b> <span style="color:var(--dim)">ab Kreis ${x.c}</span><br>${x.d}</div>`).join('');
-    h+=`<div style="color:#ff9a4a;text-align:center;margin:12px 0 6px">Elite-Affixe</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(AFFIX)}</div><div style="color:#ff6ad8;text-align:center;margin:12px 0 6px">Höllenkreis-Modifikatoren</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(CMOD,'#ff6ad8')}</div><div style="color:#ff6a8a;text-align:center;margin:12px 0 6px">Verfluchte Segen – selten in der Segnungs-Auswahl</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${CURSED.map(x=>{const n=(save.st.curK||{})[x.n]||0;return `<div class="htn ${n?'':'lock'}" style="cursor:default;opacity:${n?1:.7}"><b style="color:${n?x.c:'#c8b8a8'}">${x.i} ${x.n}</b>${n?` <span style="color:var(--dim)">${fmt(n)}×</span>`:''}<br>${x.d()}</div>`;}).join('')}</div><div style="color:#9ad8ff;text-align:center;margin:12px 0 6px">Segnungs-Synergien – wähle beide Segen in einer Jagd</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${SYNERGIES.map(x=>{const n=(save.st.synK||{})[x.n]||0;return `<div class="htn ${n?'':'lock'}" style="cursor:default;opacity:${n?1:.7}"><b style="color:${n?x.c:'#c8b8a8'}">⚡ ${x.n}</b>${n?` <span style="color:var(--dim)">${fmt(n)}×</span>`:''}<br>${x.a===x.b?'2× '+x.a:x.a+' + '+x.b}<br>${x.d}</div>`;}).join('')}</div>`;}
+    h+=`<div style="color:#ff9a4a;text-align:center;margin:12px 0 6px">Elite-Affixe</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(AFFIX)}</div><div style="color:#ff6ad8;text-align:center;margin:12px 0 6px">Höllenkreis-Modifikatoren</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${lst(CMOD,'#ff6ad8')}</div><div style="color:#ff6a8a;text-align:center;margin:12px 0 6px">Verfluchte Segen – selten in der Segnungs-Auswahl</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${CURSED.map(x=>{const n=(save.st.curK||{})[x.n]||0;return `<div class="htn ${n?'':'lock'}" style="cursor:default;opacity:${n?1:.7}"><b style="color:${n?x.c:'#c8b8a8'}">${x.i} ${x.n}</b>${n?` <span style="color:var(--dim)">${fmt(n)}×</span>`:''}<br>${x.d()}</div>`;}).join('')}</div><div style="color:#9ad8ff;text-align:center;margin:12px 0 6px">Segnungs-Synergien – wähle beide Segen in einer Jagd</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${SYNERGIES.map(x=>{const n=(save.st.synK||{})[x.n]||0;return `<div class="htn ${n?'':'lock'}" style="cursor:default;opacity:${n?1:.7}"><b style="color:${n?x.c:'#c8b8a8'}">⚡ ${x.n}</b>${n?` <span style="color:var(--dim)">${fmt(n)}×</span>`:''}<br>${x.a===x.b?'2× '+x.a:x.a+' + '+x.b}<br>${x.d}</div>`;}).join('')}</div>`
+    h+=`<div style="color:#ffd76a;text-align:center;margin:12px 0 6px">Schreine – in der Jagd anklicken</div><div class="ht" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${Object.entries(SHRINES).map(([k,x])=>{const n=(save.st.shK||{})[k]||0;return `<div class="htn ${n?'':'lock'}" style="cursor:default;opacity:${n?1:.7};display:flex;gap:10px;align-items:center"><img src="${sprURL('sh_'+k,3)}" style="image-rendering:pixelated"><div><b style="color:${n?x.c:'#c8b8a8'}">${x.n}</b>${n?` <span style="color:var(--dim)">${fmt(n)}×</span>`:''}${k==='curse'?' <span style="color:var(--dim)">ab Kreis 3, selten</span>':''}<br>${x.d}${k==='chest'&&save.st.mim?`<br><span style="color:#ff6a3a">Mimics erlegt: ${fmt(save.st.mim)}</span>`:''}</div></div>`;}).join('')}<div class="htn ${save.st.mim?'':'lock'}" style="cursor:default;opacity:${save.st.mim?1:.55};display:flex;gap:10px;align-items:center"><img src="${sprURL('mimic',3)}" style="image-rendering:pixelated;${save.st.mim?'':'filter:brightness(0)'}"><div><b style="color:${save.st.mim?'#ff6a3a':'#c8b8a8'}">${save.st.mim?'Mimic':'???'}</b><br>${save.st.mim?'Lauert in Truhen ab Kreis 2 (30%). Elite mit doppeltem Leben, schnappt mit Zahnreihen zu.':'Noch nie erlegt.'}</div></div></div>`;}
   else{const st=save.st;const rows=[['Spielzeit',fmtTime(st.play||0)],['Jagden',fmt(st.runs||0)],['Tode',fmt(st.deaths||0)],['Dämonen vernichtet',fmt(st.kills||0)],['Fürsten besiegt',fmt(st.bosses||0)],['Elite vernichtet',fmt(st.elites||0)],['Beste Jagd',fmt(st.best||0)+' Kills'],['Beste Kombo',fmt(st.combo||0)],['Tiefster Kreis',Math.max(save.maxCircle,st.maxC||0)],['Seelen gesammelt',fmt(st.soulsTotal||0)],['Bannstrahlen',fmt(st.smites||0)],['Ultimates',fmt(st.ults||0)],['Aufstiege',fmt(save.ascCount||0)],['Fragmente gesamt',fmt(save.fragTotal||0)],['Reliquien geschmolzen',fmt(st.forged||0)],['Erfolge',achCount()+' / '+ACH.length]];
     if(st.bk)rows.push(['Knochenkönig besiegt',fmt(st.bk)]);
     for(const k in CMOD)if(st.bm&&st.bm[k])rows.push(['Fürsten unter '+CMOD[k].name,fmt(st.bm[k])]);
