@@ -33,7 +33,7 @@ const runs = +process.argv[2] || 60, ASC = process.argv.includes('--asc'), QUIET
       const R = D.R, rec = { i: i + 1, c: R.c, kills: R.kills, boss: R.bossDead, why: R.why || 'zeit', souls: Math.round(R.souls), bought: buyAll(D), max: D.save.maxCircle, asc: 0 };
       stall = D.save.maxCircle > rec0 ? 0 : stall + 1; rec0 = D.save.maxCircle;
       c = R.bossDead ? D.save.maxCircle : Math.max(1, Math.min(c, D.save.maxCircle - 2)); // nach Niederlage zwei Kreise unter dem Rekord farmen
-      if (n.asc && stall >= 6 && D.fragGain() > 0) { rec.asc = D.fragGain(); D.ascend(); buyAsc(D); buyAll(D); c = rec0 = D.save.maxCircle; stall = 0; }
+      if (n.asc && stall >= 6 && D.fragGain() > 0) { rec.asc = D.fragGain(); rec.old = D.save.maxCircle; D.ascend(); rec.start = D.save.maxCircle; buyAsc(D); buyAll(D); c = rec0 = D.save.maxCircle; stall = 0; }
       out.push(rec);
     }
     return out;
@@ -42,7 +42,9 @@ const runs = +process.argv[2] || 60, ASC = process.argv.includes('--asc'), QUIET
   const best = i => Math.max(...log.slice(0, i).map(r => r.max)), asc = i => log.slice(0, i).filter(r => r.asc).length;
   console.log('\nJagden | bester Kreis | Aufstiege');
   for (const k of [20, 40, 60, 100, 150, 200].filter(k => k <= runs)) console.log(`${String(k).padStart(6)} | ${String(best(k)).padStart(12)} | ${String(asc(k)).padStart(9)}`);
-  const last = log[log.length - 1];
+  // je Aufstieg: Startkreis dank „Erinnerung“ und wie viele Jagden bis zum Überholen des alten Rekords
+  log.forEach((r, j) => { if (!r.asc) return; const k = log.findIndex((x, i) => i > j && x.max > r.old);
+    console.log(`Aufstieg ${asc(j + 1)} nach Jagd ${r.i}: Rekord ${r.old} → Start Kreis ${r.start}, +${r.asc} Fragmente, Rekord ${k < 0 ? 'nicht überholt' : 'überholt nach ' + (k - j) + ' Jagden'}`); });
   console.log(`\nErgebnis: Kreis ${best(runs)} nach ${runs} Jagden (${(runs / Math.max(1, best(runs) - 1)).toFixed(2)} Jagden pro Kreis)`);
   await b.close();
   if (errs.length) { console.error('JS-Fehler im Spiel:\n' + [...new Set(errs)].join('\n')); process.exit(1); }

@@ -140,9 +140,10 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.129: Achtes Reliquien-Set „Gebeinthron“ (Knochenkrone, Fürstenschädel, Eisernes Herz): +5 Rüstung, +40% Siegel, +20% Schaden gegen Fürsten & Elite
 - v0.130: Fürsten-eigene Reliquien – Bansheeschleier (Klagende Herrin, +10% Bannstrahl-Schaden/Stufe), Grafenzahn (Blutgraf, Lebensraub + Krit-Schaden), Eissplitter (Eiskönig, +10% Ultimate-Schaden/Stufe); 30% Chance beim Fürsten-Sieg, sonst zufällige Reliquie; Chronik zeigt den Fürsten als Quelle
 - v0.131: Neuntes Reliquien-Set „Fürstengruft“ (Bansheeschleier, Grafenzahn, Eissplitter): +25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden; Erfolg „Gruftwächter“ (alle Fürsten-Reliquien gefunden)
+- v0.132: test/sim.js listet je Aufstieg Rekord, Startkreis („Erinnerung“), Fragmente und Jagden bis zum Überholen des alten Rekords. Befund (200 Jagden, --asc): Aufstieg 1 bei Rekord 37 → Start 1, überholt nach 37 Jagden; Aufstieg 2 bei Rekord 50 → Start 13, überholt nach 38; Aufstieg 3 bei Rekord 55 → Start 18; Kreis 55 nach 200 Jagden
 
 ## Als Nächstes
-L10. test/sim.js: mehrere Aufstiege simulieren (z. B. 200 Jagden), um die Wirkung von „Erinnerung“ ab dem 2. Aufstieg zu messen
+L11. Balance: Nach dem 2. Aufstieg dauert das Überholen des alten Rekords trotz „Erinnerung“ noch ~38 Jagden – Fragment-Wirkung oder Aufstiegsknoten stärker skalieren, Ziel ≤25 Jagden (mit test/sim.js 200 --asc prüfen)
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
 K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
