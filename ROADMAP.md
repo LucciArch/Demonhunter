@@ -116,6 +116,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.108: Hub – grüner Punkt am Knopf „Jäger & Ultimates“, wenn ein Jägerbaum-Knoten des aktiven Jägers bezahlbar ist (der Schwurbaum hebt bezahlbare Knoten schon selbst hervor)
 - v0.109: Ereignis „Blutmond“ – 7% der Jagden ab Kreis 3: doppelte Dämonen, dreifache Seelen und Schwefel, Fürst braucht 50% mehr Kills; roter Himmel mit Krater-Mond, Banner, Statistik, 2 Erfolge
 - v0.110: Knochenkönig zerfällt beim Tod in einen Knochenregen – 60 Knochen und der Schädel fliegen auseinander, danach regnen sechs Wellen Knochen vom Himmel
+- v0.111: Blutmond – Fürsten lassen doppelte Siegel fallen; neuer Schwurbaum-Knoten „Mondanbeter“ (Gier-Pfad, Schwefel, 5 Stufen, je +2% Blutmond-Chance)
 
 ## Als Nächstes
 D. Segnungen: Synergien (z. B. 2× Kettenblitz → Gewitter), Schwurbaum-Knoten für mehr Auswahl/Neuwürfeln
@@ -125,4 +126,4 @@ K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Sch
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 J. Knochenkönig: eigenes Reliquien-Drop „Knochenkrone“
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
-N. Blutmond: eigener Blutmond-Fürst-Bonus (Siegel ×2) und Schwurbaum-Knoten „Mondanbeter“ (+Blutmond-Chance)
+O. Blutmond: eigener Blutmond-Fürst „Mondschlächter“ mit roter Gestalt und Erfolg

@@ -813,6 +813,7 @@ N('Gd','G4',60,'Kopfgeld','bossLoot',25,10,6,'b');
 N('Ge','G5',-60,'Ernte','soulPct',40,10,25,'b');
 N('Gf','G6',60,'Siegelbruch','sigilFlat',1,5,10,'g');
 N('Gg','Ga',25,'Seelenwucher','soulFlat',3,10,90,'s');
+N('Gh','Gd',25,'Mondanbeter','moonCh',2,5,8,'b');
 // --- BANN
 N('B1','root',0,'Bannstrahl','clickPct',10,10,3,'s');
 N('B2','B1',0,'Weite Bannung','clickAoe',10,10,15,'s');
@@ -899,7 +900,7 @@ const FX={
  hpFlat:v=>`+${v} Leben`,hpPct:v=>`+${v}% Leben`,armor:v=>`+${v} Rüstung`,regen:v=>`+${v} Leben/s`,revive:v=>`+${v} Wiederbelebung pro Jagd (50% Leben)`,
  thorns:v=>`Reflektiert ${v}% des erlittenen Schadens`,lifesteal:v=>`+${v}% Lebensraub`,
  runTime:v=>`+${v}s Jagdzeit`,magnet:v=>`+${v} Sammelradius des Zeigers`,spawnPct:v=>`+${v}% mehr Dämonen`,autoCollect:v=>`Beute fliegt fast sofort zu dir`,
- collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,
+ collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,moonCh:v=>`+${v}% Blutmond-Chance (ab Kreis 3)`,
  soulPct:v=>`+${v}% Seelen`,doubleLoot:v=>`+${v}% Chance auf doppelte Beute`,brimPct:v=>`+${v}% Schwefel`,golden:v=>`${v}% Chance auf goldene Seelen (×10)`,
  sigilPct:v=>`+${v}% Siegel`,soulFlat:v=>`+${v} Seelen pro Kill`,eliteCh:v=>`+${v}% Chance auf Elite-Dämonen`,brimFlat:v=>`+${v} Schwefel pro Elite`,bossLoot:v=>`+${v}% Fürsten-Beute`,sigilFlat:v=>`+${v} Siegel pro Fürst`,
  clickPct:v=>`Bannstrahl (Klick) +${v}% deines Schadens`,clickAoe:v=>`+${v}% Bannstrahl-Radius`,clickCrit:v=>`+${v}% Krit-Chance des Bannstrahls`,clickCritDmg:v=>`+${v}% Bannstrahl-Krit-Schaden`,
@@ -1054,7 +1055,7 @@ function computeStats(){
   s.collectDelay=Math.max(.25,(g('autoCollect')?.6:3)-g('collectDelay')*(g('autoCollect')?.1:1));
   s.soul=1+g('soulPct')/100;s.soulFlat=g('soulFlat');
   s.brim=1+g('brimPct')/100;s.brimFlat=g('brimFlat');
-  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');
+  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;
   s.dbl=g('doubleLoot')/100;s.golden=g('golden')/100;
   s.elite=g('eliteCh')/100;s.bossDmg=1+g('bossDmg')/100;s.bossLoot=1+g('bossLoot')/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.clickR=30*(1+g('clickAoe')/100);
@@ -1277,9 +1278,9 @@ function startRun(){
   const c=save.circle;
   R={c,t:0,time:ST.time,maxTime:ST.time,hp:ST.hp,maxHp:ST.hp,kills:0,souls:0,brim:0,sig:0,en:[],pr:[],loot:[],fx:[],tx:[],pt:[],
      spawnT:.3,atkT:.2,smiteT:1,mod:circleMod(c),quota:Math.max(8,Math.round((18+4*c)*ST.quota*(circleMod(c)==='horde'?1.5:1))),bossSpawned:false,bossDead:false,over:false,revived:false,
-     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,bl:0,blN:10,moon:0,wall:0,clouds:[],fires:[],ice:[],fireT:0,later:[],ep:[],hpM:Math.pow(GROW.hp,c-1)*ST.enemyHp,dmgM:Math.pow(GROW.dmg,c-1),rewM:Math.pow(GROW.rew,c-1),endT:0,bmoon:c>=3&&Math.random()<.07};
+     hero:{x:0,y:0,flip:false,lunge:0,lx:0,ly:0,flash:0},ult:0,ultWait:0,bl:0,blN:10,moon:0,wall:0,clouds:[],fires:[],ice:[],fireT:0,later:[],ep:[],hpM:Math.pow(GROW.hp,c-1)*ST.enemyHp,dmgM:Math.pow(GROW.dmg,c-1),rewM:Math.pow(GROW.rew,c-1),endT:0,bmoon:c>=3&&Math.random()<.07+ST.moonCh};
   if(R.bmoon){save.st.bmn=(save.st.bmn||0)+1;R.quota=Math.round(R.quota*1.5);}
-  mode='run';showUI();$('#hudImg').src=sprURL(HB[save.hero].spr,4);$('#hudCirc').textContent=circleName(c)+(R.mod?' · '+CMOD[R.mod].name:'');sfx('hit');if(R.bmoon){$('#hudCirc').textContent+=' · Blutmond';const bb=$('#bossBanner');bb.innerHTML='BLUTMOND<div style="font-size:22px">Doppelte Dämonen, dreifache Beute</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2600);sfx('boss');}else if(R.mod){const bb=$('#bossBanner');bb.innerHTML=CMOD[R.mod].name.toUpperCase()+'<div style="font-size:22px">'+CMOD[R.mod].d+'</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2200);}for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
+  mode='run';showUI();$('#hudImg').src=sprURL(HB[save.hero].spr,4);$('#hudCirc').textContent=circleName(c)+(R.mod?' · '+CMOD[R.mod].name:'');sfx('hit');if(R.bmoon){$('#hudCirc').textContent+=' · Blutmond';const bb=$('#bossBanner');bb.innerHTML='BLUTMOND<div style="font-size:22px">Doppelte Dämonen, dreifache Beute, doppelte Siegel</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2600);sfx('boss');}else if(R.mod){const bb=$('#bossBanner');bb.innerHTML=CMOD[R.mod].name.toUpperCase()+'<div style="font-size:22px">'+CMOD[R.mod].d+'</div>';bb.style.opacity=1;setTimeout(()=>bb.style.opacity=0,2200);}for(let i=0;i<2+Math.min(5,c);i++)spawnDemon(pickW(demonPool(c)));
 }
 function demonPool(c){const p=[['imp',10]];if(c>=2)p.push(['bat',6]);if(c>=3)p.push(['hound',6]);if(c>=5)p.push(['wraith',5]);if(c>=3)p.push(['cult',4]);if(c>=4)p.push(['succ',5]);if(c>=6)p.push(['golem',3]);if(c>=50)p.push(['worm',4]);return p;}
 function pickW(p){let s=0;for(const q of p)s+=q[1];let r=Math.random()*s;for(const q of p){if((r-=q[1])<0)return q[0];}return p[0][0];}
@@ -1360,7 +1361,7 @@ function killDemon(e,o){
   if(R.c>=2&&d.brim&&Math.random()<Math.min(1,d.brim)){let b=(e.boss?6:e.elite?ri(1,2)*(e.aff2?2:1):1)*Math.pow(1.25,Math.max(0,R.c-2))*ST.brim+(e.elite||e.boss?ST.brimFlat:0);if(e.boss)b*=ST.bossLoot;if(R.mod==='rage')b*=1.5;if(R.mod==='curse')b*=1.25;if(R.mod==='ember')b*=1.4;if(R.bmoon)b*=3;dropLoot(e,'b',b);}
   if(e.d.thief){for(let i=0;i<20;i++)dropLoot(e,'s',d.souls*R.rewM*ST.soul/4,i<4);save.st.thief=(save.st.thief||0)+1;R.tx.push({x:e.x,y:e.y-40,str:'BEUTE!',t:0,col:'#ffd76a'});sfx('relic');}
   if(e.boss||(e.elite&&Math.random()<(e.aff2?.04:.02)))dropArt(e);
-  if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1);for(let i=0;i<8;i++){dropLoot(e,'g',s*ST.bossLoot/8);R.loot[R.loot.length-1].hud=1;}R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:1.6,sc:2.6});
+  if(e.boss){const s=((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1)*(R.bmoon?2:1);for(let i=0;i<8;i++){dropLoot(e,'g',s*ST.bossLoot/8);R.loot[R.loot.length-1].hud=1;}R.fx.push({k:'swirl',x:e.x,y:e.y-e.r,t:0,dur:1.6,sc:2.6});
     R.bossDead=true;save.st.bosses++;if(!save.tipGold){save.tipGold=1;setTimeout(()=>toast('Tipp: Goldene Seelen-Kugeln lassen sich per Klick in der Luft fangen – +50% Wert!',5500),1200);}if(bossOf(R.c).ab==='bone')save.st.bk=(save.st.bk||0)+1;if(R.mod){save.st.bm=save.st.bm||{};save.st.bm[R.mod]=(save.st.bm[R.mod]||0)+1;}questProg('boss');R.time+=5;R.maxTime+=5;shake=16;R.slow=.5;R.zoom={x:e.x,y:e.y,t:0,dur:.9};// Todesstoß in Zeitlupe
 
     if(R.c>=save.maxCircle){save.maxCircle=R.c+1;R.newCircle=true;}
@@ -1968,7 +1969,7 @@ const ICON={
  skull:[".###.","#.#.#","#####",".###.",".#.#."],chain:["#....",".#...","..#.#","...#.","....#"],thorn:["#.#.#",".###.","#####",".###.","#.#.#"],star:["..#..","#####",".###.",".#.#.","#...#"]
 };
 const KEYICON={dmgFlat:'dmg',dmgPct:'dmg',atkSpd:'spd',aoe:'aoe',bossDmg:'skull',chain:'chain',chainDmg:'chain',execute:'skull',multi:'star',hpFlat:'hp',hpPct:'hp',armor:'arm',regen:'regen',revive:'regen',thorns:'thorn',lifesteal:'hp',
- runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
+ runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',moonCh:'star',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
  clickPct:'click',clickAoe:'aoe',clickCrit:'crit',clickCritDmg:'crit',autoSmite:'click',autoSmiteSpd:'spd',autoSmiteCount:'click',smiteTwice:'star',markPct:'click',clickSoul:'loot',crit:'crit',critDmg:'crit',explode:'boom',explodeR:'boom',pierce:'dmg',chainReact:'boom',enemyHpRed:'skull',dmgPerCircle:'dmg',hpPerCircle:'hp',soulPerCircle:'loot',frenzy:'spd',killTime:'time'};
 function drawIcon(key,col,size,on){const g=ICON[KEYICON[key]]||ICON.star;const px=Math.max(1,size*2/5);ctx.fillStyle=on?'#fff8e8':col;ctx.globalAlpha=on?1:.75;
   for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(g[j][i]==='#')ctx.fillRect(Math.round((i-2.5)*px),Math.round((j-2.5)*px),Math.ceil(px),Math.ceil(px));ctx.globalAlpha=1;}
