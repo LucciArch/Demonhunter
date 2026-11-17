@@ -598,6 +598,7 @@ const SET_LVL=5,SETS=[
  {name:'Fürstengruft',ids:['schleier','zahn','eis'],d:'+25% Schaden gegen Fürsten & Elite, +3% Lebensraub, +20% Ultimate-Schaden',f:s=>{s.bossDmg+=.25;s.ls+=.03;s.ultDmg*=1.2;}},
  {name:'Höllenschmiede',ids:['kohle','glutkern','ssiegel'],d:'+20% Schaden, +20% Leben, +25% Schwefel',f:s=>{s.dmg*=1.2;s.hp*=1.2;s.brim*=1.25;}},
  {name:'Pestgruft',ids:['pestmaske','dzweig','leere'],d:'+75% Dornen, +15% Leben, +2s Jagdzeit, +15% Seelen',f:s=>{s.thorns+=.75;s.hp*=1.15;s.time+=2;s.soul*=1.15;}},
+ {name:'Blutmond',ids:['sichel','zahn','kelch'],d:'+5% Blutmond-Chance, +3% Lebensraub, +50% Fürsten-Siegel bei Blutmond',f:s=>{s.moonCh+=.05;s.ls+=.03;s.moonSig*=1.5;}},
  {name:'Eisenwall',ids:['herz','dornen','feder'],d:'+40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration',f:s=>{s.hp*=1.4;s.armor=Math.max(s.armor*1.5,s.armor+10);s.regen+=s.hp*.02;}}];
 const setOn=t=>t.ids.every(i=>(save.arts[i]||0)>=SET_LVL),setMax=t=>t.ids.every(i=>(save.arts[i]||0)>=ART_MAX);
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
@@ -1091,7 +1092,7 @@ function computeStats(){
   s.collectDelay=Math.max(.25,(g('autoCollect')?.6:3)-g('collectDelay')*(g('autoCollect')?.1:1));
   s.soul=1+g('soulPct')/100;s.soulFlat=g('soulFlat');
   s.brim=1+g('brimPct')/100;s.brimFlat=g('brimFlat');
-  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.shrineF=1+g('shrineFreq')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');
+  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.moonSig=1;s.shrineF=1+g('shrineFreq')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');
   s.dbl=g('doubleLoot')/100;s.golden=g('golden')/100;
   s.elite=g('eliteCh')/100;s.bossDmg=1+g('bossDmg')/100;s.bossLoot=1+g('bossLoot')/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.clickR=30*(1+g('clickAoe')/100);
@@ -1695,7 +1696,7 @@ function updateFx(dt){
   if(R.tx.length>80)R.tx.splice(0,R.tx.length-80);
   for(const p of R.pt){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;}R.pt=R.pt.filter(p=>p.t<p.life);
 }
-const bossSig=()=>((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1)*(R.bmoon?2:1);
+const bossSig=()=>((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1)*(R.bmoon?2*ST.moonSig:1);
 function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered (Reliquien nie verlieren)
