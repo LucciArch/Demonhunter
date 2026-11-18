@@ -176,12 +176,14 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.162: Weitere Fürsten-Gestaltanimationen – Eiskönig sprengt bei der Nova Eissplitter aus seiner Krone, Schwefelherzog stößt beim Ansturm eine gelbe Schwefelwolke aus, Dornenkönig lässt acht Dornenranken ringförmig aus dem Boden wachsen
 - v0.163: Restliche Fürsten-Gestaltanimationen – Aschefürst wirbelt beim Ansturm Asche und Glut, Pestfürst lässt bei der Beschwörung Pusteln platzen, Leerenwandler öffnet einen Schattenriss („Die Leere sieht dich!“), Abgrundfürst reißt bei der Nova den Schlund auf und saugt Partikel ein. Jeder Fürst hat jetzt eine eigene Angriffsanimation
 - v0.164: Eigene Klänge zu den Fürsten-Gestaltanimationen – Aschewirbel-Rauschen, schrilles Kreischen, Fledermaus-Zirpen, platzende Pusteln, Eisklirren, Schwefelzischen, tiefes Leeren-Dröhnen, knackende Ranken, dumpfes Stampfen, Schlund-Brüllen (Synthese, keine Fremd-Assets)
+- v0.165: Seelendieb neu gepixelt (18×17 statt 14×13) – Kapuze mit Schatten und gelben Augen, roter Schal, Dolch, Gürtelschnalle und prall gefüllter Seelensack mit leuchtenden Seelen über der Schulter
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
 L12. test/sim.js: Laufzeit (~14 min für 200 Jagden) verkürzen (z. B. Zeichnen im Sim-Modus abschalten, größere Zeitschritte); Balance-Vergleiche L11 mit `--seed 1..5` mitteln
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
-I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
+I. Jäger-Porträts im HUD größer und detaillierter (eigenes Brustbild statt verkleinertem Sprite)
+K5. Seelendieb-Laufanimation: Sack wippt beim Fliehen, verliert dabei einzelne Seelen-Funken als Spur
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)

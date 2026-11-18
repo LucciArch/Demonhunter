@@ -602,20 +602,24 @@ const SET_LVL=5,SETS=[
  {name:'Eisenwall',ids:['herz','dornen','feder'],d:'+40% Leben, +50% Rüstung (mind. +10), +2% Leben/s Regeneration',f:s=>{s.hp*=1.4;s.armor=Math.max(s.armor*1.5,s.armor+10);s.regen+=s.hp*.02;}}];
 const setOn=t=>t.ids.every(i=>(save.arts[i]||0)>=SET_LVL),setMax=t=>t.ids.every(i=>(save.arts[i]||0)>=ART_MAX);
 for(const a of ARTS)SPR_DEF['art_'+a.id]={pal:ARTPAL,rows:a.rows};
-SPR_DEF.thief={pal:{k:'#3a2a40',K:'#6a5478',s:'#9bc05a',e:'#ffe14a',b:'#a8823a',B:'#ffd76a',g:'#9be8ff',l:'#1a1418'},rows:[
-"....kkkk......",
-"...kKKKKk.bbb.",
-"..kKKKKKKbBBBb",
-"..kKseesKbBgBb",
-"..kKssssKbgBgb",
-"...kKssKkbBgBb",
-"..kKKKKKKbBBBb",
-".skKKKKKKkbbb.",
-"..kKKKKKKk....",
-"..kKKKKKKk....",
-"...kK..Kk.....",
-"...ll..ll.....",
-"..lll..lll...."]};
+SPR_DEF.thief={pal:{k:'#2a1e32',K:'#4e3a5c',L:'#6e5684',q:'#120a18',s:'#9bc05a',S:'#6a8a3a',e:'#ffe14a',r:'#8a1e2a',R:'#c0303a',b:'#a8823a',B:'#ffd76a',d:'#5a3e18',g:'#9be8ff',c:'#5a3a22',C:'#c9a24a',w:'#d8e0ea',l:'#1a1418'},rows:[
+"....kkkk..........",
+"...kKKLKk....ddd..",
+"..kKKLLKKk..dBBBd.",
+"..kKqqqqKk.dbBgBbd",
+"..kqqeqqeqkdbgBgBd",
+"..kqqSssSqkdbBgBbd",
+"..krRRRRRrkdbbBbbd",
+".kKKrRRrKKcCdbbbd.",
+"kKLKKKKKcKKkdddd..",
+"skLKcccCcccKk.....",
+"wkLKKKKKKKLKk.....",
+"wkKLKKKKKKLKk.....",
+".kKLKKKKKKKLk.....",
+".kKKKk..kKKKk.....",
+"..kKk....kKk......",
+"..llk....kll......",
+".lll......lll....."]};
 const SPR={};for(const k in SPR_DEF)SPR[k]=mkSprite(SPR_DEF[k]);
 // Nahkampfwaffen als eigenes Sprite, das um die Hand (px,py) schwingt; amp = Ausholwinkel
 const WEAP={inq:{px:17.5,py:14,amp:1,f:(c,i)=>'wW'.includes(c)||(c==='g'&&i>=17)},
