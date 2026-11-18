@@ -1619,11 +1619,15 @@ function castUlt(){
 }
 function emberBurst(x,y,n){for(let i=0;i<n;i++)R.pt.push({x,y,vx:rnd(-180,180),vy:rnd(-220,60),t:0,life:rnd(.25,.55),c:['#ffe05a','#ff8a2a','#ff4a1a'][ri(0,2)],s:ri(2,3)});}
 function fireball(x,y,a,dmg,sp,nova){R.ep.push({x,y,vx:Math.cos(a)*(sp||220),vy:Math.sin(a)*(sp||220),dmg,t:0,nova});}
-// Gestalt-eigene Angriffsanimation: Herrin kreischt Schallwellen, Blutgraf zerstiebt in Fledermäuse, Glutkoloss stampft
+// Gestalt-eigene Angriffsanimation: Herrin kreischt, Blutgraf Blutschwarm, Eiskönig Eiskrone, Schwefelherzog Wolke, Dornenkönig Ranken, Glutkoloss stampft
 function bossFlair(e,bi,ab){const hy=e.y-e.r*1.5;
   if(bi===1&&ab==='summon'){R.tx.push({x:e.x,y:e.y-e.r*3,str:'KREISCH!',t:0,col:'#f0c0ff'});for(let i=0;i<3;i++)R.later.push({t:i*.12,fn:()=>R.fx.push({k:'ring',x:e.x,y:hy,r:120+i*30,t:0,dur:.5,col:'#c06aff'})});}
   else if(bi===2&&ab==='nova'){R.tx.push({x:e.x,y:e.y-e.r*3,str:'BLUTSCHWARM!',t:0,col:'#ff9a9a'});for(let i=0;i<14;i++){const a=rnd(0,Math.PI*2),v=rnd(80,200);R.pt.push({x:e.x+rnd(-10,10),y:hy+rnd(-10,10),vx:Math.cos(a)*v,vy:Math.sin(a)*v*.6-40,t:0,life:rnd(.4,.7),c:Math.random()<.5?'#2a0810':'#8a1020',s:ri(3,5)});}}
   else if(bi===8&&ab==='charge'){R.tx.push({x:e.x,y:e.y-e.r*3-24,str:'STAMPF!',t:0,col:'#ffd04a'});shake=Math.max(shake,8);R.fx.push({k:'ring',x:e.x,y:e.y,r:110,t:0,dur:.45,col:'#ff9a3a'});for(let i=0;i<16;i++){const a=i/16*Math.PI*2;R.pt.push({x:e.x+Math.cos(a)*20,y:e.y+Math.sin(a)*8,vx:Math.cos(a)*rnd(90,160),vy:Math.sin(a)*50-rnd(20,80),t:0,life:rnd(.3,.6),c:Math.random()<.5?'#7a5a3a':'#ffd04a',s:ri(2,4)});}}
+  else if(bi===4&&ab==='nova'){R.tx.push({x:e.x,y:e.y-e.r*3,str:'EISKRONE!',t:0,col:'#e8f8ff'});R.fx.push({k:'ring',x:e.x,y:hy,r:90,t:0,dur:.4,col:'#9be8ff'});for(let i=0;i<12;i++){const a=-Math.PI/2+(i-5.5)*.22;R.pt.push({x:e.x,y:hy-e.r*.6,vx:Math.cos(a)*rnd(120,200),vy:Math.sin(a)*rnd(120,200),t:0,life:rnd(.4,.7),c:['#ffffff','#9be8ff','#7ad0ff'][ri(0,2)],s:ri(2,4)});}}
+  else if(bi===5&&ab==='charge'){R.tx.push({x:e.x,y:e.y-e.r*3-24,str:'SCHWEFELWOLKE!',t:0,col:'#fff4b0'});for(let i=0;i<20;i++)R.pt.push({x:e.x+rnd(-e.r,e.r),y:e.y+rnd(-e.r,e.r*.5),vx:rnd(-40,40),vy:rnd(-50,-15),t:0,life:rnd(.7,1.2),c:['#ffe04a','#c8a020','#8a7a3a'][ri(0,2)],s:ri(4,7)});}
+  else if(bi===7&&ab==='nova'){R.tx.push({x:e.x,y:e.y-e.r*3,str:'DORNENRANKEN!',t:0,col:'#c0e07a'});// Ranken brechen ringförmig aus dem Boden und wachsen senkrecht hoch
+    for(let i=0;i<8;i++){const a=i/8*Math.PI*2,rx=e.x+Math.cos(a)*e.r*2,ry=e.y+Math.sin(a)*e.r*.8;for(let j=0;j<5;j++)R.later.push({t:j*.05,fn:()=>R.pt.push({x:rx+rnd(-3,3),y:ry,vx:rnd(-10,10),vy:-rnd(140,220),t:0,life:.35,c:j%2?'#7a9a3a':'#4a3a1e',s:3})});}}
 }
 function bossAbility(e){
   const v=e.bv,hp=heroPos();const ab=v.ab==='all'?['charge','summon','nova','sickle'][ri(0,v===BOSSES[11]?3:2)]:v.ab==='bone'?(Math.random()<.35?'summon':'spear'):v.ab;
