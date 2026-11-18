@@ -172,12 +172,13 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.158: Erzwächter – ab Kreis 30 ist der Paktwächter ein Erzwächter (+50% Leben, größer): sticht doppelt zu und wirft aus der Ferne (bis 340 px) alle 4 s seinen Dreizack; Auto-Jagd rechnet das Mehrleben ein; Bestiarium-Text ergänzt
 - v0.159: Erzwächter-Sprite – eigene handgepixelte Variante (dunkle Haut, goldene Hörner mit Krone, glühende Augen); beim Dreizackwurf hält er kurz nichts in der Hand
 - v0.160: Erzwächter im Bestiarium mit eigenem Bild und eigenem Zähler (getrennt vom Paktwächter, Hinweis „ab Kreis 30“)
+- v0.161: Fürsten-Gestaltanimationen – Klagende Herrin kreischt (drei violette Schallwellen), Blutgraf zerstiebt bei der Nova in einen Blutschwarm, Glutkoloss stampft beim Ansturm (Bodenring, Staub, starkes Beben)
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
 L12. test/sim.js: Laufzeit (~14 min für 200 Jagden) verkürzen (z. B. Zeichnen im Sim-Modus abschalten, größere Zeitschritte); Balance-Vergleiche L11 mit `--seed 1..5` mitteln
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
-K. Fürsten: eigene Angriffsanimationen passend zur Gestalt (Herrin kreischt Schallwellen, Graf löst sich in Fledermäuse auf, Koloss stampft)
+K2. Weitere Fürsten-Gestaltanimationen: Eiskönig (Eissplitter-Krone), Schwefelherzog (Schwefelwolke beim Ansturm), Dornenkönig (Dornenranken aus dem Boden)
 I. Sprites weiter überarbeiten: Schemen, Nachtmahr, Seelendieb; Jäger-Porträts im HUD größer und detaillierter
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
