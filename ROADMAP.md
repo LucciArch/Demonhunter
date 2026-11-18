@@ -196,6 +196,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.182: Mit dem Zeiger eingesammelte Reliquien fliegen zu einem eigenen Reliquien-Platz im HUD (erscheint ab der ersten Reliquie der Jagd, zählt mit, Sprite blitzt auf, Name wird kurz eingeblendet)
 - v0.183: Reliquien-Platz im HUD zeigt beim Überfahren alle in dieser Jagd gefundenen Reliquien mit Anzahl und neuer Stufe
 - v0.184: Reliquien-Platz im HUD zählt alle Reliquien der Jagd – auch die, die der Jäger selbst einsammelt (blitzt dann ebenfalls auf)
+- v0.185: Reliquien-Platz zeigt geschmiedete Reliquien (Seelen-Schmiede) als „+N Fragmente“ (Summe der Jagd) unter dem Platz und im Tooltip; Jagdbilanz nennt die geschmiedeten Fragmente
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -204,5 +205,5 @@ L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Verglei
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
-K14. Reliquien-Platz: geschmiedete Reliquien (Seelen-Schmiede) als „+N Fragmente“ unter dem Platz anzeigen
 I12. „Beute sofort einsammeln“ als Schwurbaum- oder Aufstiegsknoten statt reiner Einstellung prüfen (Balance: Beute-Sog-Knoten verlieren sonst an Wert)
+K15. Reliquien-Platz: Klick öffnet direkt den Reliquien-Reiter der Chronik (nach Jagdende)

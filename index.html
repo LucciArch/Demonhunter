@@ -1549,7 +1549,7 @@ function killDemon(e,o){
 function dropArt(e){const ok=ARTS.filter(a=>a.bi==null&&R.c>=(a.c||0)),open=ok.filter(a=>(save.arts[a.id]||0)<ART_MAX),pool=open.length?open:ok;
   dropLoot(e,'a',pool[ri(0,pool.length-1)]);}
 const forgeGain=()=>1+Math.floor(R.c/10);
-function gainArt(a){if((save.arts[a.id]||0)>=ART_MAX){const f=forgeGain();curAdd('a',f);save.st.forged=(save.st.forged||0)+1;toast('Seelen-Schmiede: '+a.name+' → +'+f+' Höllenfragmente');return;}
+function gainArt(a){if((save.arts[a.id]||0)>=ART_MAX){const f=forgeGain();curAdd('a',f);save.st.forged=(save.st.forged||0)+1;toast('Seelen-Schmiede: '+a.name+' → +'+f+' Höllenfragmente');R.forgeF=(R.forgeF||0)+f;return f;}
   save.arts[a.id]=Math.min(ART_MAX,(save.arts[a.id]||0)+1);(R.arts=R.arts||[]).push(a);save.st.arts=(save.st.arts||0)+1;
   toast('Reliquie: '+a.name+' (Stufe '+save.arts[a.id]+')');
   if(save.arts[a.id]===SET_LVL)for(const t of SETS)if(t.ids.includes(a.id)&&setOn(t)){toast('Set-Bonus „'+t.name+'“: '+t.d);computeStats();}
@@ -1560,8 +1560,8 @@ function dropLoot(e,cur,v,gold){
 }
 const HUDC={s:'#hS',b:'#hB',g:'#hG',a:'#hA'};
 function collect(l){
-  if(l.cur==='a'){gainArt(l.v);sfx('relic');if(R.arts&&R.arts.includes(l.v)){const b=$('#hA'),c=b.parentNode,i=c.firstChild,m=c.lastChild;// Reliquien-Platz im HUD (alle Reliquien der Jagd, geschmiedete nicht): Sprite blitzt auf, Name erscheint
-    i.src=sprURL('art_'+l.v.id,2);b.textContent=R.arts.length;m.textContent=l.v.name;c.style.display='';c.title='Reliquien dieser Jagd:\n'+[...new Set(R.arts)].map(a=>a.name+(R.arts.filter(x=>x===a).length>1?' ×'+R.arts.filter(x=>x===a).length:'')+' – Stufe '+save.arts[a.id]).join('\n');for(const [el,k] of [[c,'pop'],[i,'fl'],[m,'on']]){el.classList.remove(k);void el.offsetWidth;el.classList.add(k);}}return;}
+  if(l.cur==='a'){const f=gainArt(l.v);sfx('relic');{const b=$('#hA'),c=b.parentNode,i=c.firstChild,m=c.lastChild,A=R.arts||[];// Reliquien-Platz im HUD: Sprite blitzt auf, Name erscheint; geschmiedete zeigen „+N Fragmente“ (Summe der Jagd)
+    i.src=sprURL('art_'+l.v.id,2);b.textContent=A.length;m.textContent=f?'+'+fmt(R.forgeF)+' Fragmente':l.v.name;c.style.display='';c.title=(A.length?'Reliquien dieser Jagd:\n'+[...new Set(A)].map(a=>a.name+(A.filter(x=>x===a).length>1?' ×'+A.filter(x=>x===a).length:'')+' – Stufe '+save.arts[a.id]).join('\n'):'')+(R.forgeF?(A.length?'\n':'')+'Seelen-Schmiede: +'+fmt(R.forgeF)+' Höllenfragmente':'');for(const [el,k] of [[c,'pop'],[i,'fl'],[m,'on']]){el.classList.remove(k);void el.offsetWidth;el.classList.add(k);}}return;}
   if(l.cur==='s')R.souls+=l.v;else if(l.cur==='b')R.brim+=l.v;else R.sig+=l.v;
   if(l.hud){const c=$(HUDC[l.cur]).parentNode,g=c.lastChild,n=performance.now();c._n=(n-(c._t||0)<1000?c._n:0)+l.v;c._t=n;g.textContent='+'+fmt(c._n);c.classList.remove('pop');g.classList.remove('on');void c.offsetWidth;c.classList.add('pop');g.classList.add('on');}// „+N“ summiert Beute, die innerhalb 1 s eintrifft
   sfxL('pick');
@@ -1870,6 +1870,7 @@ function showSummary(){
   if(R.quests)h+=`<div style="text-align:center;color:#ffd76a;margin-bottom:6px">${R.quests} Auftrag/Aufträge erfüllt!</div>`;
   if(R.autoBought)h+=`<div style="text-align:center;color:#bfa8ff;margin-bottom:8px">Ordensschreiber kaufte ${R.autoBought} Knoten.</div>`;
   if(R.arts)h+=`<div style="text-align:center;color:#ffb0f0;font-size:20px;margin-bottom:10px">Reliquien: ${R.arts.map(a=>`<img src="${sprURL('art_'+a.id,3)}" style="vertical-align:middle;image-rendering:pixelated"> ${a.name} (Stufe ${save.arts[a.id]})`).join(' · ')}</div>`;
+  if(R.forgeF)h+=`<div style="text-align:center;color:#ff6ad8;margin-bottom:8px">Seelen-Schmiede: +${fmt(R.forgeF)} Höllenfragmente</div>`;
   if(R.boons)h+=`<div style="text-align:center;color:#c8a8ff;margin-bottom:8px">Segnungen: ${R.boons.join(' · ')}</div>`;
   if(R.newCircle)h+=`<div style="text-align:center;color:var(--gold);font-size:22px;margin-bottom:10px">Neuer Höllenkreis freigeschaltet: ${save.maxCircle}!</div>`;
   h+=`<div class="row"><button class="big" id="sumAgain">⚔ Nochmal</button><button id="sumTree">Zum Schwurbaum</button></div>
