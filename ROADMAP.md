@@ -186,6 +186,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.172: Erfolg „Funkensammler“ (500 Seelendieb-Funken mit der Maus eingesammelt) und Zähler „Seelendieb-Funken“ in der Statistik
 - v0.173: HUD-Porträt zeigt die Ultimate-Ladung als Konturbalken in Jägerfarbe, der sich im Uhrzeigersinn um das Bild füllt
 - v0.174: Eingesammelte Seelendieb-Funken fliegen mit Lichtspur zum Seelen-Zähler im HUD und werden erst dort gutgeschrieben (Zähler hüpft); Jagdende schreibt fliegende Funken trotzdem gut
+- v0.175: HUD-Porträt blitzt kurz in Jägerfarbe auf und ein Glockenklang ertönt, sobald die Ultimate-Ladung voll ist
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -194,5 +195,5 @@ L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Verglei
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
-I6. HUD-Porträt: kurzer Lichtblitz am Rahmen, wenn die Ultimate-Ladung voll wird (plus leiser Klang)
+I7. Ultimate-Button und Porträt-Ring zeigen bei Jägern mit Ultimate-Ladungsknoten die Restzeit bis zum Auto-Zünden (2,5 s) als zweiten, dünnen Ring
 K9. Normale Seelen-Kugeln beim Einsammeln mit dem Zeiger ebenfalls kurz zum HUD-Zähler fliegen lassen (Einstellung, falls zu unruhig)
