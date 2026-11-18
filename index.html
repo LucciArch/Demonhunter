@@ -1390,6 +1390,13 @@ function sfx(type){
   if(type==='pop'){note(84,AC.currentTime,.1,'square',.03);note(91,AC.currentTime+.04,.18,'triangle',.05);return;}
   if(type==='chime'){const t=AC.currentTime,m=[96,99,103][ri(0,2)];note(m,t,.35,'triangle',.035);note(m+12,t+.02,.25,'sine',.02);return;}
   if(type==='syn'){const t=AC.currentTime;[74,81,86,93].forEach((m,i)=>note(m,t+i*.05,.6,'square',.05));note(38,t,.5,'sawtooth',.09);return;}
+  if(type.startsWith('flair')){const t=AC.currentTime,sw=(a,b,d,ty,v,dl)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.connect(g);g.connect(MG);o.frequency.setValueAtTime(a,t+dl);o.frequency.exponentialRampToValueAtTime(b,t+dl+d);g.gain.setValueAtTime(v,t+dl);g.gain.exponentialRampToValueAtTime(.0001,t+dl+d+.02);o.start(t+dl);o.stop(t+dl+d+.03);};
+    // Fürsten-Gestaltklänge (Index wie BOSSES): Asche, Kreischen, Schwarm, Pusteln, Eis, Schwefel, Leere, Ranken, Stampfen, Schlund
+    ({0:()=>{sw(320,70,.6,'sawtooth',.06,0);sw(900,300,.5,'triangle',.02,.05);},1:()=>{for(let i=0;i<3;i++)sw(1600+i*300,2600,.25,'square',.03,i*.12);},
+      2:()=>{for(let i=0;i<7;i++)sw(rnd(1400,2000),rnd(2200,2800),.06,'triangle',.03,rnd(0,.4));},3:()=>{for(let i=0;i<5;i++)sw(420,110,.08,'square',.05,i*.08);},
+      4:()=>{[96,100,103,108].forEach((m,i)=>note(m,t+i*.05,.4,'sine',.04));},5:()=>{sw(220,60,.9,'sawtooth',.05,0);sw(160,50,.9,'square',.02,.1);},
+      6:()=>{sw(110,38,1.1,'sine',.12,0);note(61,t+.1,.8,'triangle',.03);note(62,t+.1,.8,'triangle',.03);},7:()=>{for(let i=0;i<5;i++)sw(520,140,.07,'sawtooth',.04,i*.05);},
+      8:()=>{sw(80,28,.45,'square',.14,0);sw(140,40,.3,'sawtooth',.06,0);},9:()=>{sw(170,45,.8,'sawtooth',.11,0);sw(120,40,.9,'square',.06,.05);}})[type.slice(5)]?.();return;}
   if(type==='relic'){[72,76,79,84].forEach((m,i)=>note(m,AC.currentTime+i*.08,.5,'triangle',.07));return;}
   const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(MG);
   const P={hit:[180,90,.04,'square',.05],crit:[420,120,.07,'square',.07],kill:[260,60,.08,'sawtooth',.05],pick:[880,1320,.05,'triangle',.04],smite:[1200,200,.12,'sawtooth',.05],boss:[90,40,.8,'sawtooth',.12],hurt:[120,60,.1,'square',.06],buy:[520,1040,.1,'triangle',.06]}[type];
@@ -1621,6 +1628,7 @@ function emberBurst(x,y,n){for(let i=0;i<n;i++)R.pt.push({x,y,vx:rnd(-180,180),v
 function fireball(x,y,a,dmg,sp,nova){R.ep.push({x,y,vx:Math.cos(a)*(sp||220),vy:Math.sin(a)*(sp||220),dmg,t:0,nova});}
 // Gestalt-eigene Angriffsanimation je Fürst: Aschewirbel, Herrin kreischt, Blutgraf Blutschwarm, Pestpusteln, Leeren-Blick, Schlund saugt, Eiskönig Eiskrone, Schwefelherzog Wolke, Dornenkönig Ranken, Glutkoloss stampft
 function bossFlair(e,bi,ab){const hy=e.y-e.r*1.5;
+  if({1:'summon',2:'nova',8:'charge',0:'charge',3:'summon',6:'summon',9:'nova',4:'nova',5:'charge',7:'nova'}[bi]===ab)sfx('flair'+bi);
   if(bi===1&&ab==='summon'){R.tx.push({x:e.x,y:e.y-e.r*3,str:'KREISCH!',t:0,col:'#f0c0ff'});for(let i=0;i<3;i++)R.later.push({t:i*.12,fn:()=>R.fx.push({k:'ring',x:e.x,y:hy,r:120+i*30,t:0,dur:.5,col:'#c06aff'})});}
   else if(bi===2&&ab==='nova'){R.tx.push({x:e.x,y:e.y-e.r*3,str:'BLUTSCHWARM!',t:0,col:'#ff9a9a'});for(let i=0;i<14;i++){const a=rnd(0,Math.PI*2),v=rnd(80,200);R.pt.push({x:e.x+rnd(-10,10),y:hy+rnd(-10,10),vx:Math.cos(a)*v,vy:Math.sin(a)*v*.6-40,t:0,life:rnd(.4,.7),c:Math.random()<.5?'#2a0810':'#8a1020',s:ri(3,5)});}}
   else if(bi===8&&ab==='charge'){R.tx.push({x:e.x,y:e.y-e.r*3-24,str:'STAMPF!',t:0,col:'#ffd04a'});shake=Math.max(shake,8);R.fx.push({k:'ring',x:e.x,y:e.y,r:110,t:0,dur:.45,col:'#ff9a3a'});for(let i=0;i<16;i++){const a=i/16*Math.PI*2;R.pt.push({x:e.x+Math.cos(a)*20,y:e.y+Math.sin(a)*8,vx:Math.cos(a)*rnd(90,160),vy:Math.sin(a)*50-rnd(20,80),t:0,life:rnd(.3,.6),c:Math.random()<.5?'#7a5a3a':'#ffd04a',s:ri(2,4)});}}
