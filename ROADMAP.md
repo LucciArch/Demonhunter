@@ -183,6 +183,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.169: Seelendieb-Spur – die Seelen-Funken lassen sich per Mausberührung (Touch: Finger) als Mini-Seelen einsammeln (je 1/80 der Diebes-Seelen)
 - v0.170: HUD-Porträt leuchtet beim Zünden der Ultimate kurz hell in Jägerfarbe auf (Lichtkranz um den Rahmen)
 - v0.171: HUD-Porträt pulsiert sanft in Jägerfarbe, solange die Ultimate bereit ist
+- v0.172: Erfolg „Funkensammler“ (500 Seelendieb-Funken mit der Maus eingesammelt) und Zähler „Seelendieb-Funken“ in der Statistik
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -191,6 +192,5 @@ L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Verglei
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
-K7. Erfolg „Funkensammler“ (500 Seelendieb-Funken eingesammelt) und Zähler in der Statistik
 I5. HUD-Porträt zeigt die Ultimate-Ladung als sich füllenden Rahmen (Konturbalken um das Bild)
 K8. Seelendieb-Funken: eingesammelte Funken ziehen als Lichtspur zum Seelen-Zähler im HUD
