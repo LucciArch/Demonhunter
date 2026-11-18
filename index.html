@@ -1548,10 +1548,11 @@ function dropLoot(e,cur,v,gold){
   const a=Math.random()*Math.PI*2,sp=rnd(60,180);
   R.loot.push({x:e.x,y:e.y-e.r,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-80,z:0,cur,v,gold,age:0,fly:0,tx:0,ty:0});
 }
+const HUDC={s:'#hS',b:'#hB',g:'#hG'};
 function collect(l){
   if(l.cur==='a'){gainArt(l.v);sfx('relic');return;}
   if(l.cur==='s')R.souls+=l.v;else if(l.cur==='b')R.brim+=l.v;else R.sig+=l.v;
-  if(l.hud){const c=$('#hG').parentNode;c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop');}
+  if(l.hud){const c=$(HUDC[l.cur]).parentNode;c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop');}
   sfxL('pick');
 }
 
@@ -1792,7 +1793,7 @@ function updateRun(dt){
     if(!l.fly){l.x+=l.vx*dt;l.y+=l.vy*dt;l.vx*=Math.pow(.02,dt);l.vy=l.vy*Math.pow(.02,dt);
       if(ptr.active&&Math.hypot(ptr.x-l.x,ptr.y-l.y)<ST.magnet)l.fly=1;
       else if(l.vz===undefined&&l.age>(l.hud?.8:ST.collectDelay))l.fly=2;}
-    else{let tx=l.fly===1?ptr.x:hp.x,ty=l.fly===1?ptr.y:hp.y-24;if(l.hud){const b=$('#hG').getBoundingClientRect();tx=b.left-12;ty=b.top+b.height/2;}/* Fürsten-Siegel fliegen zur Anzeige */const dx=tx-l.x,dy=ty-l.y,d=Math.hypot(dx,dy);const sp=420+l.age*500;
+    else{let tx=l.fly===1?ptr.x:hp.x,ty=l.fly===1?ptr.y:hp.y-24;if(l.hud){const b=$(HUDC[l.cur]).getBoundingClientRect();tx=b.left-12;ty=b.top+b.height/2;if(l.spk)R.pt.push({x:l.x,y:l.y,vx:rnd(-20,20),vy:-40,t:0,life:.3,c:Math.random()<.5?'#ffd76a':'#9be8ff',s:3});}/* Fürsten-Siegel und Seelendieb-Funken fliegen zur Anzeige */const dx=tx-l.x,dy=ty-l.y,d=Math.hypot(dx,dy);const sp=420+l.age*500;
       if(l.z){l.z=Math.max(0,l.z-sp*dt);l.vz=undefined;}if(d<14){l.dead=1;collect(l);}else{l.x+=dx/d*Math.min(d,sp*dt);l.y+=dy/d*Math.min(d,sp*dt);}}
   }
   R.loot=R.loot.filter(l=>!l.dead);
@@ -1803,14 +1804,14 @@ function updateFx(dt){
   for(const t of R.tx)t.t+=dt;R.tx=R.tx.filter(t=>t.t<.8);
   if(R.tx.length>80)R.tx.splice(0,R.tx.length-80);
   {const Z=R.zz,mx=Z?Z.fx+(ptr.x-Z.fx)/Z.z:ptr.x,my=Z?Z.fy+(ptr.y-Z.fy)/Z.z:ptr.y;// Seelendieb-Funken per Mausberührung als Mini-Seelen einsammeln
-    if(ptr.active)for(const p of R.pt)if(p.sv&&p.t<p.life&&Math.hypot(p.x-mx,p.y-my)<34){collect({cur:'s',v:p.sv});save.st.spk=(save.st.spk||0)+1;p.t=p.life;R.pt.push({x:p.x,y:p.y,vx:0,vy:-90,t:0,life:.3,c:'#ffffff',s:4});}}
+    if(ptr.active)for(const p of R.pt)if(p.sv&&p.t<p.life&&Math.hypot(p.x-mx,p.y-my)<34){R.loot.push({x:p.x,y:p.y,vx:0,vy:0,z:0,cur:'s',v:p.sv,age:0,fly:3,hud:1,spk:1});save.st.spk=(save.st.spk||0)+1;p.t=p.life;R.pt.push({x:p.x,y:p.y,vx:0,vy:-90,t:0,life:.3,c:'#ffffff',s:4});}}
   for(const p of R.pt){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;if(p.gy&&p.y>p.gy&&p.vy>0){p.y=p.gy;p.vy=0;p.vx=0;}}R.pt=R.pt.filter(p=>p.t<p.life);
 }
 const bossSig=()=>((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1)*(R.bmoon?2*ST.moonSig:1);
 function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered (Reliquien nie verlieren)
-  for(const l of R.loot)if(l.cur==='a')gainArt(l.v);else if(l.hud)R.sig+=l.v;
+  for(const l of R.loot)if(l.cur==='a')gainArt(l.v);else if(l.hud){if(l.cur==='s')R.souls+=l.v;else R.sig+=l.v;}
   const bo=R.en.find(e=>e.boss&&!e.dead);// knapp gescheitert (≤25% Leben): Trostpreis von einem Viertel der Fürsten-Siegel
   if(bo){R.bossPct=Math.max(1,Math.ceil(bo.hp/bo.max*100));if(R.bossPct<=25){R.cons=Math.max(1,Math.floor(bossSig()*ST.bossLoot*.25));R.sig+=R.cons;}}
   if(R.t>3)save.st.rate=Math.max(R.souls/R.t,(save.st.rate||0)*.9);
