@@ -2262,12 +2262,15 @@ function menu(){
   <p>Gib Seelen, Schwefel und Siegel im <b>Schwurbaum</b> aus. Ziehen (oder wischen) verschiebt den Baum, das Mausrad zoomt.</p></div>
   <h3 class="px" style="color:#ffd9b0;margin:12px 0 6px">Einstellungen</h3>
   <div style="display:grid;gap:8px;font-size:20px;max-width:440px">
+   <b class="px" style="color:#c8a080;font-size:16px;margin-top:4px">Klang</b>
    <label>Lautstärke <input type="range" id="oVol" min="0" max="1" step=".05" value="${save.opt.vol}" style="width:200px;vertical-align:middle"></label>
    <label class="chk"><input type="checkbox" id="oMusic" ${save.opt.music?'checked':''}> Musik</label>
+   <b class="px" style="color:#c8a080;font-size:16px;margin-top:4px">Anzeige</b>
    <label class="chk"><input type="checkbox" id="oDmg" ${save.opt.dmg?'checked':''}> Schadenszahlen anzeigen</label>
    <label class="chk"><input type="checkbox" id="oShake" ${save.opt.shake?'checked':''}> Bildschirmwackeln</label>
-   <label class="chk"><input type="checkbox" id="oPause" ${save.opt.autoPause?'checked':''}> Pause bei Fensterwechsel</label>
    <label class="chk"><input type="checkbox" id="oLoot" ${save.opt.lootHud?'checked':''}> Eingesammelte Beute fliegt zur Anzeige</label>
+   <b class="px" style="color:#c8a080;font-size:16px;margin-top:4px">Kampf</b>
+   <label class="chk"><input type="checkbox" id="oPause" ${save.opt.autoPause?'checked':''}> Pause bei Fensterwechsel</label>
    <label class="chk"><input type="checkbox" id="oUlt" ${save.opt.autoUlt?'checked':''}> Ultimate automatisch zünden nach <select id="oUltD" style="background:#1a1018;color:#d8c8b8;border:1px solid #6a3040;font:inherit;font-size:16px">${[1,2.5,5].map(v=>`<option value="${v}" ${save.opt.ultDelay==v?'selected':''}>${String(v).replace('.',',')} s</option>`).join('')}</select></label></div>
   <div class="row" style="margin-top:12px"><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
   $('#mClose').onclick=closeModal;
