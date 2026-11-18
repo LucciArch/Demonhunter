@@ -886,6 +886,7 @@ N('Gf','G6',60,'Siegelbruch','sigilFlat',1,5,10,'g');
 N('Gg','Ga',25,'Seelenwucher','soulFlat',3,10,90,'s');
 N('Gh','Gd',25,'Mondanbeter','moonCh',2,5,8,'b');
 N('Gi','Gh',0,'Pilgerpfad','shrineFreq',15,5,12,'b');
+N('Gj','Gi',0,'Wallfahrtsort','favShrine',10,5,30,'b');
 // --- BANN
 N('B1','root',0,'Bannstrahl','clickPct',10,10,3,'s');
 N('B2','B1',0,'Weite Bannung','clickAoe',10,10,15,'s');
@@ -975,7 +976,7 @@ const FX={
  hpFlat:v=>`+${v} Leben`,hpPct:v=>`+${v}% Leben`,armor:v=>`+${v} Rüstung`,regen:v=>`+${v} Leben/s`,revive:v=>`+${v} Wiederbelebung pro Jagd (50% Leben)`,
  thorns:v=>`Reflektiert ${v}% des erlittenen Schadens`,lifesteal:v=>`+${v}% Lebensraub`,
  runTime:v=>`+${v}s Jagdzeit`,magnet:v=>`+${v} Sammelradius des Zeigers`,spawnPct:v=>`+${v}% mehr Dämonen`,autoCollect:v=>`Beute fliegt fast sofort zu dir`,
- collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,moonCh:v=>`+${v}% Blutmond-Chance (ab Kreis 3)`,curseCh:v=>`+${v}% Chance auf einen verfluchten Segen`,shrineFreq:v=>`Schreine erscheinen ${v}% öfter`,boonReroll:v=>`Segnungen ${v}× pro Jagd neu würfeln`,boonExtra:v=>`+${v} Segen zur Auswahl`,
+ collectDelay:v=>`Beute fliegt ${v}s früher zu dir`,quotaRed:v=>`Fürst erscheint ${v}% früher`,moonCh:v=>`+${v}% Blutmond-Chance (ab Kreis 3)`,curseCh:v=>`+${v}% Chance auf einen verfluchten Segen`,shrineFreq:v=>`Schreine erscheinen ${v}% öfter`,favShrine:v=>`${v}% Chance, dass dein meistgenutzter Schrein erscheint (${(SHRINES[favShrine()]||{n:'noch keiner'}).n})`,boonReroll:v=>`Segnungen ${v}× pro Jagd neu würfeln`,boonExtra:v=>`+${v} Segen zur Auswahl`,
  soulPct:v=>`+${v}% Seelen`,doubleLoot:v=>`+${v}% Chance auf doppelte Beute`,brimPct:v=>`+${v}% Schwefel`,golden:v=>`${v}% Chance auf goldene Seelen (×10)`,
  sigilPct:v=>`+${v}% Siegel`,soulFlat:v=>`+${v} Seelen pro Kill`,eliteCh:v=>`+${v}% Chance auf Elite-Dämonen`,brimFlat:v=>`+${v} Schwefel pro Elite`,bossLoot:v=>`+${v}% Fürsten-Beute`,sigilFlat:v=>`+${v} Siegel pro Fürst`,
  clickPct:v=>`Bannstrahl (Klick) +${v}% deines Schadens`,clickAoe:v=>`+${v}% Bannstrahl-Radius`,clickCrit:v=>`+${v}% Krit-Chance des Bannstrahls`,clickCritDmg:v=>`+${v}% Bannstrahl-Krit-Schaden`,
@@ -1149,7 +1150,7 @@ function computeStats(){
   s.collectDelay=Math.max(.25,(g('autoCollect')?.6:3)-g('collectDelay')*(g('autoCollect')?.1:1));
   s.soul=1+g('soulPct')/100;s.soulFlat=g('soulFlat');
   s.brim=1+g('brimPct')/100;s.brimFlat=g('brimFlat');
-  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.moonSig=1;s.shrineF=1+g('shrineFreq')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');s.curseCh=g('curseCh')/100;
+  s.sigil=1+g('sigilPct')/100;s.sigilFlat=g('sigilFlat');s.moonCh=g('moonCh')/100;s.moonSig=1;s.shrineF=1+g('shrineFreq')/100;s.favSh=g('favShrine')/100;s.reroll=g('boonReroll');s.boonN=3+g('boonExtra');s.curseCh=g('curseCh')/100;
   s.dbl=g('doubleLoot')/100;s.golden=g('golden')/100;
   s.elite=g('eliteCh')/100;s.bossDmg=1+g('bossDmg')/100;s.bossLoot=1+g('bossLoot')/100;
   s.click=1+s.dmg*(.3+g('clickPct')/100);s.clickR=30*(1+g('clickAoe')/100);
@@ -1284,11 +1285,12 @@ for(const k in SHRINES)SPR['sh_'+k]=mkSprite({pal:SHRINE_PAL,rows:SHRINES[k].row
 SPR.mimic=mkSprite({pal,rows:["..wwwwwww..",".wWWWWWWWw.","wWWeWWWeWWw","YYYYYYYYYYY",".t.t.t.t.t.","mmmmmmmmmmm","mmmTTTTTmmm","mmTTmmmTTmm",".t.t.t.t.t.","YYYYYYYYYYY","wWWWWYWWWWw","YYYYYYYYYYY",".ww.....ww."]});
 SPR.gchest=mkSprite({pal:{...pal,w:'#8a5a1a',W:'#ffd76a',Y:'#fff3b0',y:'#ffffff'},rows:SHRINES.chest.rows});// goldene Truhe, die der Mimic fallen lässt
 SPR.mimic.f2=mkSprite({pal,rows:["..wwwwwww..",".wWWWWWWWw.","wWWeWWWeWWw","YYYYYYYYYYY",".ttttttttt.","YYYYYYYYYYY","wWWWWYWWWWw","wWWWWWWWWWw","wWWWWWWWWWw","YYYYYYYYYYY","..w.....w..",".w.......w.",".ww.....ww."]});}
+const favShrine=()=>{const K=save.st.shK||{};return Object.keys(K).filter(k=>k!=='curse').sort((a,b)=>K[b]-K[a])[0];};// Lieblingsschrein = meistgenutzter (Fluchschrein ausgenommen)
 function updShrines(dt){
   if(R.thiefT===undefined)R.thiefT=R.c>=2&&Math.random()<.4?rnd(3,8):1e9;// 40% der Jagden ab Kreis 2: ein Seelendieb
   if((R.thiefT-=dt)<=0){R.thiefT=1e9;const t=spawnDemon('thief');R.tx.push({x:t.x,y:t.y-40,str:'SEELENDIEB!',t:0,col:'#ffd76a'});}
   R.shT=(R.shT===undefined?rnd(2,4):R.shT)-dt*ST.shrineF;
-  if(R.shT<=0&&!R.shrine){R.shT=rnd(10,16);const ks=Object.keys(SHRINES).filter(k=>k!=='curse'&&(k!=='altar'||R.c>=3)&&(k!=='mirror'||R.souls>0)&&(k!=='offer'||R.brim>0)&&(k!=='scale'||R.souls>0&&R.c>=2)&&(k!=='glass'||R.hp>R.maxHp*.6)),k=R.c>=3&&Math.random()<.12?'curse':ks[ri(0,ks.length-1)],hp=heroPos(),a=Math.random()*Math.PI*2,rr=rnd(140,Math.min(W,H)*.42);
+  if(R.shT<=0&&!R.shrine){R.shT=rnd(10,16);const ks=Object.keys(SHRINES).filter(k=>k!=='curse'&&(k!=='altar'||R.c>=3)&&(k!=='mirror'||R.souls>0)&&(k!=='offer'||R.brim>0)&&(k!=='scale'||R.souls>0&&R.c>=2)&&(k!=='glass'||R.hp>R.maxHp*.6)),fv=favShrine(),k=R.c>=3&&Math.random()<.12?'curse':ks.includes(fv)&&Math.random()<ST.favSh?fv:ks[ri(0,ks.length-1)],hp=heroPos(),a=Math.random()*Math.PI*2,rr=rnd(140,Math.min(W,H)*.42);
     R.shrine={k,x:clamp(hp.x+Math.cos(a)*rr,60,W-60),y:clamp(hp.y+Math.sin(a)*rr*.7,150,H-40),t:0};R.fx.push({k:'portal',x:R.shrine.x,y:R.shrine.y,r:30,t:0,dur:.6});}
   if(R.shrine)R.shrine.t+=dt;}
 function useShrine(x,y){const s=R.shrine;if(!s||Math.hypot(x-s.x,(y-(s.y-20))*1.2)>34)return false;
@@ -2186,7 +2188,7 @@ const ICON={
  skull:[".###.","#.#.#","#####",".###.",".#.#."],chain:["#....",".#...","..#.#","...#.","....#"],thorn:["#.#.#",".###.","#####",".###.","#.#.#"],star:["..#..","#####",".###.",".#.#.","#...#"]
 };
 const KEYICON={dmgFlat:'dmg',dmgPct:'dmg',atkSpd:'spd',aoe:'aoe',bossDmg:'skull',chain:'chain',chainDmg:'chain',execute:'skull',multi:'star',hpFlat:'hp',hpPct:'hp',armor:'arm',regen:'regen',revive:'regen',thorns:'thorn',lifesteal:'hp',
- runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',moonCh:'star',curseCh:'skull',shrineFreq:'star',boonReroll:'star',boonExtra:'star',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
+ runTime:'time',magnet:'mag',spawnPct:'skull',autoCollect:'mag',collectDelay:'mag',quotaRed:'time',moonCh:'star',curseCh:'skull',shrineFreq:'star',favShrine:'star',boonReroll:'star',boonExtra:'star',soulPct:'loot',doubleLoot:'loot',brimPct:'loot',golden:'star',sigilPct:'loot',soulFlat:'loot',eliteCh:'skull',brimFlat:'loot',bossLoot:'loot',sigilFlat:'loot',
  clickPct:'click',clickAoe:'aoe',clickCrit:'crit',clickCritDmg:'crit',autoSmite:'click',autoSmiteSpd:'spd',autoSmiteCount:'click',smiteTwice:'star',markPct:'click',clickSoul:'loot',crit:'crit',critDmg:'crit',explode:'boom',explodeR:'boom',pierce:'dmg',chainReact:'boom',enemyHpRed:'skull',dmgPerCircle:'dmg',hpPerCircle:'hp',soulPerCircle:'loot',frenzy:'spd',killTime:'time'};
 function drawIcon(key,col,size,on){const g=ICON[KEYICON[key]]||ICON.star;const px=Math.max(1,size*2/5);ctx.fillStyle=on?'#fff8e8':col;ctx.globalAlpha=on?1:.75;
   for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(g[j][i]==='#')ctx.fillRect(Math.round((i-2.5)*px),Math.round((j-2.5)*px),Math.ceil(px),Math.ceil(px));ctx.globalAlpha=1;}
