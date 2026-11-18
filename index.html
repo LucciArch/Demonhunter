@@ -77,6 +77,10 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 #btnQuit{pointer-events:auto;padding:4px 10px;font-size:14px}
 #hudLoot .cur{font-size:22px}
 #hudLoot .cur.pop{animation:pop .25s}
+#hudLoot .cur{position:relative}
+#hudLoot em{position:absolute;left:28px;top:100%;font-style:normal;font-size:17px;color:#fff3c0;text-shadow:0 0 4px #000,0 1px 0 #000;opacity:0;pointer-events:none;white-space:nowrap}
+#hudLoot em.on{animation:gain 1.2s forwards}
+@keyframes gain{0%{opacity:1;transform:translateY(-3px)}70%{opacity:1}100%{opacity:0;transform:translateY(4px)}}
 @keyframes pop{50%{transform:scale(1.35)}}
 #ultWrap{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:center;z-index:6;pointer-events:none}
 #ultBtn{pointer-events:auto;min-width:220px;padding:8px 14px;font-size:18px}
@@ -159,9 +163,9 @@ label.chk{display:inline-flex;align-items:center;gap:6px;font-size:20px;cursor:p
     </div></div>
     <div id="hudC"><div id="hudCirc"></div><div class="bar q"><div id="qFill" style="background:linear-gradient(#ffd07a,#e07a2a 45%,#8a3a12);width:0%"></div><span id="qTxt"></span></div></div>
     <div id="hudLoot">
-      <span class="cur s"><i></i><b id="hS">0</b></span>
-      <span class="cur b"><i></i><b id="hB">0</b></span>
-      <span class="cur g"><i></i><b id="hG">0</b></span>
+      <span class="cur s"><i></i><b id="hS">0</b><em></em></span>
+      <span class="cur b"><i></i><b id="hB">0</b><em></em></span>
+      <span class="cur g"><i></i><b id="hG">0</b><em></em></span>
       <button id="btnQuit" title="Jagd beenden (Taste B)">⏹ Beenden</button>
     </div>
   </div>
@@ -1554,7 +1558,7 @@ const HUDC={s:'#hS',b:'#hB',g:'#hG'};
 function collect(l){
   if(l.cur==='a'){gainArt(l.v);sfx('relic');return;}
   if(l.cur==='s')R.souls+=l.v;else if(l.cur==='b')R.brim+=l.v;else R.sig+=l.v;
-  if(l.hud){const c=$(HUDC[l.cur]).parentNode;c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop');}
+  if(l.hud){const c=$(HUDC[l.cur]).parentNode,g=c.lastChild,n=performance.now();c._n=(n-(c._t||0)<1000?c._n:0)+l.v;c._t=n;g.textContent='+'+fmt(c._n);c.classList.remove('pop');g.classList.remove('on');void c.offsetWidth;c.classList.add('pop');g.classList.add('on');}// „+N“ summiert Beute, die innerhalb 1 s eintrifft
   sfxL('pick');
 }
 
