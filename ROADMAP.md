@@ -189,6 +189,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.175: HUD-Porträt blitzt kurz in Jägerfarbe auf und ein Glockenklang ertönt, sobald die Ultimate-Ladung voll ist
 - v0.176: Ist die Ultimate bereit, zeigen der Porträt-Ring (golden) und ein dünner Balken unter dem Ultimate-Button die Restzeit bis zum Auto-Zünden (2,5 s)
 - v0.177: Einstellung „Ultimate automatisch zünden“ im Menü (aus = Ultimate wartet auf Leertaste/Klick, Restzeit-Anzeige entfällt)
+- v0.178: Auto-Zünd-Verzögerung der Ultimate im Menü wählbar (1 / 2,5 / 5 s); mit dem Zeiger eingesammelte Beute (Seelen, Schwefel, Siegel) fliegt zum HUD-Zähler, abschaltbar per „Eingesammelte Beute fliegt zur Anzeige“; Jagdende schreibt fliegenden Schwefel jetzt korrekt als Schwefel gut
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -197,5 +198,5 @@ L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Verglei
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
-K9. Normale Seelen-Kugeln beim Einsammeln mit dem Zeiger ebenfalls kurz zum HUD-Zähler fliegen lassen (Einstellung, falls zu unruhig)
-I9. Auto-Zünd-Verzögerung der Ultimate im Menü wählbar (1 / 2,5 / 5 s)
+K10. HUD-Zähler zeigt beim Eintreffen fliegender Beute kurz „+N“ neben dem Wert (gesammelt pro Sekunde)
+I10. Menü-Einstellungen in Gruppen (Klang, Anzeige, Kampf) gliedern, sobald es mehr werden

@@ -992,7 +992,7 @@ function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){save.last=Date.now();try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
-save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true,autoPause:true,autoUlt:true},save.opt);
+save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true,autoPause:true,autoUlt:true,ultDelay:2.5,lootHud:true},save.opt);
 save.st.kt=save.st.kt||{};save.st.ke=save.st.ke||{};save.ach=save.ach||{};save.quests=save.quests||[];
 // ===== ERFOLGE & AUFTRÄGE =====
 const stv=k=>save.st[k]||0;
@@ -1729,7 +1729,7 @@ function updateRun(dt){
     R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1,foe:1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
   updShrines(dt);updCombo(dt);
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
-  if(R.ult>=1&&save.opt.autoUlt){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
+  if(R.ult>=1&&save.opt.autoUlt){R.ultWait+=dt;if(R.ultWait>save.opt.ultDelay)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.ug=Math.max(0,(R.hero.ug||0)-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.rl=Math.max(0,(R.hero.rl||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);R.hero.blk=Math.max(0,(R.hero.blk||0)-dt);R.hero.bsh=Math.max(0,(R.hero.bsh||0)-dt);
   // enemies
   for(const e of R.en){
@@ -1796,7 +1796,7 @@ function updateRun(dt){
       if(ptr.active&&Math.hypot(ptr.x-l.x,ptr.y-l.y)<ST.magnet)l.fly=1;
       else if(l.vz===undefined&&l.age>(l.hud?.8:ST.collectDelay))l.fly=2;}
     else{let tx=l.fly===1?ptr.x:hp.x,ty=l.fly===1?ptr.y:hp.y-24;if(l.hud){const b=$(HUDC[l.cur]).getBoundingClientRect();tx=b.left-12;ty=b.top+b.height/2;if(l.spk)R.pt.push({x:l.x,y:l.y,vx:rnd(-20,20),vy:-40,t:0,life:.3,c:Math.random()<.5?'#ffd76a':'#9be8ff',s:3});}/* Fürsten-Siegel und Seelendieb-Funken fliegen zur Anzeige */const dx=tx-l.x,dy=ty-l.y,d=Math.hypot(dx,dy);const sp=420+l.age*500;
-      if(l.z){l.z=Math.max(0,l.z-sp*dt);l.vz=undefined;}if(d<14){l.dead=1;collect(l);}else{l.x+=dx/d*Math.min(d,sp*dt);l.y+=dy/d*Math.min(d,sp*dt);}}
+      if(l.z){l.z=Math.max(0,l.z-sp*dt);l.vz=undefined;}if(d<14){if(l.fly===1&&save.opt.lootHud&&HUDC[l.cur]){l.fly=3;l.hud=1;}else{l.dead=1;collect(l);}}else{l.x+=dx/d*Math.min(d,sp*dt);l.y+=dy/d*Math.min(d,sp*dt);}}
   }
   R.loot=R.loot.filter(l=>!l.dead);
   updateFx(dt);
@@ -1813,7 +1813,7 @@ const bossSig=()=>((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='fl
 function endRun(why){
   if(R.over)return;R.over=true;R.why=why;
   // remaining loot is lost; give what was gathered (Reliquien nie verlieren)
-  for(const l of R.loot)if(l.cur==='a')gainArt(l.v);else if(l.hud){if(l.cur==='s')R.souls+=l.v;else R.sig+=l.v;}
+  for(const l of R.loot)if(l.cur==='a')gainArt(l.v);else if(l.hud){if(l.cur==='s')R.souls+=l.v;else if(l.cur==='b')R.brim+=l.v;else R.sig+=l.v;}
   const bo=R.en.find(e=>e.boss&&!e.dead);// knapp gescheitert (≤25% Leben): Trostpreis von einem Viertel der Fürsten-Siegel
   if(bo){R.bossPct=Math.max(1,Math.ceil(bo.hp/bo.max*100));if(R.bossPct<=25){R.cons=Math.max(1,Math.floor(bossSig()*ST.bossLoot*.25));R.sig+=R.cons;}}
   if(R.t>3)save.st.rate=Math.max(R.souls/R.t,(save.st.rate||0)*.9);
@@ -2263,12 +2263,14 @@ function menu(){
    <label class="chk"><input type="checkbox" id="oDmg" ${save.opt.dmg?'checked':''}> Schadenszahlen anzeigen</label>
    <label class="chk"><input type="checkbox" id="oShake" ${save.opt.shake?'checked':''}> Bildschirmwackeln</label>
    <label class="chk"><input type="checkbox" id="oPause" ${save.opt.autoPause?'checked':''}> Pause bei Fensterwechsel</label>
-   <label class="chk"><input type="checkbox" id="oUlt" ${save.opt.autoUlt?'checked':''}> Ultimate automatisch zünden</label></div>
+   <label class="chk"><input type="checkbox" id="oLoot" ${save.opt.lootHud?'checked':''}> Eingesammelte Beute fliegt zur Anzeige</label>
+   <label class="chk"><input type="checkbox" id="oUlt" ${save.opt.autoUlt?'checked':''}> Ultimate automatisch zünden nach <select id="oUltD" style="background:#1a1018;color:#d8c8b8;border:1px solid #6a3040;font:inherit;font-size:16px">${[1,2.5,5].map(v=>`<option value="${v}" ${save.opt.ultDelay==v?'selected':''}>${String(v).replace('.',',')} s</option>`).join('')}</select></label></div>
   <div class="row" style="margin-top:12px"><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
   $('#mClose').onclick=closeModal;
   $('#oVol').oninput=e=>{save.opt.vol=+e.target.value;if(audio())MG.gain.value=save.opt.vol;persist();};
   $('#oVol').onchange=()=>sfx('pick');
-  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake'],['oPause','autoPause'],['oUlt','autoUlt']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
+  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake'],['oPause','autoPause'],['oUlt','autoUlt'],['oLoot','lootHud']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
+  $('#oUltD').onchange=e=>{save.opt.ultDelay=+e.target.value;persist();};
   $('#mReset').onclick=()=>{const b=$('#mReset');if(b.dataset.c){save=defSave();persist();closeModal();toHub();cam.x=cam.y=0;toast('Neuer Schwur geleistet.');}else{b.dataset.c=1;b.textContent='Wirklich? Nochmal klicken';}};
 }
 addEventListener('blur',()=>{if(save.opt.autoPause&&mode==='run'&&R&&!R.over&&!R.paused){R.paused=true;$('#ultBtn').disabled=true;}});
@@ -2400,12 +2402,12 @@ function frame(now){
     if(R.paused){ctx.save();ctx.fillStyle='#000a';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffd9b0';ctx.textAlign='center';ctx.font='48px "Pixelify Sans"';ctx.fillText('PAUSE',W/2,H/2);ctx.font='22px "Pixelify Sans"';ctx.fillText('Esc zum Fortsetzen · B zum Beenden',W/2,H/2+36);ctx.restore();}
     // HUD
     $('#hpFill').style.width=$('#hpTrail').style.width=(100*Math.max(0,R.hp)/R.maxHp)+'%';$('#hpTxt').textContent=`${fmt(Math.max(0,R.hp))} / ${fmt(R.maxHp)}`;
-    {const im=$('#hudImg').style,lo=R.hp>0&&R.hp<R.maxHp*.25;im.filter=R.hero.flash>0?'sepia(1) saturate(6) hue-rotate(-40deg) brightness(1.3)':lo?'grayscale(.7) brightness(.85)':'';im.transform=lo&&!R.paused?`translate(${rnd(-1,1)}px,${rnd(-1,1)}px)`:'';const ug=R.hero.ug||0,c=HB[save.hero].col,ps=$('#hudPort').style;const rd=R.ult>=1;ps.setProperty('--u',(rd?100*Math.max(0,1-R.ultWait/2.5):R.ult*100)+'%');ps.setProperty('--uc',rd?'#ffd76a':c);if(ug>0)im.filter=`brightness(${1+ug*1.5})`;$('#hudPort').style.boxShadow=`inset 0 0 0 2px ${c}`+(ug>0?`,0 0 ${ug*30|0}px ${ug*10|0}px ${c}`:R.ult>=1?`,0 0 ${8+6*Math.sin(performance.now()/180)|0}px 2px ${c}`:'');}// Porträt: rot bei Treffern, blass und zitternd bei wenig Leben, leuchtet beim Zünden der Ultimate in Jägerfarbe
+    {const im=$('#hudImg').style,lo=R.hp>0&&R.hp<R.maxHp*.25;im.filter=R.hero.flash>0?'sepia(1) saturate(6) hue-rotate(-40deg) brightness(1.3)':lo?'grayscale(.7) brightness(.85)':'';im.transform=lo&&!R.paused?`translate(${rnd(-1,1)}px,${rnd(-1,1)}px)`:'';const ug=R.hero.ug||0,c=HB[save.hero].col,ps=$('#hudPort').style;const rd=R.ult>=1;ps.setProperty('--u',(rd?100*Math.max(0,1-R.ultWait/save.opt.ultDelay):R.ult*100)+'%');ps.setProperty('--uc',rd?'#ffd76a':c);if(ug>0)im.filter=`brightness(${1+ug*1.5})`;$('#hudPort').style.boxShadow=`inset 0 0 0 2px ${c}`+(ug>0?`,0 0 ${ug*30|0}px ${ug*10|0}px ${c}`:R.ult>=1?`,0 0 ${8+6*Math.sin(performance.now()/180)|0}px 2px ${c}`:'');}// Porträt: rot bei Treffern, blass und zitternd bei wenig Leben, leuchtet beim Zünden der Ultimate in Jägerfarbe
     $('#tFill').style.width=(100*R.time/R.maxTime)+'%';$('#blFill').style.width=(100*R.bl/R.blN)+'%';$('#tTxt').textContent=`⧗ ${R.time.toFixed(1)}s`;
     if(!R.bossSpawned){$('#qFill').style.width=(100*Math.min(1,R.kills/R.quota))+'%';$('#qTxt').textContent=`Fürst erscheint: ${R.kills}/${R.quota}`;}
     else if(!R.bossDead){const b=R.en.find(e=>e.boss);$('#qFill').style.width=(b?100*b.hp/b.max:0)+'%';$('#qTxt').textContent=(b&&b.name||'FÜRST').toUpperCase();}
     else{$('#qFill').style.width='100%';$('#qTxt').textContent='Fürst gebannt! Kills: '+R.kills;}
-    $('#ultName').textContent=ULT[save.hero].name+(R.ult>=1?' (Leertaste)':'');$('#ultFill').style.width=(R.ult*100)+'%';$('#ultBtn').classList.toggle('ready',R.ult>=1);$('#ultAuto').style.width=(R.ult>=1&&save.opt.autoUlt?100*Math.max(0,1-R.ultWait/2.5):0)+'%';
+    $('#ultName').textContent=ULT[save.hero].name+(R.ult>=1?' (Leertaste)':'');$('#ultFill').style.width=(R.ult*100)+'%';$('#ultBtn').classList.toggle('ready',R.ult>=1);$('#ultAuto').style.width=(R.ult>=1&&save.opt.autoUlt?100*Math.max(0,1-R.ultWait/save.opt.ultDelay):0)+'%';
     $('#hS').textContent=fmt(R.souls);$('#hB').textContent=fmt(R.brim);$('#hG').textContent=fmt(R.sig);
     refreshCur();
   }else{
