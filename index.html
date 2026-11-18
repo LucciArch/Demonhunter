@@ -1740,7 +1740,7 @@ function updateRun(dt){
     const dx=hp.x-e.x,dy=hp.y-e.y,d=Math.hypot(dx,dy)||1;const reach=18+e.r;
     e.flip=dx<0;
     e.moving=0;
-    if(e.d.thief){e.life=(e.life||0)+dt;e.flip=dx>0;e.moving=1;if(Math.random()<dt*20){const k=(e.drawSc||3);R.pt.push({x:e.x+(e.flip?-1:1)*5.5*k+rnd(-4,4),y:e.y-12.5*k,vx:rnd(-30,30),vy:rnd(-80,-20),t:0,life:rnd(1,1.6),gy:e.y+rnd(-5,5),c:Math.random()<.5?'#ffd76a':'#9be8ff',s:3});}// Seelen-Funken fallen aus dem Sack und bleiben kurz als Spur liegen// Seelendieb flieht vor dem Jäger
+    if(e.d.thief){e.life=(e.life||0)+dt;e.flip=dx>0;e.moving=1;if(Math.random()<dt*20){const k=(e.drawSc||3);R.pt.push({x:e.x+(e.flip?-1:1)*5.5*k+rnd(-4,4),y:e.y-12.5*k,vx:rnd(-30,30),vy:rnd(-80,-20),t:0,life:rnd(1,1.6),gy:e.y+rnd(-5,5),c:Math.random()<.5?'#ffd76a':'#9be8ff',s:3});}// Seelendieb flieht vor dem Jäger; Seelen-Funken fallen aus dem Sack und bleiben kurz als Spur liegen
       if(e.life>8){e.dead=true;R.fx.push({k:'portal',x:e.x,y:e.y,r:30,t:0,dur:.6});R.tx.push({x:e.x,y:e.y-40,str:'ENTKOMMEN!',t:0,col:'#9be8ff'});sfx('tele');continue;}
       let fx=-dx/d,fy=-dy/d;if(e.x<70||e.x>W-70)fx*=-.3;if(e.y<140||e.y>H-50)fy*=-.3;fx+=Math.sin(e.life*2.3+e.bob)*.7;e.x=clamp(e.x+fx*e.spd*dt,30,W-30);e.y=clamp(e.y+fy*e.spd*.8*dt,120,H-20);continue;}
     if(e.bv){if(!e.rage&&e.hp<e.max*.5){e.rage=1;e.spd*=1.4;e.abT=Math.min(e.abT,.8);shake=Math.max(shake,10);sfx('boss');R.fx.push({k:'ring',x:e.x,y:e.y,r:140,col:'#ff3a3a',t:0,dur:.6});// Phase 2: Wut
