@@ -685,6 +685,9 @@ const BELT_PAL={b:'#5a3a22',B:'#c8a040',k:'#8a6a3a',w:'#d8ffd0',g:'#7aff6a',G:'#
 SPR.belt=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk.kk","wg.wg.wg","GG.GG.GG"]});
 SPR.belt2=mkSprite({pal:BELT_PAL,rows:["bbbBbbbb","kk.kk...","wg.wg...","GG.GG..."]});
 SPR.vial=mkSprite({pal:BELT_PAL,rows:["kk","wg","GG"]});
+// Seelendieb: Sack (rechts der Schulter) als eigenes Sprite, damit er beim Fliehen wippt
+{const d=SPR_DEF.thief,sk=(c,i)=>i>=11&&'dbBg'.includes(c),part=keep=>d.rows.map(r=>[...r].map((c,i)=>c!=='.'&&sk(c,i)===keep?c:'.').join(''));
+  SPR.thiefBody=mkSprite({pal:d.pal,rows:part(false)});SPR.thiefBody.f2=mkSprite({pal:d.pal,rows:walkRows(part(false))});SPR.thiefSack=mkSprite({pal:d.pal,rows:part(true)});}
 for(const k of ['thief','imp','hound','succ','golem','cult','brute','inq','hex','exo','blut','rune','pest','templ'])SPR[k].f2=mkSprite({pal:SPR_DEF[k].pal,rows:walkRows(SPR_DEF[k].rows)});
 // Eigene Gestalt je Fürst (Index 1..10, Index 0 = Aschefürst nutzt SPR_DEF.boss); Farben kommen aus der Variante
 const BOSS_ROWS=[null,
@@ -1733,7 +1736,7 @@ function updateRun(dt){
     const dx=hp.x-e.x,dy=hp.y-e.y,d=Math.hypot(dx,dy)||1;const reach=18+e.r;
     e.flip=dx<0;
     e.moving=0;
-    if(e.d.thief){e.life=(e.life||0)+dt;e.flip=dx>0;e.moving=1;if(Math.random()<dt*20)R.pt.push({x:e.x+rnd(-6,6),y:e.y-12,vx:rnd(-20,20),vy:rnd(-50,-10),t:0,life:.5,c:Math.random()<.5?'#ffd76a':'#9be8ff',s:2});// Seelendieb flieht vor dem Jäger
+    if(e.d.thief){e.life=(e.life||0)+dt;e.flip=dx>0;e.moving=1;if(Math.random()<dt*20){const k=(e.drawSc||3);R.pt.push({x:e.x+(e.flip?-1:1)*5.5*k+rnd(-4,4),y:e.y-12.5*k,vx:rnd(-30,30),vy:rnd(-80,-20),t:0,life:rnd(1,1.6),gy:e.y+rnd(-5,5),c:Math.random()<.5?'#ffd76a':'#9be8ff',s:3});}// Seelen-Funken fallen aus dem Sack und bleiben kurz als Spur liegen// Seelendieb flieht vor dem Jäger
       if(e.life>8){e.dead=true;R.fx.push({k:'portal',x:e.x,y:e.y,r:30,t:0,dur:.6});R.tx.push({x:e.x,y:e.y-40,str:'ENTKOMMEN!',t:0,col:'#9be8ff'});sfx('tele');continue;}
       let fx=-dx/d,fy=-dy/d;if(e.x<70||e.x>W-70)fx*=-.3;if(e.y<140||e.y>H-50)fy*=-.3;fx+=Math.sin(e.life*2.3+e.bob)*.7;e.x=clamp(e.x+fx*e.spd*dt,30,W-30);e.y=clamp(e.y+fy*e.spd*.8*dt,120,H-20);continue;}
     if(e.bv){if(!e.rage&&e.hp<e.max*.5){e.rage=1;e.spd*=1.4;e.abT=Math.min(e.abT,.8);shake=Math.max(shake,10);sfx('boss');R.fx.push({k:'ring',x:e.x,y:e.y,r:140,col:'#ff3a3a',t:0,dur:.6});// Phase 2: Wut
@@ -1794,7 +1797,7 @@ function updateFx(dt){
   for(const f of R.fx)f.t+=dt;R.fx=R.fx.filter(f=>f.t<f.dur);
   for(const t of R.tx)t.t+=dt;R.tx=R.tx.filter(t=>t.t<.8);
   if(R.tx.length>80)R.tx.splice(0,R.tx.length-80);
-  for(const p of R.pt){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;}R.pt=R.pt.filter(p=>p.t<p.life);
+  for(const p of R.pt){p.t+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;if(p.gy&&p.y>p.gy&&p.vy>0){p.y=p.gy;p.vy=0;p.vx=0;}}R.pt=R.pt.filter(p=>p.t<p.life);
 }
 const bossSig=()=>((1+Math.floor((R.c-1)/2))*ST.sigil+ST.sigilFlat)*(R.mod==='flood'?2:1)*(R.mod==='frost'?1.4:1)*(R.bmoon?2*ST.moonSig:1);
 function endRun(why){
@@ -1971,7 +1974,7 @@ function drawDemon(e,sc){
   if(e.pact&&e.spawn<=0){ctx.save();ctx.font='16px "Pixelify Sans"';ctx.textAlign='center';const t='☠ '+Math.ceil(e.pactT)+'s';ctx.fillStyle='#000';ctx.fillText(t,e.x+1,e.y-s.h*k-31);ctx.fillStyle=e.pactT<5?'#ff3a3a':'#ff6a8a';ctx.fillText(t,e.x,e.y-s.h*k-32);ctx.restore();}// Paktwächter-Countdown
   if(e.boss||e.elite||e.d.thief){ctx.save();ctx.globalAlpha=.25+.1*Math.sin(e.bob);if(e.rage)ctx.globalAlpha=.45+.25*Math.sin(e.bob*2);ctx.fillStyle=e.d.thief?'#ffd76a':e.boss?'#ff3a3a':e.aff?AFFIX[e.aff].col:'#ffb04a';ctx.beginPath();ctx.ellipse(e.x,e.y,s.w*k*.5,s.w*k*.18,0,0,Math.PI*2);ctx.fill();ctx.restore();}
   const sq=e.d.fly?0:Math.abs(Math.sin(e.bob))*1.5;e.drawSc=k;
-  const fr=(!e.d.fly&&e.moving&&s.f2&&Math.floor(e.bob/2.4)%2)?s.f2:s;
+  const sb=e.d.thief?SPR.thiefBody:s,fr=(!e.d.fly&&e.moving&&sb.f2&&Math.floor(e.bob/2.4)%2)?sb.f2:sb;
   let o=e.d.fly?{sy:1+.08*Math.sin(e.bob*2),sx:1-.04*Math.sin(e.bob*2)}:null,lx=0,ly=0;
   if(e.hitAnim>0){const q=Math.sin((1-e.hitAnim/.22)*Math.PI),hp=heroPos(),d=Math.hypot(hp.x-e.x,hp.y-e.y)||1;lx=(hp.x-e.x)/d*q*12;ly=(hp.y-e.y)/d*q*6; // Biss/Hieb: Sprung zum Jäger
     o={rot:(e.flip?1:-1)*.3*q,sx:(o?o.sx:1)*(1+.12*q),sy:(o?o.sy:1)*(1-.1*q)};}
@@ -1979,6 +1982,7 @@ function drawDemon(e,sc){
     o={rot:(e.flip?-1:1)*.15*q,sx:o?o.sx:1,sy:o?o.sy:1};}
   if(e.spawn>0){const q=1-e.spawn/(e.sp0||.35);drawSpr(s,e.x,e.y+fy+(1-q)*10,k,e.flip,false,q,true,{sy:q,sx:2-q});}
   else drawSpr(fr,e.x+lx,e.y+fy-sq+ly,k,e.flip,e.flash>0,e.inv>0?.15:undefined,false,o);
+  if(e.d.thief&&e.spawn<=0){const w=Math.sin(e.bob*1.6);drawSpr(SPR.thiefSack,e.x+lx+(e.flip?-1:1)*w*k*.6,e.y-sq+ly-Math.abs(w)*k*1.2,k,e.flip,e.flash>0,e.inv>0?.15:undefined,false,o);}// Sack wippt gegen den Schritt
   if(e.plag>0&&e.spawn<=0){const a=Math.min(1,e.plag*2);drawSpr({w:fr.w,h:fr.h,c:plagC(fr)},e.x+lx,e.y+fy-sq+ly,k,e.flip,false,.55*a,false,o); // Schwarzer Tod: grünlich verfärbt, wirft Blasen
     const ty=e.y+fy-s.h*k*.6;ctx.save();for(let i=0;i<4;i++){const q=(R.t*1.3+i/4+e.bob*.05)%1;ctx.globalAlpha=a*(1-q);ctx.fillStyle=i%2?'#b8ff8a':'#5ad04a';const bs=i%2?4:3;ctx.fillRect(Math.round(e.x+Math.sin(i*2.3+e.bob*.3)*s.w*k*.3),Math.round(ty-q*s.h*k*.7),bs,bs);}ctx.restore();}
   if(e.shd>0&&e.spawn<=0){ctx.save();ctx.globalAlpha=.35+.15*Math.sin(e.bob*.5);ctx.strokeStyle='#ffe27a';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(e.x,e.y+fy-s.h*k*.45,s.w*k*.55,s.h*k*.6,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha*=.3;ctx.fillStyle='#ffe27a';ctx.fill();ctx.restore();}
