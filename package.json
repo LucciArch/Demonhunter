@@ -1,7 +1,7 @@
 {
   "name": "daemonenjaeger",
   "productName": "Dämonenjäger",
-  "version": "0.168.0",
+  "version": "0.170.0",
   "description": "Dämonenjäger – Incremental Game",
   "main": "electron/main.js",
   "author": "LucciArch",

@@ -180,6 +180,8 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.166: Seelendieb-Laufanimation – der Seelensack ist ein eigenes Sprite und wippt beim Fliehen gegen den Schritt; aus dem Sack fallen Seelen-Funken, die kurz als leuchtende Spur am Boden liegen bleiben
 - v0.167: HUD-Porträt als Brustbild – Kopf und Oberkörper des Jägers (ohne Waffe, auf die Figur zugeschnitten) groß im Rahmen, Rahmen in der Jägerfarbe
 - v0.168: HUD-Porträt reagiert – färbt sich bei Treffern kurz rot, wird bei unter 25% Leben blass und zittert
+- v0.169: Seelendieb-Spur – die Seelen-Funken lassen sich per Mausberührung (Touch: Finger) als Mini-Seelen einsammeln (je 1/80 der Diebes-Seelen)
+- v0.170: HUD-Porträt leuchtet beim Zünden der Ultimate kurz hell in Jägerfarbe auf (Lichtkranz um den Rahmen)
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -187,6 +189,6 @@ L12. test/sim.js: Laufzeit (~14 min für 200 Jagden) verkürzen (z. B. Zeichnen 
 L9. Simulation mit mehreren Jägern (Jäger-Freischaltung mitkaufen) und Vergleich der Jäger per `--hero <id>`
 M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-Seelendieb mit Lockvögeln
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
-K6. Seelendieb-Spur: Funken am Boden lassen sich per Mausberührung als Mini-Seelen einsammeln
-I3. HUD-Porträt zeigt beim Zünden der Ultimate kurz ein Aufleuchten in Jägerfarbe
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
+K7. Erfolg „Funkensammler“ (500 Seelendieb-Funken eingesammelt) und Zähler in der Statistik
+I4. HUD-Porträt pulsiert sanft, sobald die Ultimate bereit ist
