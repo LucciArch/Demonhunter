@@ -188,6 +188,7 @@ Artifact: https://claude.ai/artifact/FEtxyjH99APZBeaM9dwG1s (slug 7350a289-1ff1-
 - v0.174: Eingesammelte Seelendieb-Funken fliegen mit Lichtspur zum Seelen-Zähler im HUD und werden erst dort gutgeschrieben (Zähler hüpft); Jagdende schreibt fliegende Funken trotzdem gut
 - v0.175: HUD-Porträt blitzt kurz in Jägerfarbe auf und ein Glockenklang ertönt, sobald die Ultimate-Ladung voll ist
 - v0.176: Ist die Ultimate bereit, zeigen der Porträt-Ring (golden) und ein dünner Balken unter dem Ultimate-Button die Restzeit bis zum Auto-Zünden (2,5 s)
+- v0.177: Einstellung „Ultimate automatisch zünden“ im Menü (aus = Ultimate wartet auf Leertaste/Klick, Restzeit-Anzeige entfällt)
 
 ## Als Nächstes
 L11. Balance: Überholen nach Aufstieg dauert noch ~29–36 Jagden (Ziel ≤25; „Ahnenmacht“ allein reicht nicht). Nächster Versuch: Fragment-Ausbeute früher Aufstiege erhöhen oder Spätspiel-Wachstum GROW.late von 1,35 auf 1,3 senken – Spätspiel-Klettern ab Kreis ~35 (2,5 Jagden pro Kreis) ist der Engpass; z. B. Aufstiegsknoten mit geometrischer Wirkung pro Aufstieg (×1,15 Schaden & Leben je Aufstieg) testen, Simulation mehrmals laufen lassen (starke Streuung)
@@ -197,4 +198,4 @@ M. Elite-Kultist/Elite-Fledermaus-Varianten für Fürsten-Beschwörungen; Elite-
 E6. Mimic-Varianten ab Kreis 15: Reliquien-Mimic (verkleidet als Beute-Kugel, flieht) und Fürsten-Mimic im Knochenthron
 E7. Schrein-Wahl per Schwurbaum-Knoten beeinflussen (Lieblingsschrein öfter)
 K9. Normale Seelen-Kugeln beim Einsammeln mit dem Zeiger ebenfalls kurz zum HUD-Zähler fliegen lassen (Einstellung, falls zu unruhig)
-I8. Einstellung „Ultimate automatisch zünden“ (aus = Ultimate wartet auf Leertaste/Klick)
+I9. Auto-Zünd-Verzögerung der Ultimate im Menü wählbar (1 / 2,5 / 5 s)

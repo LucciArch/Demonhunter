@@ -992,7 +992,7 @@ function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){save.last=Date.now();try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
-save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true,autoPause:true},save.opt);
+save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true,autoPause:true,autoUlt:true},save.opt);
 save.st.kt=save.st.kt||{};save.st.ke=save.st.ke||{};save.ach=save.ach||{};save.quests=save.quests||[];
 // ===== ERFOLGE & AUFTRÄGE =====
 const stv=k=>save.st[k]||0;
@@ -1729,7 +1729,7 @@ function updateRun(dt){
     R.fx.push({k:'meteor',x:mx,y:my,r:46,t:0,dur:1.2});R.later.push({t:1.2,fn:()=>{const h=heroPos();R.fx.push({k:'ring',x:mx,y:my,r:70,t:0,dur:.4,col:'#ff7a1a'});R.fires.push({x:mx,y:my,r:30,t:0,dur:2.5,dmg:dm*.1,foe:1});shake=Math.max(shake,5);sfxL('hurt');for(const e of R.en)if(!e.dead&&e.spawn<=0&&Math.hypot(e.x-mx,e.y-my)<56+e.r)dealDmg(e,ST.dmg*3,{col:'#ff9a3a'});if(Math.hypot(mx-h.x,my-h.y)<56)hurtHero(dm,null);}});}
   updShrines(dt);updCombo(dt);
   for(const l of R.later){l.t-=dt;if(l.t<=0){l.done=1;l.fn();}}R.later=R.later.filter(l=>!l.done);
-  if(R.ult>=1){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
+  if(R.ult>=1&&save.opt.autoUlt){R.ultWait+=dt;if(R.ultWait>2.5)castUlt();}else R.ultWait=0;
   R.hero.lunge=Math.max(0,R.hero.lunge-dt);R.hero.ug=Math.max(0,(R.hero.ug||0)-dt);R.hero.sw=Math.max(0,(R.hero.sw||0)-dt);R.hero.ra=Math.max(0,(R.hero.ra||0)-dt);R.hero.rl=Math.max(0,(R.hero.rl||0)-dt);R.hero.flash=Math.max(0,R.hero.flash-dt);R.hero.blk=Math.max(0,(R.hero.blk||0)-dt);R.hero.bsh=Math.max(0,(R.hero.bsh||0)-dt);
   // enemies
   for(const e of R.en){
@@ -2262,12 +2262,13 @@ function menu(){
    <label class="chk"><input type="checkbox" id="oMusic" ${save.opt.music?'checked':''}> Musik</label>
    <label class="chk"><input type="checkbox" id="oDmg" ${save.opt.dmg?'checked':''}> Schadenszahlen anzeigen</label>
    <label class="chk"><input type="checkbox" id="oShake" ${save.opt.shake?'checked':''}> Bildschirmwackeln</label>
-   <label class="chk"><input type="checkbox" id="oPause" ${save.opt.autoPause?'checked':''}> Pause bei Fensterwechsel</label></div>
+   <label class="chk"><input type="checkbox" id="oPause" ${save.opt.autoPause?'checked':''}> Pause bei Fensterwechsel</label>
+   <label class="chk"><input type="checkbox" id="oUlt" ${save.opt.autoUlt?'checked':''}> Ultimate automatisch zünden</label></div>
   <div class="row" style="margin-top:12px"><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
   $('#mClose').onclick=closeModal;
   $('#oVol').oninput=e=>{save.opt.vol=+e.target.value;if(audio())MG.gain.value=save.opt.vol;persist();};
   $('#oVol').onchange=()=>sfx('pick');
-  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake'],['oPause','autoPause']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
+  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake'],['oPause','autoPause'],['oUlt','autoUlt']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
   $('#mReset').onclick=()=>{const b=$('#mReset');if(b.dataset.c){save=defSave();persist();closeModal();toHub();cam.x=cam.y=0;toast('Neuer Schwur geleistet.');}else{b.dataset.c=1;b.textContent='Wirklich? Nochmal klicken';}};
 }
 addEventListener('blur',()=>{if(save.opt.autoPause&&mode==='run'&&R&&!R.over&&!R.paused){R.paused=true;$('#ultBtn').disabled=true;}});
@@ -2404,7 +2405,7 @@ function frame(now){
     if(!R.bossSpawned){$('#qFill').style.width=(100*Math.min(1,R.kills/R.quota))+'%';$('#qTxt').textContent=`Fürst erscheint: ${R.kills}/${R.quota}`;}
     else if(!R.bossDead){const b=R.en.find(e=>e.boss);$('#qFill').style.width=(b?100*b.hp/b.max:0)+'%';$('#qTxt').textContent=(b&&b.name||'FÜRST').toUpperCase();}
     else{$('#qFill').style.width='100%';$('#qTxt').textContent='Fürst gebannt! Kills: '+R.kills;}
-    $('#ultName').textContent=ULT[save.hero].name+(R.ult>=1?' (Leertaste)':'');$('#ultFill').style.width=(R.ult*100)+'%';$('#ultBtn').classList.toggle('ready',R.ult>=1);$('#ultAuto').style.width=(R.ult>=1?100*Math.max(0,1-R.ultWait/2.5):0)+'%';
+    $('#ultName').textContent=ULT[save.hero].name+(R.ult>=1?' (Leertaste)':'');$('#ultFill').style.width=(R.ult*100)+'%';$('#ultBtn').classList.toggle('ready',R.ult>=1);$('#ultAuto').style.width=(R.ult>=1&&save.opt.autoUlt?100*Math.max(0,1-R.ultWait/2.5):0)+'%';
     $('#hS').textContent=fmt(R.souls);$('#hB').textContent=fmt(R.brim);$('#hG').textContent=fmt(R.sig);
     refreshCur();
   }else{
