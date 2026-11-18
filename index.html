@@ -80,7 +80,7 @@ button.big:hover{background:linear-gradient(#a8232f,#6a1320)}
 #hudLoot .cur{position:relative}
 #hudLoot em{position:absolute;left:28px;top:100%;font-style:normal;font-size:17px;color:#fff3c0;text-shadow:0 0 4px #000,0 1px 0 #000;opacity:0;pointer-events:none;white-space:nowrap}
 #hudLoot em.on{animation:gain 1.2s forwards}
-#hudLoot .cur.a img{height:26px;vertical-align:middle;image-rendering:pixelated}#hudLoot .cur.a img.fl{animation:aflash .6s}#hudLoot .cur.a b{color:#ffb0f0}
+#hudLoot .cur.a img{height:26px;vertical-align:middle;image-rendering:pixelated}#hudLoot .cur.a img.fl{animation:aflash .6s}#hudLoot .cur.a b{color:#ffb0f0}#hudLoot .cur.a{pointer-events:auto;cursor:help}
 @keyframes aflash{0%{filter:brightness(3) drop-shadow(0 0 8px #ff6ad8);transform:scale(1.5)}100%{filter:none;transform:none}}
 @keyframes gain{0%{opacity:1;transform:translateY(-3px)}70%{opacity:1}100%{opacity:0;transform:translateY(4px)}}
 @keyframes pop{50%{transform:scale(1.35)}}
@@ -1561,7 +1561,7 @@ function dropLoot(e,cur,v,gold){
 const HUDC={s:'#hS',b:'#hB',g:'#hG',a:'#hA'};
 function collect(l){
   if(l.cur==='a'){gainArt(l.v);sfx('relic');if(l.hud){const b=$('#hA'),c=b.parentNode,i=c.firstChild,m=c.lastChild;// Reliquien-Platz im HUD: Sprite blitzt auf, Name erscheint
-    i.src=sprURL('art_'+l.v.id,2);b.textContent=+b.textContent+1;m.textContent=l.v.name;c.style.display='';for(const [el,k] of [[c,'pop'],[i,'fl'],[m,'on']]){el.classList.remove(k);void el.offsetWidth;el.classList.add(k);}}return;}
+    i.src=sprURL('art_'+l.v.id,2);b.textContent=+b.textContent+1;m.textContent=l.v.name;c.style.display='';c.title='Reliquien dieser Jagd:\n'+[...new Set(R.arts)].map(a=>a.name+(R.arts.filter(x=>x===a).length>1?' ×'+R.arts.filter(x=>x===a).length:'')+' – Stufe '+save.arts[a.id]).join('\n');for(const [el,k] of [[c,'pop'],[i,'fl'],[m,'on']]){el.classList.remove(k);void el.offsetWidth;el.classList.add(k);}}return;}
   if(l.cur==='s')R.souls+=l.v;else if(l.cur==='b')R.brim+=l.v;else R.sig+=l.v;
   if(l.hud){const c=$(HUDC[l.cur]).parentNode,g=c.lastChild,n=performance.now();c._n=(n-(c._t||0)<1000?c._n:0)+l.v;c._t=n;g.textContent='+'+fmt(c._n);c.classList.remove('pop');g.classList.remove('on');void c.offsetWidth;c.classList.add('pop');g.classList.add('on');}// „+N“ summiert Beute, die innerhalb 1 s eintrifft
   sfxL('pick');
@@ -2438,7 +2438,7 @@ else{// Offline-Fortschritt: 25% der zuletzt erjagten Seelen/s, max. 8 Stunden
 addEventListener('pagehide',persist);setInterval(persist,30000);
 requestAnimationFrame(frame);
 // debug hook for testing
-window.__DJ={get save(){return save},get R(){return R},startRun,killDemon,toHub,computeStats,updateRun,autoBuy,smite,nodeCost,nodeAvail,NODES,ST:()=>ST,HT,htAvail,ASC,ascCost,fragGain,ascend,al,useShrine,bossAbility,BOSSES,offerBoons,CURSED,spawnDemon,castUlt,ptr};
+window.__DJ={get save(){return save},get R(){return R},startRun,killDemon,toHub,computeStats,updateRun,autoBuy,smite,nodeCost,nodeAvail,NODES,ST:()=>ST,HT,htAvail,ASC,ascCost,fragGain,ascend,al,useShrine,bossAbility,BOSSES,offerBoons,CURSED,spawnDemon,castUlt,ptr,ARTS};
 </script>
 </body>
 </html>
