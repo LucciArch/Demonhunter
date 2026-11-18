@@ -996,7 +996,7 @@ function defSave(){return {souls:0,brim:0,sig:0,tree:{root:1},hero:'inq',circle:
 function load(){try{const s=JSON.parse(localStorage.getItem(SKEY)||'null');save=Object.assign(defSave(),s||{});save.tree.root=1;}catch(e){save=defSave();}}
 function persist(){save.last=Date.now();try{localStorage.setItem(SKEY,JSON.stringify(save));}catch(e){}}
 load();
-save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true,autoPause:true,autoUlt:true,ultDelay:2.5,lootHud:true},save.opt);
+save.opt=Object.assign({vol:.6,music:true,dmg:true,shake:true,autoPause:true,autoUlt:true,ultDelay:2.5,lootHud:true,instaLoot:false},save.opt);
 save.st.kt=save.st.kt||{};save.st.ke=save.st.ke||{};save.ach=save.ach||{};save.quests=save.quests||[];
 // ===== ERFOLGE & AUFTRÄGE =====
 const stv=k=>save.st[k]||0;
@@ -1798,7 +1798,7 @@ function updateRun(dt){
     if(l.vz!==undefined){l.z+=l.vz*dt;l.vz-=1100*dt;if(l.z<=0){l.z=0;if(l.gold&&l.vz<-200)sfx('chime');l.vz=l.vz<-200?-l.vz*.3:undefined;}}
     if(!l.fly){l.x+=l.vx*dt;l.y+=l.vy*dt;l.vx*=Math.pow(.02,dt);l.vy=l.vy*Math.pow(.02,dt);
       if(ptr.active&&Math.hypot(ptr.x-l.x,ptr.y-l.y)<ST.magnet)l.fly=1;
-      else if(l.vz===undefined&&l.age>(l.hud?.8:ST.collectDelay))l.fly=2;}
+      else if(l.vz===undefined&&l.age>(l.hud?.8:save.opt.instaLoot&&save.ascCount?.15:ST.collectDelay))l.fly=2;}
     else{let tx=l.fly===1?ptr.x:hp.x,ty=l.fly===1?ptr.y:hp.y-24;if(l.hud){const b=$(HUDC[l.cur]).getBoundingClientRect();tx=b.left-12;ty=b.top+b.height/2;if(l.spk)R.pt.push({x:l.x,y:l.y,vx:rnd(-20,20),vy:-40,t:0,life:.3,c:Math.random()<.5?'#ffd76a':'#9be8ff',s:3});}/* Fürsten-Siegel und Seelendieb-Funken fliegen zur Anzeige */const dx=tx-l.x,dy=ty-l.y,d=Math.hypot(dx,dy);const sp=420+l.age*500;
       if(l.z){l.z=Math.max(0,l.z-sp*dt);l.vz=undefined;}if(d<14){if(l.fly===1&&save.opt.lootHud&&HUDC[l.cur]){l.fly=3;l.hud=1;}else{l.dead=1;collect(l);}}else{l.x+=dx/d*Math.min(d,sp*dt);l.y+=dy/d*Math.min(d,sp*dt);}}
   }
@@ -2271,12 +2271,13 @@ function menu(){
    <label class="chk"><input type="checkbox" id="oLoot" ${save.opt.lootHud?'checked':''}> Eingesammelte Beute fliegt zur Anzeige</label>
    <b class="px" style="color:#c8a080;font-size:16px;margin-top:4px">Kampf</b>
    <label class="chk"><input type="checkbox" id="oPause" ${save.opt.autoPause?'checked':''}> Pause bei Fensterwechsel</label>
-   <label class="chk"><input type="checkbox" id="oUlt" ${save.opt.autoUlt?'checked':''}> Ultimate automatisch zünden nach <select id="oUltD" style="background:#1a1018;color:#d8c8b8;border:1px solid #6a3040;font:inherit;font-size:16px">${[1,2.5,5].map(v=>`<option value="${v}" ${save.opt.ultDelay==v?'selected':''}>${String(v).replace('.',',')} s</option>`).join('')}</select></label></div>
+   <label class="chk"><input type="checkbox" id="oUlt" ${save.opt.autoUlt?'checked':''}> Ultimate automatisch zünden nach <select id="oUltD" style="background:#1a1018;color:#d8c8b8;border:1px solid #6a3040;font:inherit;font-size:16px">${[1,2.5,5].map(v=>`<option value="${v}" ${save.opt.ultDelay==v?'selected':''}>${String(v).replace('.',',')} s</option>`).join('')}</select></label>
+   ${save.ascCount?`<label class="chk"><input type="checkbox" id="oInsta" ${save.opt.instaLoot?'checked':''}> Beute sofort einsammeln (ohne Verzögerung)</label>`:''}</div>
   <div class="row" style="margin-top:12px"><button id="mReset" style="border-color:#a03040">Spielstand löschen</button><button id="mClose">Schließen</button></div>`);
   $('#mClose').onclick=closeModal;
   $('#oVol').oninput=e=>{save.opt.vol=+e.target.value;if(audio())MG.gain.value=save.opt.vol;persist();};
   $('#oVol').onchange=()=>sfx('pick');
-  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake'],['oPause','autoPause'],['oUlt','autoUlt'],['oLoot','lootHud']])$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
+  for(const [id,k] of [['oMusic','music'],['oDmg','dmg'],['oShake','shake'],['oPause','autoPause'],['oUlt','autoUlt'],['oLoot','lootHud'],['oInsta','instaLoot']])if($('#'+id))$('#'+id).onchange=e=>{save.opt[k]=e.target.checked;persist();};
   $('#oUltD').onchange=e=>{save.opt.ultDelay=+e.target.value;persist();};
   $('#mReset').onclick=()=>{const b=$('#mReset');if(b.dataset.c){save=defSave();persist();closeModal();toHub();cam.x=cam.y=0;toast('Neuer Schwur geleistet.');}else{b.dataset.c=1;b.textContent='Wirklich? Nochmal klicken';}};
 }
